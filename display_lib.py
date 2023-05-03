@@ -34,13 +34,13 @@ def display_grid_layout(Grid, Agents):
                     agent_flag = 1
 
             if Grid[i][j] == 'C':
-                print('%7s' % str("#"), end=" ")
+                print('%8s' % str("#"), end=" ")
             elif Grid[i][j] == 'S' and agent_flag:
-                print('%7s' % str(str(agent_label) + str([agent_load_size])), end=" ")
+                print('%8s' % str(str(agent_label) + str([agent_load_size])), end=" ")
             elif Grid[i][j] == 'S':
-                print('%7s' % str('_'), end=" ")
+                print('%8s' % str('_'), end=" ")
             else:
-                print('%7s' % str(Grid[i][j]), end=" ")
+                print('%8s' % str(Grid[i][j]), end=" ")
             print_counter += 1
             if print_counter == columns:
                 print_counter = 0

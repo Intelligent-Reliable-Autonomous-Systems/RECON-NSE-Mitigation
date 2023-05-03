@@ -44,9 +44,7 @@ def value_iteration(agent, S, R, gamma):
 
         if max(Residual[s] for s in S) < 0.001:
             break
-    # for s in S:
-    #     action_set = [k for k, v in QQ[s].items() if round(v, 2) == round(V[s], 2)]
-    #     print(str(s) + "--------------------> " + str(QQ[s]) + " ==== optimal action set: " + str(action_set))
+
     return V, PI
 
 

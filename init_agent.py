@@ -6,18 +6,23 @@ s_goals = init_env.s_goals
 
 
 class Agent:
-    def __init__(self, start_loc, Grid, trash_unit_size, label):
-        # state of an agent: <x,y,junk_size,coral_flag>
-        self.s = (start_loc[0], start_loc[1], trash_unit_size, Grid.coral_flag[start_loc[0]][start_loc[1]])
-        self.s0 = (start_loc[0], start_loc[1], trash_unit_size, Grid.coral_flag[start_loc[0]][start_loc[1]])
+    def __init__(self, start_loc, Grid, label):
+        # state of an agent: <x,y,trash_size,coral_flag>
+        self.s = (start_loc[0], start_loc[1], 'Null', Grid.coral_flag[start_loc[0]][start_loc[1]])
+        self.s0 = (start_loc[0], start_loc[1], 'Null', Grid.coral_flag[start_loc[0]][start_loc[1]])
         self.startLoc = start_loc
         self.best_performance_flag = False
+        self.goal_states = Grid.goal_states
+        self.Grid = Grid
 
-        # self.A = ['U', 'D', 'L', 'R']
+        # operation actions = ['pick_S', 'pick_M', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
         self.A = {}
+        # counterfactual comparison actions = ['switch_compare']
+        self.A2 = {}
         self.R_blame = {}
         for s in Grid.S:
-            self.A[s] = ['U', 'D', 'L', 'R']
+            self.A[s] = ['pick_S', 'pick_M', 'pick_L', 'drop', 'U', 'D', 'L', 'R']  # operation actions
+            self.A2[s] = ['switch_compare']  # action for counterfactuals comparison
             self.R_blame[s] = 0.0
         for s in Grid.S:
             if s[0] == 0:
@@ -28,6 +33,7 @@ class Agent:
                 self.A[s].remove('L')
             if s[1] == init_env.columns - 1:
                 self.A[s].remove('R')
+
         self.P = 1.0
         self.R = 0.0
         self.gamma = 0.99
@@ -36,6 +42,51 @@ class Agent:
         self.NSE = 0.0
         self.label = label
         self.path = str(self.s)  # + "->"
+
+    def Reward(self, s, a, trash_repository):
+        # operation actions = ['pick_S', 'pick_M', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
+        # state of an agent: <x,y,junk_size,coral_flag>
+        R = 0
+        reward = {'Null': -10, 'S': 10, 'M': 15, 'L': 20}
+        # for current implementation: salps cannot drop trash anywhere
+        # or pick it up from anywhere but from their own start state
+        if a == 'pick_S':
+            if s == self.s0:
+                if trash_repository['S'] > 0:
+                    R = reward['S']
+                    trash_repository['S'] -= 1
+                else:
+                    R = -50
+            else:
+                R = -50
+        elif a == 'pick_M':
+            if s == self.s0:
+                if trash_repository['M'] > 0:
+                    R = reward['M']
+                    trash_repository['M'] -= 1
+                else:
+                    R = -50
+            else:
+                R = -50
+        elif a == 'pick_L':
+            if s == self.s0:
+                if trash_repository['L'] > 0:
+                    R = reward['L']
+                    trash_repository['L'] -= 1
+                else:
+                    R = -50
+            else:
+                R = -50
+        elif a == 'drop':
+            if [s[0], s[1]] in self.Grid.goal_states:
+                R = 10 * reward[s[2]]
+            else:
+                R = -100
+        else:
+            s_ = move(s, a)
+            R = self.Grid.R[s_]
+            # check this again
+        return R, trash_repository
 
     def agent_reset(self):
         self.NSE = 0.0
