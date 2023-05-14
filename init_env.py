@@ -12,6 +12,7 @@ Factored State Representation ->  ( x, y, Traffic_flag)
 import copy
 import read_grid
 import numpy as np
+import itertools
 from math import exp
 
 # from calculation_lib import move
@@ -36,6 +37,7 @@ class Environment:
         self.columns = columns
         self.trash_repository = trash_repository
         self.goal_states = s_goals  # this is a list of list [[gx_1,gy_1][gx_2,gy_2]...]
+        self.All_States = All_States
 
     def give_joint_NSE_value(self, joint_state):
         # joint_NSE_val = basic_joint_NSE(joint_state)
@@ -52,7 +54,7 @@ class Environment:
         # this function returns worst NSE in the log NSE formulation
         NSE_worst = 0
         X = {'S': 0, 'M': 0, 'L': 0}
-        # state s: < x , y , junk_size_being_carried_by_the_agent , coral_flag(True or False) >
+        # state s: < x , y , box_with_the_agent , coral_flag(True or False), boxes_at_goal >
         NSE_worst = 10 * np.log(len(Agents) / 20.0 + 1)
         NSE_worst *= 25  # rescaling it to get good values
         NSE_worst = round(NSE_worst, 2)
@@ -72,6 +74,23 @@ def move(s, a):
         return s
 
 
+def do_action(s, a):
+    # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
+    if a == 'pick_S':
+        s[2] = 'S'
+    elif a == 'pick_L':
+        s[2] = 'L'
+    elif a == 'drop':
+        s[4].append(s[2])
+        s[4] = s[4].sort()
+        s[2] = 'Null'
+    elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
+        s = move(s, a)
+    else:
+        print("INVALID ACTION: ", a)
+    return s
+
+
 # function to find 2d index of any item in the list
 # here being used for finding Goal state
 def index_2d(myList, v):
@@ -84,15 +103,25 @@ def check_if_in(arr, Arr):
     return any(np.array_equal(x, arr) for x in Arr)
 
 
-def initialize_grid_params():
+def initialize_grid_params(num_of_agents):
     # Initializing all states
+    # s = < x, y, box_with_me, coral_flag, list_of_boxes_at_goal>
     S = []
+    types = ['L', 'S']
+    combinations_at_goal = [b for b in itertools.product(types, repeat=num_of_agents)]
+    combinations_at_goal = [list(b) for b in combinations_at_goal]
+    combinations_at_goal = [sorted(b) for b in combinations_at_goal]
+    Boxes_at_goal = list(set(tuple(sorted(sub)) for sub in combinations_at_goal))
+    Boxes_at_goal = [list(b) for b in Boxes_at_goal]
+    Boxes_at_goal.append(['Null'])
+    Boxes_at_goal.append(['L'])
+    Boxes_at_goal.append(['S'])
     for i in range(rows):
         for j in range(columns):
-            if All_States[i][j] == 'C':
-                S.append((i, j, True))
-            else:
-                S.append((i, j, False))
+            for box_onboard in ['Null', 'L', 'S']:
+                for coral_flag in [True, False]:
+                    for boxes_at_goal in Boxes_at_goal:
+                        S.append((i, j, box_onboard, coral_flag, boxes_at_goal))
 
     # recording coral on the floor
     coral = np.zeros((rows, columns), dtype=bool)
