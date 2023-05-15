@@ -23,13 +23,13 @@ columns = init_env.columns
 M = 3
 
 agent1_startLoc = (0, 0)
-agent2_startLoc = (4, 0)
-agent3_startLoc = (0, 5)
-agent4_startLoc = (6, 7)
-agent5_startLoc = (7, 3)
-agent6_startLoc = (0, 7)
-agent7_startLoc = (7, 0)
-agent8_startLoc = (6, 0)
+agent2_startLoc = (0, 0)
+# agent3_startLoc = (0, 5)
+# agent4_startLoc = (6, 7)
+# agent5_startLoc = (7, 3)
+# agent6_startLoc = (0, 7)
+# agent7_startLoc = (7, 0)
+# agent8_startLoc = (6, 0)
 
 # initialize the environment
 trash_repository = {'S': 5, 'M': 5, 'L': 5}
@@ -37,34 +37,31 @@ Grid = Environment(trash_repository)
 # initialize agent
 agent1 = Agent(agent1_startLoc, Grid, '1')
 agent2 = Agent(agent2_startLoc, Grid, '2')
-agent3 = Agent(agent3_startLoc, Grid, '3')
-agent4 = Agent(agent4_startLoc, Grid, '4')
-agent5 = Agent(agent5_startLoc, Grid, '5')
-# agent6 = Agent(agent6_startLoc, Grid, 'M', '6')
-# agent7 = Agent(agent7_startLoc, Grid, 'L', '7')
-# agent8 = Agent(agent8_startLoc, Grid, 'S', '8')
-Agents = [agent1, agent2, agent3, agent4, agent5]  # , agent6, agent7, agent8]
+for s in Grid.S:
+    print(s)
+Agents = [agent1, agent2]
 
-
-# updating trash repository by removing selected options by agents
-for agent in Agents:
-    Grid.trash_repository[agent.s[2]] -= 1
-    if Grid.trash_repository[agent.s[2]] < 0:
-        display_message = "!!!TRASH ERROR!!! -> junk of size " + agent.s[
-            2] + " is not available for agent " + agent.label + "!!"
-        print("\n", display_message)
-        exit()
+# # updating trash repository by removing selected options by agents
+# for agent in Agents:
+#     Grid.trash_repository[agent.s[2]] -= 1
+#     if Grid.trash_repository[agent.s[2]] < 0:
+#         display_message = "!!!TRASH ERROR!!! -> junk of size " + agent.s[
+#             2] + " is not available for agent " + agent.label + "!!"
+#         print("\n", display_message)
+#         exit()
 
 # value iteration for all agents
 for agent in Agents:
-    agent.V, agent.Pi = value_iteration.value_iteration(agent, Grid.S, Grid.R, agent.gamma)
-
+    agent.V, agent.Pi = value_iteration.value_iteration(agent, Grid.S)
+print("=========   Agent 1   =========")
+for s in Agents[0].Pi:
+    print(str(s) + ": " + str(Agents[0].Pi[s]))
+print("============================\n")
 path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states
 path_joint_NSE_values = [
     Grid.give_joint_NSE_value(get_joint_state(Agents))]  # Store the corresponding joint NSE
 joint_NSE_states = []
 joint_NSE_values = []
-
 while not all_have_reached_goal(Agents):
     Agents, joint_NSE = take_step(Grid, Agents)
     joint_state = get_joint_state(Agents)

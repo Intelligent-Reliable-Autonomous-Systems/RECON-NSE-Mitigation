@@ -15,28 +15,24 @@ import numpy as np
 import itertools
 from math import exp
 
-# from calculation_lib import move
-
 All_States, rows, columns = read_grid.grid_read_from_file()
 
 all_states = copy.copy(All_States)
 
-# Identifying all goal states G in the All_States grid
+# Identifying all goal states G in the All_States grid (list of lists: [[gx_1,gy_1],[gx_2,gy_2]...])
 s_goals = np.argwhere(All_States == 'G')
-# print(s_goals)
-zer = np.zeros((len(s_goals), 1))
-
-
-# s_goals = np.append(s_goals, np.full((len(s_goals), 1), False), axis=1)
+s_goal = s_goals[0]
+s_goal = (s_goal[0], s_goal[1], 'None', False, ['L', 'S'])
 
 
 class Environment:
     def __init__(self, trash_repository):
-        self.S, self.R, self.coral_flag = initialize_grid_params()
+        num_of_agents = 2
+        self.S, self.coral_flag = initialize_grid_params(num_of_agents)
         self.rows = rows
         self.columns = columns
         self.trash_repository = trash_repository
-        self.goal_states = s_goals  # this is a list of list [[gx_1,gy_1][gx_2,gy_2]...]
+        self.goal_states = s_goals  # this is a list of list [[gx_1,gy_1],[gx_2,gy_2]...]
         self.All_States = All_States
 
     def give_joint_NSE_value(self, joint_state):
@@ -52,9 +48,7 @@ class Environment:
 
     def max_log_joint_NSE(self, Agents):
         # this function returns worst NSE in the log NSE formulation
-        NSE_worst = 0
-        X = {'S': 0, 'M': 0, 'L': 0}
-        # state s: < x , y , box_with_the_agent , coral_flag(True or False), boxes_at_goal >
+        # state s: < x , y , box_with_the_agent , coral_flag(True or False), tuple_of_boxes_at_goal >
         NSE_worst = 10 * np.log(len(Agents) / 20.0 + 1)
         NSE_worst *= 25  # rescaling it to get good values
         NSE_worst = round(NSE_worst, 2)
@@ -63,31 +57,37 @@ class Environment:
 
 def move(s, a):
     if a == 'U':
-        return s[0] - 1, s[1], s[2], all_states[s[0] - 1][s[1]] == 'C'
+        return s[0] - 1, s[1], s[2], all_states[s[0] - 1][s[1]] == 'C', s[4]
     if a == 'D':
-        return s[0] + 1, s[1], s[2], all_states[s[0] + 1][s[1]] == 'C'
+        return s[0] + 1, s[1], s[2], all_states[s[0] + 1][s[1]] == 'C', s[4]
     if a == 'L':
-        return s[0], s[1] - 1, s[2], all_states[s[0]][s[1] - 1] == 'C'
+        return s[0], s[1] - 1, s[2], all_states[s[0]][s[1] - 1] == 'C', s[4]
     if a == 'R':
-        return s[0], s[1] + 1, s[2], all_states[s[0]][s[1] + 1] == 'C'
+        return s[0], s[1] + 1, s[2], all_states[s[0]][s[1] + 1] == 'C', s[4]
     if a == 'G':
         return s
 
 
 def do_action(s, a):
+    s = list(s)
     # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
     if a == 'pick_S':
         s[2] = 'S'
     elif a == 'pick_L':
         s[2] = 'L'
     elif a == 'drop':
+        if s[4] == 'None':
+            s[4] = []
+        s[4] = list(s[4])
         s[4].append(s[2])
         s[4] = s[4].sort()
-        s[2] = 'Null'
+        s[4] = tuple(s[4])
+        s[2] = 'None'
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
         s = move(s, a)
     else:
         print("INVALID ACTION: ", a)
+    s = tuple(s)
     return s
 
 
@@ -112,16 +112,19 @@ def initialize_grid_params(num_of_agents):
     combinations_at_goal = [list(b) for b in combinations_at_goal]
     combinations_at_goal = [sorted(b) for b in combinations_at_goal]
     Boxes_at_goal = list(set(tuple(sorted(sub)) for sub in combinations_at_goal))
-    Boxes_at_goal = [list(b) for b in Boxes_at_goal]
-    Boxes_at_goal.append(['Null'])
-    Boxes_at_goal.append(['L'])
-    Boxes_at_goal.append(['S'])
+    Boxes_at_goal = [tuple(b) for b in Boxes_at_goal]
+    Boxes_at_goal.append(tuple(['None']))
+    Boxes_at_goal.append(tuple('L'))
+    Boxes_at_goal.append(tuple('S'))
     for i in range(rows):
         for j in range(columns):
-            for box_onboard in ['Null', 'L', 'S']:
-                for coral_flag in [True, False]:
-                    for boxes_at_goal in Boxes_at_goal:
-                        S.append((i, j, box_onboard, coral_flag, boxes_at_goal))
+            for box_onboard in ['None', 'L', 'S']:
+                for boxes_at_goal in Boxes_at_goal:
+                    print("So the box at goal variable here is: ", list(boxes_at_goal))
+                    if len(boxes_at_goal) == 2:
+                        S.append((i, j, 'None', All_States[i][j] == 'C', boxes_at_goal))
+                        continue
+                    S.append((i, j, box_onboard, All_States[i][j] == 'C', boxes_at_goal))
 
     # recording coral on the floor
     coral = np.zeros((rows, columns), dtype=bool)
@@ -135,27 +138,20 @@ def initialize_grid_params(num_of_agents):
     # Now go to value_iteration and change Q function
     # and see how and what to pass when calling it and how to pass probability
 
-    # Defining rewards R for the states
-    R = {}
-    for s in S:
-        # for coral state checking the coral_flag in s[3]
-        if [s[0], s[1]] in s_goals:
-            R[s] = 100
-        else:
-            R[s] = -1
-
-    return S, R, coral
+    return S, coral
 
 
 def take_step(Grid, Agents):
     NSE_val = 0
     for agent in Agents:
+        print("=============== Debug1 this state: ", agent.s)
         Pi = copy.copy(agent.Pi)
-        if Pi[(agent.s[0], agent.s[1], agent.s[3])] == 'G':
+        if agent.s == s_goal:
             continue
 
-        # state of an agent: <x,y,trash_size,coral_flag>
-        agent.s = move(agent.s, Pi[(agent.s[0], agent.s[1], agent.s[3])])
+        # state of an agent: <x,y,trash_box_size,coral_flag,boxes_at_goal>
+        print("=============== Debug2 this state: ", agent.s)
+        agent.s = do_action(agent.s, Pi[agent.s])
         agent.R += Grid.R[(agent.s[0], agent.s[1], agent.s[3])]
         agent.path = agent.path + " -> " + str(agent.s)
     joint_state = get_joint_state(Agents)
@@ -169,7 +165,7 @@ def get_reward_by_following_policy(Agents):
     for agent in Agents:
         Pi = copy.copy(agent.Pi)
         while Pi[(agent.s[0], agent.s[1], agent.s[3])] != 'G':
-            agent.s = move(agent.s, Pi[(agent.s[0], agent.s[1], agent.s[3])])
+            agent.s = do_action(agent.s, Pi[(agent.s[0], agent.s[1], agent.s[3])])
             agent.R += agent.R_blame[(agent.s[0], agent.s[1], agent.s[3])]
         RR_blame_dist[agent.label] = round(agent.R, 2)
     return RR_blame_dist
