@@ -8,8 +8,8 @@ s_goals = init_env.s_goals
 class Agent:
     def __init__(self, start_loc, Grid, label):
         # state of an agent: <x,y,box_with_me,coral_flag,box_at_goal>
-        self.s = (start_loc[0], start_loc[1], 'None', Grid.coral_flag[start_loc[0]][start_loc[1]], tuple('None'))
-        self.s0 = (start_loc[0], start_loc[1], 'None', Grid.coral_flag[start_loc[0]][start_loc[1]], tuple('None'))
+        self.s = (start_loc[0], start_loc[1], 'X', Grid.coral_flag[start_loc[0]][start_loc[1]], tuple('X'))
+        self.s0 = (start_loc[0], start_loc[1], 'X', Grid.coral_flag[start_loc[0]][start_loc[1]], tuple('X'))
         self.startLoc = start_loc
         self.best_performance_flag = False
         self.goal_states = Grid.goal_states
@@ -45,12 +45,12 @@ class Agent:
             if s[1] == Grid.columns - 1:
                 if 'R' in self.A[s]:
                     self.A[s].remove('R')
-            if s[2] != 'None':
+            if s[2] != 'X':
                 if 'pick_S' in self.A[s]:
                     self.A[s].remove('pick_S')
                 if 'pick_L' in self.A[s]:
                     self.A[s].remove('pick_L')
-            if s[2] == 'None':
+            if s[2] == 'X':
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
             if len(s[4]) == 2:
@@ -65,7 +65,7 @@ class Agent:
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
         for s in Grid.S:
-            if len(s[4]) == 2 and s[2] != 'None':
+            if len(s[4]) == 2 and s[2] != 'X':
                 del Grid.S[s]
             if len(s[4]) == 2:
                 if 'pick_S' in self.A[s]:

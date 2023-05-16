@@ -57,11 +57,15 @@ print("=========   Agent 1   =========")
 for s in Agents[0].Pi:
     print(str(s) + ": " + str(Agents[0].Pi[s]))
 print("============================\n")
+
 path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states
 path_joint_NSE_values = [
     Grid.give_joint_NSE_value(get_joint_state(Agents))]  # Store the corresponding joint NSE
 joint_NSE_states = []
 joint_NSE_values = []
+
+exit(0)  # temporary stopping the code to analyse policy
+
 while not all_have_reached_goal(Agents):
     Agents, joint_NSE = take_step(Grid, Agents)
     joint_state = get_joint_state(Agents)

@@ -15,7 +15,7 @@ def index_2d(myList, v):
 rows = init_env.rows
 columns = init_env.columns
 s_goal = init_env.s_goals[0]
-s_goal = (s_goal[0], s_goal[1], 'None', False, ['L', 'S'])
+s_goal = (s_goal[0], s_goal[1], 'X', False, ['L', 'S'])
 all_states = init_env.All_States
 
 
@@ -69,7 +69,7 @@ def do_action(s, a):
         # print("Pre-Drop state: ", s)
         # print("Debugging this shit~~~~222: ", s[4])
         s[4] = list(s[4])
-        if s[4] == ['None']:
+        if s[4] == ['X']:
             s[4] = []
         s[4].append(s[2])
         # print("Debugging this shit~~~~333: ", s[4])
@@ -77,7 +77,7 @@ def do_action(s, a):
         # print("Debugging this shit~~~~444: ", s[4])
         s[4] = tuple(s[4])
         # print("Debugging this shit~~~~555: ", s[4])
-        s[2] = 'None'
+        s[2] = 'X'
         # print("Post-Drop state: ", s)
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
         s = move(s, a)
@@ -97,11 +97,11 @@ def get_action(from_state, to_state):
         return 'D'
     elif net_vector == (-1, 0):
         return 'U'
-    elif from_state[2] != 'None' and to_state[2] == 'None':
+    elif from_state[2] != 'X' and to_state[2] == 'X':
         return 'drop'
-    elif from_state[2] == 'None' and to_state[2] == 'S':
+    elif from_state[2] == 'X' and to_state[2] == 'S':
         return 'pick_S'
-    elif from_state[2] == 'None' and to_state[2] == 'L':
+    elif from_state[2] == 'X' and to_state[2] == 'L':
         return 'pick_L'
 
 
