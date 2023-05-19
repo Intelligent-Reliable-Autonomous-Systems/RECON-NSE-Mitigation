@@ -23,7 +23,7 @@ columns = init_env.columns
 M = 3
 
 agent1_startLoc = (0, 0)
-agent2_startLoc = (0, 0)
+# agent2_startLoc = (0, 0)
 # agent3_startLoc = (0, 5)
 # agent4_startLoc = (6, 7)
 # agent5_startLoc = (7, 3)
@@ -36,10 +36,10 @@ trash_repository = {'S': 5, 'M': 5, 'L': 5}
 Grid = Environment(trash_repository)
 # initialize agent
 agent1 = Agent(agent1_startLoc, Grid, '1')
-agent2 = Agent(agent2_startLoc, Grid, '2')
-for s in Grid.S:
-    print(s)
-Agents = [agent1, agent2]
+# agent2 = Agent(agent2_startLoc, Grid, '2')
+# for s in Grid.S:
+#     print(s)
+Agents = [agent1]  # agent2]
 
 # # updating trash repository by removing selected options by agents
 # for agent in Agents:
@@ -55,7 +55,10 @@ for agent in Agents:
     agent.V, agent.Pi = value_iteration.value_iteration(agent, Grid.S)
 print("=========   Agent 1   =========")
 for s in Agents[0].Pi:
-    print(str(s) + ": " + str(Agents[0].Pi[s]))
+    act = Agents[0].Pi[s]
+    print(str(s) + ": [" + str(act) + "] --> reward: " + str(Agents[0].Reward(s, act)))# + ", Actions choices here: " + str(Agents[0].A[s]))
+print("============================\n")
+print('')
 print("============================\n")
 
 path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states

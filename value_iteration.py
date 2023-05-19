@@ -17,7 +17,7 @@ def value_iteration(agent, S):
     s_goal = init_env.s_goals[0]
     Q = {}
     for s in S:
-        print(s)
+        # print(s)
         Q[s] = {}
     for s in S:
         for a in agent.A[s]:

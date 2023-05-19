@@ -3,6 +3,7 @@ import init_env
 from calculation_lib import move
 
 s_goals = init_env.s_goals
+s_goal = init_env.s_goal
 
 
 class Agent:
@@ -53,7 +54,7 @@ class Agent:
             if s[2] == 'X':
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
-            if len(s[4]) == 2:
+            if len(s[4]) == 2:  # change as goal changes
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
             if Grid.All_States[s[0]][s[1]] != 'J':
@@ -76,12 +77,8 @@ class Agent:
     def Reward(self, s, a):
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
         # state of an agent: <x,y,trash_box_size,coral_flag,list_of_boxes_at_goal>
-        if s == (self.Grid.goal_states[0][0], self.Grid.goal_states[0][1], 'L', False, ['S']) or s == (
-                self.Grid.goal_states[0][0], self.Grid.goal_states[0][1], 'S', False, ['L']):
-            if a == 'drop':
-                R = 100
-            else:
-                R = -1
+        if init_env.do_action(s, a) == s_goal:
+            R = 100
         else:
             R = -1
         return R

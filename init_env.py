@@ -22,7 +22,7 @@ all_states = copy.copy(All_States)
 # Identifying all goal states G in the All_States grid (list of lists: [[gx_1,gy_1],[gx_2,gy_2]...])
 s_goals = np.argwhere(All_States == 'G')
 s_goal = s_goals[0]
-s_goal = (s_goal[0], s_goal[1], 'X', False, ['L', 'S'])
+s_goal = (s_goal[0], s_goal[1], 'X', False, ('L', 'S'))
 
 
 class Environment:
@@ -75,18 +75,18 @@ def do_action(s, a):
         s[2] = 'S'
     elif a == 'pick_L':
         s[2] = 'L'
-    elif a == 'X':
+    elif a == 'drop':
         if s[4] == 'X':
             s[4] = []
         s[4] = list(s[4])
         s[4].append(s[2])
-        s[4] = s[4].sort()
+        s[4].sort()
         s[4] = tuple(s[4])
         s[2] = 'X'
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
         s = move(s, a)
     else:
-        print("INVALID ACTION: ", a)
+        print("AT STATE " + str(tuple(s)) + ", INVALID ACTION: " + str(a))
     s = tuple(s)
     return s
 
@@ -120,7 +120,7 @@ def initialize_grid_params(num_of_agents):
         for j in range(columns):
             for box_onboard in ['X', 'L', 'S']:
                 for boxes_at_goal in Boxes_at_goal:
-                    print("So the box at goal variable here is: ", list(boxes_at_goal))
+                    # print("So the box at goal variable here is: ", list(boxes_at_goal))
                     if len(boxes_at_goal) == 2:
                         S.append((i, j, 'X', All_States[i][j] == 'C', boxes_at_goal))
                         continue
@@ -144,15 +144,15 @@ def initialize_grid_params(num_of_agents):
 def take_step(Grid, Agents):
     NSE_val = 0
     for agent in Agents:
-        print("=============== Debug1 this state: ", agent.s)
+        print("\n=============== Before movement state: ", agent.s)
         Pi = copy.copy(agent.Pi)
         if agent.s == s_goal:
             continue
 
         # state of an agent: <x,y,trash_box_size,coral_flag,boxes_at_goal>
-        print("=============== Debug2 this state: ", agent.s)
-        agent.R += agent.Reward(agent.s,Pi[agent.s])
+        agent.R += agent.Reward(agent.s, Pi[agent.s])
         agent.s = do_action(agent.s, Pi[agent.s])
+        print("\n=============== After movement state: ", agent.s)
         agent.path = agent.path + " -> " + str(agent.s)
     joint_state = get_joint_state(Agents)
     joint_NSE_val = Grid.give_joint_NSE_value(joint_state)
