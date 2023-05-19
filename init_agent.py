@@ -1,6 +1,6 @@
 import copy
 import init_env
-from calculation_lib import move
+from calculation_lib import do_action
 
 s_goals = init_env.s_goals
 s_goal = init_env.s_goal
@@ -23,6 +23,7 @@ class Agent:
         self.NSE = 0.0
         self.label = label
         self.path = str(self.s)  # + "->"
+        self.trajectory = []
 
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
         self.A = {}
@@ -83,23 +84,20 @@ class Agent:
             R = -1
         return R
 
+    def follow_policy(self, Grid):
+        Pi = copy.copy(self.Pi)
 
-def agent_reset(self):
-    self.NSE = 0.0
-    self.s = copy.deepcopy(self.s0)
-    self.path = str(self.s)  # + "->"
-    self.R = 0.0
+        while self.s != s_goal:
+            R = self.Reward(self.s, Pi[self.s])
+            self.R += R
+            self.trajectory.append((self.s, Pi[self.s], R))
+            self.s = do_action(self.s, Pi[self.s])
+            x, y, _, _, _ = self.s
+            loc = (x, y)
+            self.path = self.path + "->" + str(loc)
 
-
-def follow_policy(self, Grid):
-    Pi = copy.copy(self.Pi)
-    while Pi[self.s] != 'G':
-        self.R += Grid.R[self.s]
-        self.NSE += Grid.NSE[self.s]
-        self.s = move(self.s, Pi[self.s])
-        x, y, _ = self.s
-        loc = (x, y)
-        self.path = self.path + "->" + str(loc)
-
-    # add the Goal reward
-    self.R += Grid.R[self.s]
+    def agent_reset(self):
+        self.NSE = 0.0
+        self.s = copy.deepcopy(self.s0)
+        self.path = str(self.s)  # + "->"
+        self.R = 0.0

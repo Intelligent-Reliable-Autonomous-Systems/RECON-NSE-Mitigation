@@ -58,7 +58,10 @@ for s in Agents[0].Pi:
     act = Agents[0].Pi[s]
     print(str(s) + ": [" + str(act) + "] --> reward: " + str(Agents[0].Reward(s, act)))# + ", Actions choices here: " + str(Agents[0].A[s]))
 print("============================\n")
-print('')
+Agents[0].follow_policy(Grid)
+print("Trajectory for Agent 1:")
+for sar in Agents[0].trajectory:
+    print(sar)
 print("============================\n")
 
 path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states
