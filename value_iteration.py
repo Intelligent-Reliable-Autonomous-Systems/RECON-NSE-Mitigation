@@ -44,7 +44,6 @@ def value_iteration(agent, S):
 
         if max(Residual[s] for s in S) < 0.001:
             break
-
     return V, PI
 
 

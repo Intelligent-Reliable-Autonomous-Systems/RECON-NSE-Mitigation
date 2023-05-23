@@ -66,19 +66,12 @@ def do_action(s, a):
     elif a == 'pick_L':
         s[2] = 'L'
     elif a == 'drop':
-        # print("Pre-Drop state: ", s)
-        # print("Debugging this shit~~~~222: ", s[4])
+        size_index_map = {'S': 0, 'L': 1}
         s[4] = list(s[4])
-        if s[4] == ['X']:
-            s[4] = []
-        s[4].append(s[2])
-        # print("Debugging this shit~~~~333: ", s[4])
-        s[4].sort()
-        # print("Debugging this shit~~~~444: ", s[4])
+        s[4][size_index_map[s[2]]] += 1
         s[4] = tuple(s[4])
-        # print("Debugging this shit~~~~555: ", s[4])
         s[2] = 'X'
-        # print("Post-Drop state: ", s)
+
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
         s = move(s, a)
     else:

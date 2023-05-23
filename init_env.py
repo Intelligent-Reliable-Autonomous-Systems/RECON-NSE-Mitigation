@@ -22,18 +22,25 @@ all_states = copy.copy(All_States)
 # Identifying all goal states G in the All_States grid (list of lists: [[gx_1,gy_1],[gx_2,gy_2]...])
 s_goals = np.argwhere(All_States == 'G')
 s_goal = s_goals[0]
-s_goal = (s_goal[0], s_goal[1], 'X', False, ('L', 'S'))
+s_goal = (s_goal[0], s_goal[1], 'X', False, (1, 1))
 
 
 class Environment:
     def __init__(self, trash_repository):
         num_of_agents = 2
-        self.S, self.coral_flag = initialize_grid_params(num_of_agents)
+        list_of_junk_states = np.argwhere(All_States == 'J')  # this is a list of list [[jx_1,jy_1],[jx_2,jy_2]...]
+        total_trash_repo = {}
+        for junk_size in trash_repository:
+            total_trash_repo[junk_size] = trash_repository[junk_size] * len(list_of_junk_states)
+        print("total_trash_repo:(init_env line 35) ", total_trash_repo)
+        self.S, self.coral_flag = initialize_grid_params(total_trash_repo)
         self.rows = rows
         self.columns = columns
-        self.trash_repository = trash_repository
         self.goal_states = s_goals  # this is a list of list [[gx_1,gy_1],[gx_2,gy_2]...]
         self.All_States = All_States
+        self.trash_repos = {}
+        for [i, j] in list_of_junk_states:
+            self.trash_repos[(i, j)] = trash_repository
 
     def give_joint_NSE_value(self, joint_state):
         # joint_NSE_val = basic_joint_NSE(joint_state)
@@ -76,11 +83,9 @@ def do_action(s, a):
     elif a == 'pick_L':
         s[2] = 'L'
     elif a == 'drop':
-        if s[4] == 'X':
-            s[4] = []
+        size_index_map = {'S': 0, 'L': 1}
         s[4] = list(s[4])
-        s[4].append(s[2])
-        s[4].sort()
+        s[4][size_index_map[s[2]]] += 1
         s[4] = tuple(s[4])
         s[2] = 'X'
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
@@ -103,28 +108,16 @@ def check_if_in(arr, Arr):
     return any(np.array_equal(x, arr) for x in Arr)
 
 
-def initialize_grid_params(num_of_agents):
+def initialize_grid_params(total_trash_repository):
     # Initializing all states
     # s = < x, y, box_with_me, coral_flag, list_of_boxes_at_goal>
     S = []
-    types = ['L', 'S']
-    combinations_at_goal = [b for b in itertools.product(types, repeat=num_of_agents)]
-    combinations_at_goal = [list(b) for b in combinations_at_goal]
-    combinations_at_goal = [sorted(b) for b in combinations_at_goal]
-    Boxes_at_goal = list(set(tuple(sorted(sub)) for sub in combinations_at_goal))
-    Boxes_at_goal = [tuple(b) for b in Boxes_at_goal]
-    Boxes_at_goal.append(tuple(['X']))
-    Boxes_at_goal.append(tuple('L'))
-    Boxes_at_goal.append(tuple('S'))
     for i in range(rows):
         for j in range(columns):
             for box_onboard in ['X', 'L', 'S']:
-                for boxes_at_goal in Boxes_at_goal:
-                    # print("So the box at goal variable here is: ", list(boxes_at_goal))
-                    if len(boxes_at_goal) == 2:
-                        S.append((i, j, 'X', All_States[i][j] == 'C', boxes_at_goal))
-                        continue
-                    S.append((i, j, box_onboard, All_States[i][j] == 'C', boxes_at_goal))
+                for S_boxes in range(total_trash_repository['S'] + 1):
+                    for L_boxes in range(total_trash_repository['L'] + 1):
+                        S.append((i, j, box_onboard, All_States[i][j] == 'C', (S_boxes, L_boxes)))
 
     # recording coral on the floor
     coral = np.zeros((rows, columns), dtype=bool)
@@ -192,3 +185,7 @@ def log_joint_NSE(joint_state):
     joint_NSE_val = round(joint_NSE_val, 2)
 
     return joint_NSE_val
+
+# Grid = Environment({'S': 1, 'L': 1})
+# for s in Grid.S:
+#     print(s)

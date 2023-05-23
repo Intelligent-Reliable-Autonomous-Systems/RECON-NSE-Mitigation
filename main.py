@@ -32,7 +32,7 @@ agent1_startLoc = (0, 0)
 # agent8_startLoc = (6, 0)
 
 # initialize the environment
-trash_repository = {'S': 5, 'M': 5, 'L': 5}
+trash_repository = {'S': 1, 'L': 1}
 Grid = Environment(trash_repository)
 # initialize agent
 agent1 = Agent(agent1_startLoc, Grid, '1')
@@ -40,7 +40,7 @@ agent1 = Agent(agent1_startLoc, Grid, '1')
 # for s in Grid.S:
 #     print(s)
 Agents = [agent1]  # agent2]
-
+# exit(0)
 # # updating trash repository by removing selected options by agents
 # for agent in Agents:
 #     Grid.trash_repository[agent.s[2]] -= 1
@@ -56,13 +56,16 @@ for agent in Agents:
 print("=========   Agent 1   =========")
 for s in Agents[0].Pi:
     act = Agents[0].Pi[s]
-    print(str(s) + ": [" + str(act) + "] --> reward: " + str(Agents[0].Reward(s, act)))# + ", Actions choices here: " + str(Agents[0].A[s]))
-print("============================\n")
-Agents[0].follow_policy(Grid)
+    print(str(s) + ": [" + str(act) + "] --> reward: " + str(Agents[0].Reward(s, act)))
+print("=========================================\n")
+Agents[0].follow_policy()
 print("Trajectory for Agent 1:")
 for sar in Agents[0].trajectory:
     print(sar)
-print("============================\n")
+print("=========================================\n")
+print("Plan for Agent 1:")
+print(agent1.plan[4:])
+print("=========================================\n")
 
 path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states
 path_joint_NSE_values = [
