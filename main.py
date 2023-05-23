@@ -53,19 +53,22 @@ Agents = [agent1]  # agent2]
 # value iteration for all agents
 for agent in Agents:
     agent.V, agent.Pi = value_iteration.value_iteration(agent, Grid.S)
-print("=========   Agent 1   =========")
-for s in Agents[0].Pi:
-    act = Agents[0].Pi[s]
-    print(str(s) + ": [" + str(act) + "] --> reward: " + str(Agents[0].Reward(s, act)))
-print("=========================================\n")
-Agents[0].follow_policy()
-print("Trajectory for Agent 1:")
-for sar in Agents[0].trajectory:
-    print(sar)
-print("=========================================\n")
-print("Plan for Agent 1:")
-print(agent1.plan[4:])
-print("=========================================\n")
+for agent in Agents:
+    print("=====================   Agent " + str(agent.label) + "   =====================")
+    for s in agent.Pi:
+        act = agent.Pi[s]
+        print(str(s) + ": [" + str(act) + "] --> reward: " + str(agent.Reward(s, act)))
+    print("=====================================================\n")
+for agent in Agents:
+    Agents[0].follow_policy()
+    print("==================== Trajectory for Agent " + agent.label + "  =====================")
+    for sar in Agents[0].trajectory:
+        print(sar)
+    print("==================================================================\n")
+for agent in Agents:
+    print("Plan for Agent " + agent.label + ":")
+    print(agent.plan[4:])
+    print("============================================================\n")
 
 path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states
 path_joint_NSE_values = [
