@@ -19,28 +19,28 @@ s_goal = (s_goal[0], s_goal[1], 'X', False, ['L', 'S'])
 all_states = init_env.All_States
 
 
-def get_transition_prob(s, a):
+def get_transition_prob(agent, s, a):
     # actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
     p_success = 0.8
     p_fail = 0.2
     if s == s_goal:
         T = {s: 1}  # stay at the goal with prob = 1
     else:
-        T = {s: p_fail, do_action(s, a): p_success}  # (same: 0.2, next: 0.8)
+        T = {s: p_fail, do_action(agent, s, a): p_success}  # (same: 0.2, next: 0.8)
     return T
 
 
-def get_neighbours(s, a):
+def get_neighbours(agent, s, a):
     if s == s_goal:
         return [s]
     else:
-        return [s, do_action(s, a)]
+        return [s, do_action(agent, s, a)]
 
 
 def get_All_neighbours(agent, s):
     Neighbours = []
     for a in agent.A[s]:
-        Neighbours.append(do_action(s, a))
+        Neighbours.append(do_action(agent, s, a))
     return Neighbours
 
 
@@ -58,7 +58,7 @@ def move(s, a):
         return s
 
 
-def do_action(s, a):
+def do_action(agent, s, a):
     # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
     s = list(s)
     if a == 'pick_S':
@@ -67,8 +67,13 @@ def do_action(s, a):
         s[2] = 'L'
     elif a == 'drop':
         size_index_map = {'S': 0, 'L': 1}
+        index = agent.goal_modes.index(s[4])
+        # print("calc_lib.py DEBUG: 'drop' action at state ", s)
         s[4] = list(s[4])
-        s[4][size_index_map[s[2]]] += 1
+        if (index + agent.num_of_agents) < len(agent.goal_modes):
+            s[4] = agent.goal_modes[index + agent.num_of_agents]
+        else:
+            s[4] = list(init_env.s_goal[4])
         s[4] = tuple(s[4])
         s[2] = 'X'
 

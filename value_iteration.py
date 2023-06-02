@@ -31,9 +31,8 @@ def value_iteration(agent, S):
                     V[s] = agent.Reward(s, a)
                     PI[s] = a
                     continue
-                # print("============= A[" + str(s) + "]: " + str(agent.A[s]))
                 QQ = 0
-                T = calculation_lib.get_transition_prob(s, a)  # returns {s:__, s': __}
+                T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
                 Q[s][a] = QQ + agent.Reward(s, a)

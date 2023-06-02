@@ -49,6 +49,16 @@ def display_grid_layout(Grid, Agents):
     print('\n')
 
 
+def display_just_grid(Environment):
+
+    for i in range(len(Environment)):
+        for j in range(len(Environment[0])):
+            print('%8s' % str(Environment[i][j]), end=" ")
+        print()
+        print()
+    print('\n')
+
+
 def display_values(V):
     # print('\n  Grid Values:\n')
     print_counter = 0
@@ -83,7 +93,8 @@ def display_agent_log(agent, flag='before'):
         print("Reward accumulated by Agent " + str(agent.label) + " starting from " + str(agent.startLoc) + " is: ",
               agent.R)
     else:
-        print("Reward from R_Blame accumulated by Agent " + str(agent.label) + " starting from " + str(agent.startLoc) + " is: ",
+        print("Reward from R_Blame accumulated by Agent " + str(agent.label) + " starting from " + str(
+            agent.startLoc) + " is: ",
               agent.R)
     # print("\n NSE accumulated by Agent " + str(agent.label) + " starting from " + str(agent.startLoc) + " is: ",
     #       agent.NSE)

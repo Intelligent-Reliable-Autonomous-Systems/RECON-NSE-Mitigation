@@ -12,8 +12,6 @@ Factored State Representation ->  ( x, y, Traffic_flag)
 import copy
 import read_grid
 import numpy as np
-import itertools
-from math import exp
 
 All_States, rows, columns = read_grid.grid_read_from_file()
 
@@ -22,18 +20,15 @@ all_states = copy.copy(All_States)
 # Identifying all goal states G in the All_States grid (list of lists: [[gx_1,gy_1],[gx_2,gy_2]...])
 s_goals = np.argwhere(All_States == 'G')
 s_goal = s_goals[0]
-s_goal = (s_goal[0], s_goal[1], 'X', False, (1, 1))
+s_goal = (s_goal[0], s_goal[1], 'X', False, (2, 1))
+print(s_goal[4][1])
 
 
 class Environment:
-    def __init__(self, trash_repository):
-        num_of_agents = 2
+    def __init__(self, trash_repository, num_of_agents):
+        self.num_of_agents = num_of_agents
         list_of_junk_states = np.argwhere(All_States == 'J')  # this is a list of list [[jx_1,jy_1],[jx_2,jy_2]...]
-        total_trash_repo = {}
-        for junk_size in trash_repository:
-            total_trash_repo[junk_size] = trash_repository[junk_size] * len(list_of_junk_states)
-        print("total_trash_repo:(init_env line 35) ", total_trash_repo)
-        self.S, self.coral_flag = initialize_grid_params(total_trash_repo)
+        self.S, self.coral_flag = initialize_grid_params(trash_repository)
         self.rows = rows
         self.columns = columns
         self.goal_states = s_goals  # this is a list of list [[gx_1,gy_1],[gx_2,gy_2]...]
@@ -41,6 +36,12 @@ class Environment:
         self.trash_repos = {}
         for [i, j] in list_of_junk_states:
             self.trash_repos[(i, j)] = trash_repository
+        self.goal_modes = []
+        i = 0
+        for i in range(int(s_goal[4][0]) + 1):
+            self.goal_modes.append((i, 0))
+        for j in range(1, int(s_goal[4][1])):
+            self.goal_modes.append((i, j))
 
     def give_joint_NSE_value(self, joint_state):
         # joint_NSE_val = basic_joint_NSE(joint_state)
@@ -75,23 +76,28 @@ def move(s, a):
         return s
 
 
-def do_action(s, a):
-    s = list(s)
+def do_action(agent, s, a):
     # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
+    s = list(s)
     if a == 'pick_S':
         s[2] = 'S'
     elif a == 'pick_L':
         s[2] = 'L'
     elif a == 'drop':
         size_index_map = {'S': 0, 'L': 1}
+        index = agent.goal_modes.index(s[4])
         s[4] = list(s[4])
-        s[4][size_index_map[s[2]]] += 1
+        if (index + agent.num_of_agents) < len(agent.goal_modes):
+            s[4] = agent.goal_modes[index + agent.num_of_agents]
+        else:
+            s[4] = list(s_goal[4])
         s[4] = tuple(s[4])
         s[2] = 'X'
+
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
         s = move(s, a)
     else:
-        print("AT STATE " + str(tuple(s)) + ", INVALID ACTION: " + str(a))
+        print("INVALID ACTION (from calc_lib): ", a)
     s = tuple(s)
     return s
 
@@ -112,12 +118,17 @@ def initialize_grid_params(total_trash_repository):
     # Initializing all states
     # s = < x, y, box_with_me, coral_flag, list_of_boxes_at_goal>
     S = []
+    goal_modes = []
+    i = 0
+    for i in range(int(s_goal[4][0]) + 1):
+        goal_modes.append((i, 0))
+    for j in range(1, int(s_goal[4][1]) + 1):
+        goal_modes.append((i, j))
     for i in range(rows):
         for j in range(columns):
             for box_onboard in ['X', 'L', 'S']:
-                for S_boxes in range(total_trash_repository['S'] + 1):
-                    for L_boxes in range(total_trash_repository['L'] + 1):
-                        S.append((i, j, box_onboard, All_States[i][j] == 'C', (S_boxes, L_boxes)))
+                for goal_configurations in goal_modes:
+                    S.append((i, j, box_onboard, All_States[i][j] == 'C', goal_configurations))
 
     # recording coral on the floor
     coral = np.zeros((rows, columns), dtype=bool)
@@ -186,6 +197,9 @@ def log_joint_NSE(joint_state):
 
     return joint_NSE_val
 
-# Grid = Environment({'S': 1, 'L': 1})
+# Grid = Environment({'S': 2, 'L': 3}, 2)
+# print(All_States)
 # for s in Grid.S:
 #     print(s)
+# print()
+# print("All goal modes: ", Grid.goal_modes)

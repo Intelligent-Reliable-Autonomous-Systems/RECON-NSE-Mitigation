@@ -8,9 +8,13 @@ s_goal = init_env.s_goal
 
 class Agent:
     def __init__(self, start_loc, Grid, label):
+        self.goal_modes = Grid.goal_modes
+        self.label = label
+        self.IDX = int(label) - 1
         # state of an agent: <x,y,box_with_me,coral_flag,box_at_goal>
-        self.s = (start_loc[0], start_loc[1], 'X', Grid.coral_flag[start_loc[0]][start_loc[1]], (0, 0))
-        self.s0 = (start_loc[0], start_loc[1], 'X', Grid.coral_flag[start_loc[0]][start_loc[1]], (0, 0))
+        coral_flag = Grid.coral_flag[start_loc[0]][start_loc[1]]
+        self.s = (start_loc[0], start_loc[1], 'X', coral_flag, (0, 0))
+        self.s0 = (start_loc[0], start_loc[1], 'X', coral_flag, self.goal_modes[self.IDX])
         self.startLoc = start_loc
         self.best_performance_flag = False
         self.goal_states = Grid.goal_states
@@ -21,10 +25,11 @@ class Agent:
         self.V = []
         self.Pi = []
         self.NSE = 0.0
-        self.label = label
         self.path = str(self.s)  # + "->"
         self.plan = ""
         self.trajectory = []
+        self.num_of_agents = Grid.num_of_agents
+        self.done_flag = False
 
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
         self.A = {}
@@ -90,7 +95,7 @@ class Agent:
     def Reward(self, s, a):
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
         # state of an agent: <x,y,trash_box_size,coral_flag,list_of_boxes_at_goal>
-        if init_env.do_action(s, a) == s_goal:
+        if init_env.do_action(self, s, a) == s_goal:
             R = 100
         else:
             R = -1
@@ -106,7 +111,7 @@ class Agent:
             self.plan += " -> " + str(Pi[self.s])
             # print("Action: ", Pi[self.s])
             # print("Plan till here: ", self.plan)
-            self.s = do_action(self.s, Pi[self.s])
+            self.s = do_action(self, self.s, Pi[self.s])
             x, y, _, _, _ = self.s
             loc = (x, y)
             self.path = self.path + "->" + str(loc)

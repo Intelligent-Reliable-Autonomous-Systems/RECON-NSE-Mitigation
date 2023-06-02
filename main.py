@@ -7,7 +7,7 @@ from init_env import get_joint_state, get_reward_by_following_policy
 from init_agent import Agent
 import value_iteration
 from display_lib import display_values, display_policy, display_grid_layout
-from display_lib import display_agent_log
+from display_lib import display_agent_log, display_just_grid
 from blame_assignment import generate_counterfactuals, get_joint_NSEs_for_list
 from calculation_lib import all_have_reached_goal
 import copy
@@ -22,33 +22,14 @@ columns = init_env.columns
 # Number of agent to be corrected (M = 2)/(out of N = 5)
 M = 3
 
-agent1_startLoc = (0, 0)
-# agent2_startLoc = (0, 0)
-# agent3_startLoc = (0, 5)
-# agent4_startLoc = (6, 7)
-# agent5_startLoc = (7, 3)
-# agent6_startLoc = (0, 7)
-# agent7_startLoc = (7, 0)
-# agent8_startLoc = (6, 0)
-
 # initialize the environment
 trash_repository = {'S': 1, 'L': 1}
-Grid = Environment(trash_repository)
+Grid = Environment(trash_repository, 2)
 # initialize agent
-agent1 = Agent(agent1_startLoc, Grid, '1')
-# agent2 = Agent(agent2_startLoc, Grid, '2')
-# for s in Grid.S:
-#     print(s)
-Agents = [agent1]  # agent2]
-# exit(0)
-# # updating trash repository by removing selected options by agents
-# for agent in Agents:
-#     Grid.trash_repository[agent.s[2]] -= 1
-#     if Grid.trash_repository[agent.s[2]] < 0:
-#         display_message = "!!!TRASH ERROR!!! -> junk of size " + agent.s[
-#             2] + " is not available for agent " + agent.label + "!!"
-#         print("\n", display_message)
-#         exit()
+agent1 = Agent((0, 0), Grid, '1')
+agent2 = Agent((0, 0), Grid, '2')
+
+Agents = [agent1, agent2]
 
 # value iteration for all agents
 for agent in Agents:
@@ -60,11 +41,14 @@ for agent in Agents:
         print(str(s) + ": [" + str(act) + "] --> reward: " + str(agent.Reward(s, act)))
     print("=====================================================\n")
 for agent in Agents:
-    Agents[0].follow_policy()
+    agent.s = copy.deepcopy(agent.s0)
+    agent.follow_policy()
     print("==================== Trajectory for Agent " + agent.label + "  =====================")
     for sar in Agents[0].trajectory:
         print(sar)
     print("==================================================================\n")
+print("Environment:")
+display_just_grid(Grid.All_States)
 for agent in Agents:
     print("Plan for Agent " + agent.label + ":")
     print(agent.plan[4:])
