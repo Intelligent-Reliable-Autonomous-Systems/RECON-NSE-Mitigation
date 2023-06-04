@@ -21,8 +21,8 @@ all_states = init_env.All_States
 
 def get_transition_prob(agent, s, a):
     # actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
-    p_success = 0.8
-    p_fail = 0.2
+    p_success = 1.0
+    p_fail = 0.0
     if s == s_goal:
         T = {s: 1}  # stay at the goal with prob = 1
     else:

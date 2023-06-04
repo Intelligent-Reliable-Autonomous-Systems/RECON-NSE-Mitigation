@@ -19,34 +19,34 @@ from heapq import nsmallest
 rows = init_env.rows
 columns = init_env.columns
 
-# Number of agent to be corrected (M = 2)/(out of N = 5)
-M = 3
+# Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
+M = 1
+num_of_agents = 2
 
 # initialize the environment
 trash_repository = {'S': 1, 'L': 1}
-Grid = Environment(trash_repository, 2)
-# initialize agent
-agent1 = Agent((0, 0), Grid, '1')
-agent2 = Agent((0, 0), Grid, '2')
-
-Agents = [agent1, agent2]
+Grid = Environment(trash_repository, num_of_agents)
+# initialize agents
+Agents = []
+for label in range(num_of_agents):
+    Agents.append(Agent((0, 0), Grid, str(label + 1)))
 
 # value iteration for all agents
 for agent in Agents:
     agent.V, agent.Pi = value_iteration.value_iteration(agent, Grid.S)
 for agent in Agents:
-    print("=====================   Agent " + str(agent.label) + "   =====================")
+    # print("=====================   Agent " + str(agent.label) + "   =====================")
     for s in agent.Pi:
         act = agent.Pi[s]
-        print(str(s) + ": [" + str(act) + "] --> reward: " + str(agent.Reward(s, act)))
-    print("=====================================================\n")
+        # print(str(s) + ": [" + str(act) + "] --> reward: " + str(agent.Reward(s, act)))
+    # print("=====================================================\n")
 for agent in Agents:
     agent.s = copy.deepcopy(agent.s0)
     agent.follow_policy()
-    print("==================== Trajectory for Agent " + agent.label + "  =====================")
-    for sar in Agents[0].trajectory:
-        print(sar)
-    print("==================================================================\n")
+    # print("==================== Trajectory for Agent " + agent.label + "  =====================")
+    # for sar in Agents[0].trajectory:
+    #     print(sar)
+    # print("==================================================================\n")
 print("Environment:")
 display_just_grid(Grid.All_States)
 for agent in Agents:

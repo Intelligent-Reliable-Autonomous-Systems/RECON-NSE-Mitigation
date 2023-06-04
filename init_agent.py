@@ -13,7 +13,7 @@ class Agent:
         self.IDX = int(label) - 1
         # state of an agent: <x,y,box_with_me,coral_flag,box_at_goal>
         coral_flag = Grid.coral_flag[start_loc[0]][start_loc[1]]
-        self.s = (start_loc[0], start_loc[1], 'X', coral_flag, (0, 0))
+        self.s = (start_loc[0], start_loc[1], 'X', coral_flag, self.goal_modes[self.IDX])
         self.s0 = (start_loc[0], start_loc[1], 'X', coral_flag, self.goal_modes[self.IDX])
         self.startLoc = start_loc
         self.best_performance_flag = False
@@ -30,6 +30,7 @@ class Agent:
         self.trajectory = []
         self.num_of_agents = Grid.num_of_agents
         self.done_flag = False
+        # print('[from init_agent] Goal Mode for Agent ' + self.label + ' at initialization is: ' + str(self.s0[4]))
 
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
         self.A = {}
@@ -81,22 +82,15 @@ class Agent:
             if s[2] == 'L' and s[4][1] >= s_goal[4][1]:
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
-        for s in Grid.S:
-            print("A[" + str(s) + "] = " + str(self.A[s]))
-        # for s in Grid.S:
-        #     if len(s[4]) == 2 and s[2] != 'X':
-        #         del Grid.S[s]
-        #     if len(s[4]) == 2:
-        #         if 'pick_S' in self.A[s]:
-        #             self.A[s].remove('pick_S')
-        #         if 'pick_L' in self.A[s]:
-        #             self.A[s].remove('pick_L')
 
     def Reward(self, s, a):
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
         # state of an agent: <x,y,trash_box_size,coral_flag,list_of_boxes_at_goal>
         if init_env.do_action(self, s, a) == s_goal:
-            R = 100
+            if a == 'drop':
+                R = 100
+            else:
+                R = -1
         else:
             R = -1
         return R

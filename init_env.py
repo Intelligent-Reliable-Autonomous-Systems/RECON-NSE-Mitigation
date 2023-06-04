@@ -3,25 +3,26 @@
 This script initialized the grid with goal, obstacles and corresponding actions
 also other parameters such as gamma
 
-Factored State Representation ->  ( x, y, Traffic_flag)
+Factored State Representation ->  < x , y , box_with_me , coral_flag , box_at_goal >
     x: denoting x-coordinate of the grid cell
     y: denoting y-coordinate of the grid cell
-    Traffic_flag: set to 1 if there is traffic in the cell, else 0
+    box_with_me: junk unit size being carried by the agent {'S','L'}
+    coral_flag: boolean denoting presence of coral at the location {True, False}
+    box_at_goal: what the goal deposit looks like to this particular agent
 ===============================================================================
 """
 import copy
 import read_grid
 import numpy as np
 
+goal_deposit = (1, 1)
 All_States, rows, columns = read_grid.grid_read_from_file()
-
 all_states = copy.copy(All_States)
 
 # Identifying all goal states G in the All_States grid (list of lists: [[gx_1,gy_1],[gx_2,gy_2]...])
 s_goals = np.argwhere(All_States == 'G')
 s_goal = s_goals[0]
-s_goal = (s_goal[0], s_goal[1], 'X', False, (2, 1))
-print(s_goal[4][1])
+s_goal = (s_goal[0], s_goal[1], 'X', False, goal_deposit)
 
 
 class Environment:
@@ -42,6 +43,7 @@ class Environment:
             self.goal_modes.append((i, 0))
         for j in range(1, int(s_goal[4][1])):
             self.goal_modes.append((i, j))
+        # print('[from init_grid] Goal Modes: ', self.goal_modes)
 
     def give_joint_NSE_value(self, joint_state):
         # joint_NSE_val = basic_joint_NSE(joint_state)
@@ -86,6 +88,7 @@ def do_action(agent, s, a):
     elif a == 'drop':
         size_index_map = {'S': 0, 'L': 1}
         index = agent.goal_modes.index(s[4])
+        # print('[init_env] Agent ' + agent.label + '\'s goal mode was ' + str(s[4]))
         s[4] = list(s[4])
         if (index + agent.num_of_agents) < len(agent.goal_modes):
             s[4] = agent.goal_modes[index + agent.num_of_agents]
@@ -93,6 +96,8 @@ def do_action(agent, s, a):
             s[4] = list(s_goal[4])
         s[4] = tuple(s[4])
         s[2] = 'X'
+        # print('[init_env] Agent ' + agent.label + '\'s goal mode now is ' + str(s[4]))
+
 
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
         s = move(s, a)
