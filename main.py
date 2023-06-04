@@ -51,8 +51,11 @@ print("Environment:")
 display_just_grid(Grid.All_States)
 for agent in Agents:
     print("Plan for Agent " + agent.label + ":")
-    print(agent.plan[4:])
-    print("============================================================\n")
+    print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '
+    print("________________________________________________\n")
+
+for agent in Agents:
+    agent.agent_reset()
 
 path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states
 path_joint_NSE_values = [
@@ -60,9 +63,7 @@ path_joint_NSE_values = [
 joint_NSE_states = []
 joint_NSE_values = []
 
-exit(0)  # temporary stopping the code to analyse policy
-
-while not all_have_reached_goal(Agents):
+while all_have_reached_goal(Agents) is False:
     Agents, joint_NSE = take_step(Grid, Agents)
     joint_state = get_joint_state(Agents)
     path_joint_states.append(joint_state)
@@ -71,10 +72,11 @@ while not all_have_reached_goal(Agents):
         joint_NSE_states.append(joint_state)
         joint_NSE_values.append(joint_NSE)
 
-print("\nGrid:")
-display_grid_layout(init_env.all_states, Agents)
-print("Policy:")
-display_policy(agent1.Pi)
+print('NSE Report:')
+for x in range(len(path_joint_states)):
+    print(str(path_joint_states[x]) + ': ' + str(path_joint_NSE_values[x]))
+
+exit(0)  # temporary stopping the code to analyse policy
 
 print("Agent spawn locations:")
 for agent in Agents:

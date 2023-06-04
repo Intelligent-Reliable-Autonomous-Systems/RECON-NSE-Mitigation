@@ -153,15 +153,16 @@ def initialize_grid_params(total_trash_repository):
 def take_step(Grid, Agents):
     NSE_val = 0
     for agent in Agents:
-        print("\n=============== Before movement state: ", agent.s)
+        # print("\n==== Before movement Agent "+agent.label+"'s state: ", agent.s)
         Pi = copy.copy(agent.Pi)
         if agent.s == s_goal:
+            # print("Agent "+agent.label+" is at GOAL!")
             continue
 
         # state of an agent: <x,y,trash_box_size,coral_flag,boxes_at_goal>
         agent.R += agent.Reward(agent.s, Pi[agent.s])
-        agent.s = do_action(agent.s, Pi[agent.s])
-        print("\n=============== After movement state: ", agent.s)
+        agent.s = do_action(agent, agent.s, Pi[agent.s])
+        # print("\n==== After movement Agent "+agent.label+"'s state: ", agent.s)
         agent.path = agent.path + " -> " + str(agent.s)
     joint_state = get_joint_state(Agents)
     joint_NSE_val = Grid.give_joint_NSE_value(joint_state)
@@ -189,14 +190,14 @@ def get_joint_state(Agents):
 
 def log_joint_NSE(joint_state):
     joint_NSE_val = 0
-    X = {'S': 0, 'M': 0, 'L': 0}
+    X = {'X': 0, 'S': 0, 'L': 0}
     Joint_State = list(copy.deepcopy(joint_state))
 
     # state s: < x , y , junk_size_being_carried_by_the_agent , coral_flag(True or False) >
     for s in Joint_State:
         if s[3] is True:
             X[s[2]] += 1
-    joint_NSE_val = 2 * np.log(X['S'] / 20.0 + 1) + 5 * np.log(X['M'] / 20.0 + 1) + 10 * np.log(X['L'] / 20.0 + 1)
+    joint_NSE_val = 2 * np.log(X['S'] / 20.0 + 1) + 10 * np.log(X['L'] / 20.0 + 1)
     joint_NSE_val *= 25  # rescaling it to get good values
     joint_NSE_val = round(joint_NSE_val, 2)
 

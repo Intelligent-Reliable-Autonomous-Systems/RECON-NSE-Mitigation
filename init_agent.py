@@ -21,7 +21,7 @@ class Agent:
         self.Grid = Grid
         self.P = 1.0
         self.R = 0.0
-        self.gamma = 0.99
+        self.gamma = 0.95
         self.V = []
         self.Pi = []
         self.NSE = 0.0
@@ -62,7 +62,7 @@ class Agent:
             if s[2] == 'X':
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
-            if Grid.All_States[s[0]][s[1]] != 'J':
+            if Grid.All_States[s[0]][s[1]] != 'J' and Grid.All_States[s[0]][s[1]] != 'j':
                 if 'pick_S' in self.A[s]:
                     self.A[s].remove('pick_S')
                 if 'pick_L' in self.A[s]:
@@ -82,6 +82,12 @@ class Agent:
             if s[2] == 'L' and s[4][1] >= s_goal[4][1]:
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
+            if Grid.All_States[s[0]][s[1]] == 'j':
+                if 'pick_L' in self.A[s]:
+                    self.A[s].remove('pick_L')
+            if Grid.All_States[s[0]][s[1]] == 'J':
+                if 'pick_S' in self.A[s]:
+                    self.A[s].remove('pick_S')
 
     def Reward(self, s, a):
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']

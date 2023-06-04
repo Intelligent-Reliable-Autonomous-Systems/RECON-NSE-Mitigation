@@ -1,5 +1,6 @@
 import init_env
 import numpy as np
+from init_env import s_goal
 
 
 def check_if_in(arr, Arr):
@@ -14,8 +15,6 @@ def index_2d(myList, v):
 
 rows = init_env.rows
 columns = init_env.columns
-s_goal = init_env.s_goals[0]
-s_goal = (s_goal[0], s_goal[1], 'X', False, ['L', 'S'])
 all_states = init_env.All_States
 
 
@@ -104,7 +103,13 @@ def get_action(from_state, to_state):
 
 
 def all_have_reached_goal(Agents):
-    still_not_over_flag = True
+    mission_over = True
     for agent in Agents:
-        still_not_over_flag *= (agent.s == s_goal)
-    return still_not_over_flag
+        mission_over = mission_over and (agent.s == s_goal)
+    # if mission_over:
+        # print("[calc_lib] Both Agents are at goal!!")
+    # else:
+        # print("[calc_lib] It's not over yet!!")
+        # print('agent.s: ', Agents[0].s)
+        # print('s_goal: ', s_goal)
+    return mission_over
