@@ -76,13 +76,6 @@ print('NSE Report:')
 for x in range(len(path_joint_states)):
     print(str(path_joint_states[x]) + ': ' + str(path_joint_NSE_values[x]))
 
-exit(0)  # temporary stopping the code to analyse policy
-
-print("Agent spawn locations:")
-for agent in Agents:
-    print("Agent " + agent.label + " started at " + str(agent.startLoc) + " and is now at " + str(
-        agent.Pi[(agent.s[0], agent.s[1], agent.s[3])]))
-
 R_old = 0  # Just for storage purposes
 NSE_old = 0  # Just for storage purposes
 if all_have_reached_goal(Agents):
@@ -91,17 +84,13 @@ if all_have_reached_goal(Agents):
     NSE_old = round(float(np.sum(path_joint_NSE_values[:])), 2)
     print("Total Reward: ", R_old)
     print("Total NSE: ", NSE_old)
-    print("\n")
+print('______________________________________\nAgent Logs:')
 
 # displaying individual logs of agents -  path, Reward, actual NSE contribution
 for agent in Agents:
     print("\nAgent " + agent.label + ":")
     display_agent_log(agent, 'before')
-
-# Actual Joint NSE display log of all joint states and NSEs reported
-print("\n\n=================\nJoint State NSE report:")
-for i in range(len(path_joint_states)):
-    print(str(path_joint_states[i]) + ": " + str(path_joint_NSE_values[i]))
+print('______________________________________')
 
 agentWise_cfs = []
 start_timer = timer()
@@ -115,11 +104,13 @@ for js_nse in joint_NSE_states:
             print(str(cf) + ": " + str(cf_nse))
 
 end_timer = timer()
-print("\n-------------------\nTime taken for generating counterfactuals: " + str(
+print("-------------------------------------------------------")
+print("Time taken for generating counterfactuals: " + str(
     round((end_timer - start_timer) * 1000, 3)) + " ms")
-print("==============================================")
-print("Trash Repo: ", trash_repository)
-print("==============================================")
+print("-------------------------------------------------------")
+
+exit(0)  # temporary stopping the code to analyse policy
+
 print("============== BLAME ASSIGNMENT ==============")
 blame = Blame(Agents, Grid)
 blame_distribution = {}  # dict to store blame distributions of joint states as an array [A1_blame, A2_blame,...]

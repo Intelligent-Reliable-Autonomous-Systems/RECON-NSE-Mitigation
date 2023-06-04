@@ -81,21 +81,20 @@ class Blame:
 
 
 def generate_counterfactuals(joint_state, Grid, Agents, print_flag=True):
-    # permuting s[2] from state s: <x,y,junk_size,coral_flag> in joint state (s1,s2,s3...)
+    # permuting s[2] from state s: <x,y,junk_size,coral_flag,goal_trash> in joint state (s1,s2,s3...)
     counterfactual_jointStates = []
     agent_wise_cfStates = []
     for agent in Agents:
         cf_joint_state = []
         Joint_State = copy.deepcopy(joint_state)
         agent_idx = int(agent.label) - 1
-        size_options = list(Grid.trash_repository.keys())
-        for junk_unit_size in list(Grid.trash_repository.keys()):
-            if Grid.trash_repository[junk_unit_size] <= 0:
-                size_options.remove(junk_unit_size)
+        size_options = ['X', 'S', 'L']
+        # print('BEFORE size options for Agent ' + agent.label + ' cfs: ' + str(size_options))
+        # print(Joint_State[agent_idx][2])
 
-        if Grid.trash_repository[agent.s[2]] != 0:
-            size_options.remove(agent.s[2])  # we want agent to choose something different as a counterfactual
+        size_options.remove(Joint_State[agent_idx][2])  # agent should choose something different as a counterfactual
 
+        # print('AFTER size options for Agent ' + agent.label + ' cfs: ' + str(size_options))
         for option in size_options:
             s = Joint_State[agent_idx]
             s = list(s)
