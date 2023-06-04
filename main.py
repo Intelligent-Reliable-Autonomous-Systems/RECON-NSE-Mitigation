@@ -109,8 +109,6 @@ print("Time taken for generating counterfactuals: " + str(
     round((end_timer - start_timer) * 1000, 3)) + " ms")
 print("-------------------------------------------------------")
 
-exit(0)  # temporary stopping the code to analyse policy
-
 print("============== BLAME ASSIGNMENT ==============")
 blame = Blame(Agents, Grid)
 blame_distribution = {}  # dict to store blame distributions of joint states as an array [A1_blame, A2_blame,...]
@@ -120,6 +118,8 @@ for js_nse in joint_NSE_states:
     blame_values = blame.get_blame(original_NSE, js_nse)
     blame_distribution[js_nse] = np.around(blame_values, 2)
     print("\t" + str(round(original_NSE, 2)) + " : " + str(np.around(blame_values, 2)))
+
+exit(0)  # temporary stopping the code to analyse policy
 
 for js_nse in joint_NSE_states:
     for agent_idx in range(len(Agents)):

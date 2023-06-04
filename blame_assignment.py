@@ -48,15 +48,19 @@ class Blame:
         # print("~~~~~~     Original NSE: ", get_joint_NSEs_for_list(joint_NSE_state))
         agentWise_cfs, cfs = generate_counterfactuals(joint_NSE_state, self.Grid, self.Agents, print_flag=False)
         for cf_state in agentWise_cfs:
+            # print('[blame_assignment] cf_state: ', cf_state)
             NSEs_for_cf_state = get_joint_NSEs_for_list(cf_state, self.Grid)
-            # print("****cf_NSEs for agent: " + str(cf_NSEs_for_agent_i))
+            # print("[blame_assignment] ****cf_NSEs for agent: " + str(NSEs_for_cf_state))
             agentWise_cfs_NSEs.append(NSEs_for_cf_state)
+        # print('[blame_assignment] agentWise_cfs_NSEs: ', agentWise_cfs_NSEs)
         # print("&&&&&&&&&&&&&&&&&&&&&&&")
         for agent_idx in range(len(self.Agents)):
             cf_nse_set_for_agent = agentWise_cfs_NSEs[agent_idx]
-            # print("cf_nse_set_for_agent: ", cf_nse_set_for_agent)
+            # print("[blame_assignment] cf_nse_set_for_agent: ", cf_nse_set_for_agent)
             # print("min(cf_nse_set_for_agent): ", min(cf_nse_set_for_agent))
             best_performance_by_agent = min(list(cf_nse_set_for_agent))
+            # print('[blame_assignment]     original_NSE: ', original_NSE)
+            # print('[blame_assignment]     best_performance_by_agent: ', best_performance_by_agent)
 
             if original_NSE <= best_performance_by_agent:
                 self.Agents[agent_idx].best_performance_flag = True
@@ -64,9 +68,10 @@ class Blame:
                 self.Agents[agent_idx].best_performance_flag = False
 
             blame_val = round(original_NSE - best_performance_by_agent, 2)  # the worst blame can be 0
+            # print('[blame_assignment]          blame_val: ', blame_val)
             # print("min(CF_NSEs Agent" + str(agent_idx + 1) + ") -> " + str(best_performance_by_agent))
             # print("Blame = OG_NSE - min(CF_NSEs Agent" + str(agent_idx + 1) + ") -> ", blame_val)
-            blame[agent_idx] = blame_val + self.NSE_worst + self.epsilon
+            blame[agent_idx] = blame_val + self.epsilon  # + self.NSE_worst
             blame[agent_idx] = round(blame[agent_idx] / 2, 2)  # rescale Blame from [0, 2*NSE_worst] to [0,NSE_worst]
             # print("---- AFTER Blame Value =", blame[agent_idx])
         # print("&&&&&&&&&&&&&&&&&&&&&&&")
