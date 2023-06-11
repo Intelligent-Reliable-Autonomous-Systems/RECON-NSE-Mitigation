@@ -25,6 +25,7 @@ class Agent:
         self.V = []
         self.Pi = []
         self.NSE = 0.0
+        self.NSE_gen = 0.0
         self.path = str(self.s)  # + "->"
         self.plan = ""
         self.trajectory = []
@@ -37,10 +38,12 @@ class Agent:
         # counterfactual comparison actions = ['switch_compare']
         self.A2 = {}
         self.R_blame = {}
+        self.R_blame_gen = {}
         for s in Grid.S:
             self.A[s] = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']  # operation actions
             self.A2[s] = ['switch_compare']  # action for counterfactuals comparison
             self.R_blame[s] = 0.0
+            self.R_blame_gen[s] = 0.0
         for s in Grid.S:
             if s[0] == 0:
                 if 'U' in self.A[s]:

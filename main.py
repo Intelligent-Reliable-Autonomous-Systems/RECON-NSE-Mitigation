@@ -119,7 +119,6 @@ for js_nse in joint_NSE_states:
     blame_distribution[js_nse] = np.around(blame_values, 2)
     print("\t" + str(round(original_NSE, 2)) + " : " + str(np.around(blame_values, 2)))
 
-exit(0)  # temporary stopping the code to analyse policy
 
 for js_nse in joint_NSE_states:
     for agent_idx in range(len(Agents)):
@@ -128,6 +127,7 @@ for js_nse in joint_NSE_states:
         s = js_nse[agent_idx]
         agent.R_blame[(s[0], s[1], s[3])] = blame_array_for_js[agent_idx]
 
+exit(0)  # temporary stopping the code to analyse policy
 # Loop for computing R_blame, printing it, and resetting all agents
 for agent in Agents:
     agent = Grid.add_goal_reward(agent)

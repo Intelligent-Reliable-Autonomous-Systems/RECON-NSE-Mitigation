@@ -43,24 +43,25 @@ class Blame:
         agentWise_cfs_NSEs = []
         blame = np.zeros(len(self.Agents))
         NSE_blame = np.zeros(len(self.Agents))
-        # print("~~~~~~     Original NSE: ", original_NSE)
-        # print("joint_NSE_state in the function(line 47): ", joint_NSE_state)
-        # print("~~~~~~     Original NSE: ", get_joint_NSEs_for_list(joint_NSE_state))
+        print("~~~~~~     Original NSE: ", original_NSE)
+        print("joint_NSE_state in the function(line 47): ", joint_NSE_state)
+        print("~~~~~~     Original NSE: ", get_joint_NSEs_for_list(joint_NSE_state, self.Grid))
         agentWise_cfs, cfs = generate_counterfactuals(joint_NSE_state, self.Grid, self.Agents, print_flag=False)
+        print('[blame_assignment] agentWise_cfs: ', agentWise_cfs)
         for cf_state in agentWise_cfs:
-            # print('[blame_assignment] cf_state: ', cf_state)
+            print('[blame_assignment] cf_state: ', cf_state)
             NSEs_for_cf_state = get_joint_NSEs_for_list(cf_state, self.Grid)
-            # print("[blame_assignment] ****cf_NSEs for agent: " + str(NSEs_for_cf_state))
+            print("[blame_assignment] ****cf_NSEs for agent: " + str(NSEs_for_cf_state))
             agentWise_cfs_NSEs.append(NSEs_for_cf_state)
-        # print('[blame_assignment] agentWise_cfs_NSEs: ', agentWise_cfs_NSEs)
-        # print("&&&&&&&&&&&&&&&&&&&&&&&")
+        print('[blame_assignment] agentWise_cfs_NSEs: ', agentWise_cfs_NSEs)
+        print("&&&&&&&&&&&&&&&&&&&&&&&")
         for agent_idx in range(len(self.Agents)):
             cf_nse_set_for_agent = agentWise_cfs_NSEs[agent_idx]
-            # print("[blame_assignment] cf_nse_set_for_agent: ", cf_nse_set_for_agent)
-            # print("min(cf_nse_set_for_agent): ", min(cf_nse_set_for_agent))
+            print("[blame_assignment] cf_nse_set_for_agent: ", cf_nse_set_for_agent)
+            print("min(cf_nse_set_for_agent): ", min(cf_nse_set_for_agent))
             best_performance_by_agent = min(list(cf_nse_set_for_agent))
-            # print('[blame_assignment]     original_NSE: ', original_NSE)
-            # print('[blame_assignment]     best_performance_by_agent: ', best_performance_by_agent)
+            print('[blame_assignment]     original_NSE: ', original_NSE)
+            print('[blame_assignment]     best_performance_by_agent: ', best_performance_by_agent)
 
             if original_NSE <= best_performance_by_agent:
                 self.Agents[agent_idx].best_performance_flag = True
@@ -93,23 +94,28 @@ def generate_counterfactuals(joint_state, Grid, Agents, print_flag=True):
         cf_joint_state = []
         Joint_State = copy.deepcopy(joint_state)
         agent_idx = int(agent.label) - 1
-        size_options = ['X', 'S', 'L']
-        # print('BEFORE size options for Agent ' + agent.label + ' cfs: ' + str(size_options))
-        # print(Joint_State[agent_idx][2])
+        if Joint_State[agent_idx][2] != 'X':
+            size_options = ['S', 'L']
+            # print('BEFORE size options for Agent ' + agent.label + ' cfs: ' + str(size_options))
+            # print(Joint_State[agent_idx][2])
 
-        size_options.remove(Joint_State[agent_idx][2])  # agent should choose something different as a counterfactual
+            size_options.remove(
+                Joint_State[agent_idx][2])  # agent should choose something different as a counterfactual
 
-        # print('AFTER size options for Agent ' + agent.label + ' cfs: ' + str(size_options))
-        for option in size_options:
-            s = Joint_State[agent_idx]
-            s = list(s)
-            s[2] = option
-            s = tuple(s)
-            Joint_State = list(Joint_State)
-            Joint_State[agent_idx] = s
-            Joint_State = tuple(Joint_State)
-            cf_joint_state.append(Joint_State)
+            # print('AFTER size options for Agent ' + agent.label + ' cfs: ' + str(size_options))
+            for option in size_options:
+                s = Joint_State[agent_idx]
+                s = list(s)
+                s[2] = option
+                s = tuple(s)
+                Joint_State = list(Joint_State)
+                Joint_State[agent_idx] = s
+                Joint_State = tuple(Joint_State)
+                cf_joint_state.append(Joint_State)
+                counterfactual_jointStates.append(Joint_State)
+        else:
             counterfactual_jointStates.append(Joint_State)
+
         agent_wise_cfStates.append(counterfactual_jointStates)
         counterfactual_jointStates = []
 
@@ -118,7 +124,6 @@ def generate_counterfactuals(joint_state, Grid, Agents, print_flag=True):
 
 def get_joint_NSEs_for_list(joint_states, Grid):
     joint_NSEs = []
-    for js in joint_states:
-        nse = Grid.give_joint_NSE_value(js)
-        joint_NSEs.append(nse)
+    nse = Grid.give_joint_NSE_value(joint_states)
+    joint_NSEs.append(nse)
     return joint_NSEs
