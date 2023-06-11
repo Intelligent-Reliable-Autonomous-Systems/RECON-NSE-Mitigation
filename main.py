@@ -119,22 +119,27 @@ for js_nse in joint_NSE_states:
     blame_distribution[js_nse] = np.around(blame_values, 2)
     print("\t" + str(round(original_NSE, 2)) + " : " + str(np.around(blame_values, 2)))
 
-exit(0)  # temporary stopping the code to analyse policy
-
 for js_nse in joint_NSE_states:
     for agent_idx in range(len(Agents)):
         agent = Agents[agent_idx]
         blame_array_for_js = -blame_distribution[js_nse]
         s = js_nse[agent_idx]
         agent.R_blame[(s[0], s[1], s[3])] = blame_array_for_js[agent_idx]
+        agent.blame_training_data_x.append([s[2], s[3], s[4][0], s[4][1]])
+        agent.blame_training_data_y.append(blame_array_for_js[agent_idx])
 
-# Loop for computing R_blame, printing it, and resetting all agents
+    # Loop for computing R_blame, printing it, and resetting all agents
 for agent in Agents:
     agent = Grid.add_goal_reward(agent)
     print("--------------\nR_blame for Agent ", agent.label)
     agent.R = 0
     agent.s = copy.deepcopy(agent.s0)
-    display_values(agent.R_blame)
+    # display_values(agent.R_blame)
+    print("Training data for Agent ", agent.label)
+    for i in range(len(agent.blame_training_data_x)):
+        print(str(agent.blame_training_data_x[i]) + ": " + str(agent.blame_training_data_y[i]))
+
+exit(0)  # temporary stopping the code to analyse policy
 
 # getting R_blame rewards for each agent by re-simulating original policies
 agent_Rblame_dict = get_reward_by_following_policy(Agents)

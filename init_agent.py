@@ -38,6 +38,8 @@ class Agent:
         # counterfactual comparison actions = ['switch_compare']
         self.A2 = {}
         self.R_blame = {}
+        self.blame_training_data_x = []
+        self.blame_training_data_y = []
         self.R_blame_gen = {}
         for s in Grid.S:
             self.A[s] = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']  # operation actions
