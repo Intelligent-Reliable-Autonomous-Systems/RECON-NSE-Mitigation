@@ -48,9 +48,7 @@ class Environment:
     def give_joint_NSE_value(self, joint_state):
         # joint_NSE_val = basic_joint_NSE(joint_state)
         # joint_NSE_val = gaussian_joint_NSE(self, joint_state)
-        # joint_state = list(joint_state)
-        print("[init_env.py -line 51-] joint_state: ", joint_state)
-        joint_NSE_val = log_joint_NSE(copy.copy(joint_state))
+        joint_NSE_val = log_joint_NSE(joint_state)
         return joint_NSE_val
 
     def add_goal_reward(self, agent):
@@ -192,17 +190,11 @@ def get_joint_state(Agents):
 
 def log_joint_NSE(joint_state):
     joint_NSE_val = 0
-    # joint_state = joint_state[0]
-    print("[init_env.py -line 195-] joint state: ", joint_state)
-    joint_state = joint_state
-    print("[init_env.py -line 197-] joint state: ", joint_state)
     X = {'X': 0, 'S': 0, 'L': 0}
-    Joint_State = tuple(copy.copy(joint_state))
-    print("[init_env.py -line 201-] Joint State: ", Joint_State)
+    Joint_State = list(copy.deepcopy(joint_state))
 
     # state s: < x , y , junk_size_being_carried_by_the_agent , coral_flag(True or False) >
     for s in Joint_State:
-        print('s in Joint_State: ', s)
         if s[3] is True:
             X[s[2]] += 1
     joint_NSE_val = 2 * np.log(X['S'] / 20.0 + 1) + 10 * np.log(X['L'] / 20.0 + 1)
