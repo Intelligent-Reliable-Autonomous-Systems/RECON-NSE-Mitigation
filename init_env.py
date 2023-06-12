@@ -190,6 +190,8 @@ def get_joint_state(Agents):
 
 def log_joint_NSE(joint_state):
     joint_NSE_val = 0
+
+    weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
     X = {'X': 0, 'S': 0, 'L': 0}
     Joint_State = list(copy.deepcopy(joint_state))
 
@@ -197,7 +199,7 @@ def log_joint_NSE(joint_state):
     for s in Joint_State:
         if s[3] is True:
             X[s[2]] += 1
-    joint_NSE_val = 2 * np.log(X['S'] / 20.0 + 1) + 10 * np.log(X['L'] / 20.0 + 1)
+    joint_NSE_val = weighting['S'] * np.log(X['S'] / 20.0 + 1) + weighting['L'] * np.log(X['L'] / 20.0 + 1)
     joint_NSE_val *= 25  # rescaling it to get good values
     joint_NSE_val = round(joint_NSE_val, 2)
 

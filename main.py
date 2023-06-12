@@ -112,6 +112,7 @@ print("-------------------------------------------------------")
 print("============== BLAME ASSIGNMENT ==============")
 blame = Blame(Agents, Grid)
 blame_distribution = {}  # dict to store blame distributions of joint states as an array [A1_blame, A2_blame,...]
+weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
 for js_nse in joint_NSE_states:
     print("-------\nBlame distribution for " + str(js_nse) + " =")  # , end="")
     original_NSE = Grid.give_joint_NSE_value(js_nse)
@@ -124,8 +125,8 @@ for js_nse in joint_NSE_states:
         agent = Agents[agent_idx]
         blame_array_for_js = -blame_distribution[js_nse]
         s = js_nse[agent_idx]
-        agent.R_blame[(s[0], s[1], s[3])] = blame_array_for_js[agent_idx]
-        agent.blame_training_data_x.append([s[2], s[3], s[4][0], s[4][1]])
+        agent.R_blame[s] = blame_array_for_js[agent_idx]
+        agent.blame_training_data_x.append([weighting[s[2]], int(s[3]), s[4][0], s[4][1]])
         agent.blame_training_data_y.append(blame_array_for_js[agent_idx])
 
     # Loop for computing R_blame, printing it, and resetting all agents
@@ -138,6 +139,12 @@ for agent in Agents:
     print("Training data for Agent ", agent.label)
     for i in range(len(agent.blame_training_data_x)):
         print(str(agent.blame_training_data_x[i]) + ": " + str(agent.blame_training_data_y[i]))
+
+for agent in Agents:
+    agent.Generalize_Rblame()
+    print('\nR_blame_gen for Agent', agent.label)
+    display_values(agent.R_blame_gen)
+# print(Agents[0].R_blame_gen)
 
 exit(0)  # temporary stopping the code to analyse policy
 

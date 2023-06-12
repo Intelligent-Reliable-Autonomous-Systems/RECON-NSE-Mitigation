@@ -50,7 +50,6 @@ def display_grid_layout(Grid, Agents):
 
 
 def display_just_grid(Environment):
-
     for i in range(len(Environment)):
         for j in range(len(Environment[0])):
             print('%8s' % str(Environment[i][j]), end=" ")
@@ -64,7 +63,7 @@ def display_values(V):
     print_counter = 0
     for s in V:
         # print('   ' + str(round(V[s])) + '   ', end=" ")
-        print('%7s' % str(round(V[s])), end=" ")
+        print('%7s' % str(round(V[s], 1)), end=" ")
         print_counter += 1
         if print_counter == columns:
             print_counter = 0

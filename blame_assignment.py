@@ -12,7 +12,7 @@ class Blame:
         self.NSE_best = 0  # best NSE is no NSE
         self.NSE_worst = Grid.max_log_joint_NSE(Agents)
         self.NSE_window = (self.NSE_best, self.NSE_worst)  # formulation where NSE is positive
-        self.epsilon = 0.0001
+        self.epsilon = 0.001
 
     def assign_blame_using_clone(self, joint_state):
         # clone agent 1 by deep-copying it
@@ -69,12 +69,14 @@ class Blame:
             # print('[blame_assignment]          blame_val: ', blame_val)
             # print("min(CF_NSEs Agent" + str(agent_idx + 1) + ") -> " + str(best_performance_by_agent))
             # print("Blame = OG_NSE - min(CF_NSEs Agent" + str(agent_idx + 1) + ") -> ", blame_val)
-            blame[agent_idx] = blame_val + self.epsilon  # + self.NSE_worst
+            blame[agent_idx] = blame_val + self.epsilon + self.NSE_worst
             blame[agent_idx] = round(blame[agent_idx] / 2, 2)  # rescale Blame from [0, 2*NSE_worst] to [0,NSE_worst]
+            if joint_NSE_state[agent_idx][2] == 'X':
+                blame[agent_idx] = 0.0
             # print("---- AFTER Blame Value =", blame[agent_idx])
         # print("&&&&&&&&&&&&&&&&&&&&&&&")
         for agent_idx in range(len(self.Agents)):
-            NSE_blame[agent_idx] = round((((blame[agent_idx]) / (np.sum(blame[:]) + 0.001)) * original_NSE), 2)
+            NSE_blame[agent_idx] = round((((blame[agent_idx]) / (np.sum(blame[:]))) * original_NSE), 2)
         for agent in self.Agents:
             if agent.best_performance_flag is True:
                 print("Agent " + agent.label + " did it's best!")
@@ -91,11 +93,11 @@ def generate_counterfactuals(joint_state, Grid, Agents, print_flag=True):
         cf_joint_state = []
         Joint_State = copy.deepcopy(joint_state)
         agent_idx = int(agent.label) - 1
-        size_options = ['X', 'S', 'L']
+        size_options = ['S', 'L']
         # print('BEFORE size options for Agent ' + agent.label + ' cfs: ' + str(size_options))
         # print(Joint_State[agent_idx][2])
-
-        size_options.remove(Joint_State[agent_idx][2])  # agent should choose something different as a counterfactual
+        if Joint_State[agent_idx][2] in size_options:
+            size_options.remove(Joint_State[agent_idx][2])  # agent should choose something different as counterfactual
 
         # print('AFTER size options for Agent ' + agent.label + ' cfs: ' + str(size_options))
         for option in size_options:

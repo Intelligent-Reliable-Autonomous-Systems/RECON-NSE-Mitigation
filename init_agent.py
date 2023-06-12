@@ -1,6 +1,8 @@
 import copy
 import init_env
 from calculation_lib import do_action
+import numpy as np
+from sklearn.linear_model import LinearRegression
 
 s_goals = init_env.s_goals
 s_goal = init_env.s_goal
@@ -126,3 +128,17 @@ class Agent:
         self.s = copy.deepcopy(self.s0)
         self.path = str(self.s)  # + "->"
         self.R = 0.0
+
+    def Generalize_Rblame(self):
+        weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
+        X = copy.deepcopy(self.blame_training_data_x)
+        N = len(X)
+        y = copy.deepcopy(self.blame_training_data_y)
+        X, y = np.array(X).reshape((N, 4)), np.array(y).reshape((N, 1))
+        model = LinearRegression()
+        model.fit(X, y)
+        print('--------------------------------------------\nWeights for Agent ' + self.label)
+        print(model.coef_)
+        for s in self.Grid.S:
+            R_blame_prediction_for_s = float(model.predict(np.array([[weighting[s[2]], int(s[3]), s[4][0], s[4][1]]])))
+            self.R_blame_gen[s] = round(R_blame_prediction_for_s, 1)
