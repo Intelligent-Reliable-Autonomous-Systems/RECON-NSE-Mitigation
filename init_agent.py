@@ -127,6 +127,7 @@ class Agent:
         self.NSE = 0.0
         self.s = copy.deepcopy(self.s0)
         self.path = str(self.s)  # + "->"
+        self.plan = ""
         self.R = 0.0
 
     def Generalize_Rblame(self):
@@ -137,8 +138,10 @@ class Agent:
         X, y = np.array(X).reshape((N, 4)), np.array(y).reshape((N, 1))
         model = LinearRegression()
         model.fit(X, y)
-        print('--------------------------------------------\nWeights for Agent ' + self.label)
-        print(model.coef_)
+        # print('--------------------------------------------\nWeights for Agent ' + self.label)
+        # print(model.coef_)
         for s in self.Grid.S:
             R_blame_prediction_for_s = float(model.predict(np.array([[weighting[s[2]], int(s[3]), s[4][0], s[4][1]]])))
             self.R_blame_gen[s] = round(R_blame_prediction_for_s, 1)
+
+        self.R_blame_gen[s_goal] = 100

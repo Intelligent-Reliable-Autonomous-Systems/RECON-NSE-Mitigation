@@ -20,7 +20,7 @@ rows = init_env.rows
 columns = init_env.columns
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
-M = 1
+M = 2
 num_of_agents = 2
 
 # initialize the environment
@@ -34,19 +34,11 @@ for label in range(num_of_agents):
 # value iteration for all agents
 for agent in Agents:
     agent.V, agent.Pi = value_iteration.value_iteration(agent, Grid.S)
-for agent in Agents:
-    # print("=====================   Agent " + str(agent.label) + "   =====================")
-    for s in agent.Pi:
-        act = agent.Pi[s]
-        # print(str(s) + ": [" + str(act) + "] --> reward: " + str(agent.Reward(s, act)))
-    # print("=====================================================\n")
+
 for agent in Agents:
     agent.s = copy.deepcopy(agent.s0)
     agent.follow_policy()
-    # print("==================== Trajectory for Agent " + agent.label + "  =====================")
-    # for sar in Agents[0].trajectory:
-    #     print(sar)
-    # print("==================================================================\n")
+
 print("Environment:")
 display_just_grid(Grid.All_States)
 for agent in Agents:
@@ -142,28 +134,41 @@ for agent in Agents:
 
 for agent in Agents:
     agent.Generalize_Rblame()
-    print('\nR_blame_gen for Agent', agent.label)
-    display_values(agent.R_blame_gen)
+    # print('\nR_blame_gen for Agent', agent.label)
+    # display_values(agent.R_blame_gen)
 # print(Agents[0].R_blame_gen)
 
-exit(0)  # temporary stopping the code to analyse policy
 
 # getting R_blame rewards for each agent by re-simulating original policies
 agent_Rblame_dict = get_reward_by_following_policy(Agents)
-print(agent_Rblame_dict)
-
+print("\n--------Total Agent NSE --------\n", agent_Rblame_dict)
 agent_labels_to_be_corrected = nsmallest(M, agent_Rblame_dict, key=agent_Rblame_dict.get)
-print("Agents to be corrected: ", agent_labels_to_be_corrected)
+print("\nAgents to be corrected: ", agent_labels_to_be_corrected)
 Agents_to_be_corrected = [Agents[int(i) - 1] for i in agent_labels_to_be_corrected]
 
-print("\n---- Now doing Lexicographic Value Iteration for selected agents ----\n ")
-for agent in Agents_to_be_corrected:
-    agent = value_iteration.action_set_value_iteration(agent, Grid.S, Grid.R, agent.gamma)
-    agent.V, agent.Pi = value_iteration.value_iteration(agent, Grid.S, agent.R_blame, agent.gamma)
+for agent in Agents:
+    agent.agent_reset()
 
-# for agent in Agents_to_be_corrected:
-#     print("Final Policy for Agent " + str(agent.label) + ": ")
-#     display_policy(agent.Pi)
+print("\n---- Now doing Lexicographic Value Iteration with R_blame for selected agents ----\n ")
+for agent in Agents_to_be_corrected:
+    agent = value_iteration.action_set_value_iteration(agent, Grid.S)
+    agent.V, agent.Pi = value_iteration.blame_value_iteration(agent, Grid.S, agent.R_blame)
+
+for agent in Agents:
+    agent.s = copy.deepcopy(agent.s0)
+    agent.follow_policy()
+
+# for agent in Agents:
+#     print("For Agent ", agent.label)
+#     for s in agent.Grid.S:
+#         print("R_blame[" + str(s) + "] : " + str(agent.R_blame[s]))
+
+print("Environment:")
+display_just_grid(Grid.All_States)
+for agent in Agents:
+    print("Corrected Plan for Agent " + agent.label + ":")
+    print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '
+    print("________________________________________________\n")
 
 for agent in Agents:
     agent.agent_reset()
@@ -174,7 +179,8 @@ joint_NSE_states = []
 joint_NSE_values = []
 # print(Grid.R)
 
-while not all_have_reached_goal(Agents):
+
+while all_have_reached_goal(Agents) is False:
     Agents, joint_NSE = take_step(Grid, Agents)
     joint_state = get_joint_state(Agents)
     path_joint_states.append(joint_state)
@@ -182,6 +188,73 @@ while not all_have_reached_goal(Agents):
     if joint_NSE != 0:
         joint_NSE_states.append(joint_state)
         joint_NSE_values.append(joint_NSE)
+
+print('NSE Report (after R_blame):')
+for x in range(len(path_joint_states)):
+    print(str(path_joint_states[x]) + ': ' + str(path_joint_NSE_values[x]))
+R_new = 0
+NSE_new = 0
+if all_have_reached_goal(Agents):
+    print("-----------------------------------")
+    R_new = round(float(np.sum([agent.R for agent in Agents])), 2)
+    NSE_new = round(float(np.sum(path_joint_NSE_values[:])), 2)
+    print("Total Reward (after R_blame): ", R_new)
+    print("Total NSE (after R_blame): ", NSE_new)
+print('-----------------------------------')
+for agent in Agents:
+    agent.agent_reset()
+
+print("\n---- Now doing Lexicographic Value Iteration with R_blame_gen for selected agents ----\n ")
+for agent in Agents_to_be_corrected:
+    agent = value_iteration.action_set_value_iteration(agent, Grid.S)
+    agent.V, agent.Pi = value_iteration.blame_value_iteration(agent, Grid.S, agent.R_blame_gen)
+
+for agent in Agents:
+    agent.s = copy.deepcopy(agent.s0)
+    agent.follow_policy()
+
+print("Environment:")
+display_just_grid(Grid.All_States)
+for agent in Agents:
+    print("Corrected Plan for Agent " + agent.label + ":")
+    print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '
+    print("________________________________________________\n")
+
+for agent in Agents:
+    agent.agent_reset()
+
+path_joint_states = [get_joint_state(Agents)]
+path_joint_NSE_values = [Grid.give_joint_NSE_value(get_joint_state(Agents))]
+joint_NSE_states = []
+joint_NSE_values = []
+
+while all_have_reached_goal(Agents) is False:
+    Agents, joint_NSE = take_step(Grid, Agents)
+    joint_state = get_joint_state(Agents)
+    path_joint_states.append(joint_state)
+    path_joint_NSE_values.append(joint_NSE)
+    if joint_NSE != 0:
+        joint_NSE_states.append(joint_state)
+        joint_NSE_values.append(joint_NSE)
+
+print('NSE Report (after R_blame_gen):')
+for x in range(len(path_joint_states)):
+    print(str(path_joint_states[x]) + ': ' + str(path_joint_NSE_values[x]))
+
+if all_have_reached_goal(Agents):
+    print("-----------------------------------")
+    print("Total Reward (initial): ", R_old)
+    print("Total NSE (initial): ", NSE_old)
+    print("-----------------------------------")
+    print("Total Reward (after R_blame): ", R_new)
+    print("Total NSE (after R_blame): ", NSE_new)
+    print("-----------------------------------")
+    R_new_gen = round(float(np.sum([agent.R for agent in Agents])), 2)
+    NSE_new_gen = round(float(np.sum(path_joint_NSE_values[:])), 2)
+    print("Total Reward (after R_blame_gen): ", R_new_gen)
+    print("Total NSE (after R_blame_gen): ", NSE_new_gen)
+print('-----------------------------------')
+exit(0)  # temporary stopping the code to analyse policy
 
 print("Policy Agent 1:")
 display_policy(agent1.Pi)

@@ -52,8 +52,8 @@ class Environment:
         return joint_NSE_val
 
     def add_goal_reward(self, agent):
-        for s in s_goals:
-            agent.R_blame[tuple(s)] = 100
+        if agent.s == s_goal:
+            agent.R_blame[agent.s] = 100
         return agent
 
     def max_log_joint_NSE(self, Agents):
@@ -174,9 +174,9 @@ def get_reward_by_following_policy(Agents):
     RR_blame_dist = {}
     for agent in Agents:
         Pi = copy.copy(agent.Pi)
-        while Pi[(agent.s[0], agent.s[1], agent.s[3])] != 'G':
-            agent.s = do_action(agent.s, Pi[(agent.s[0], agent.s[1], agent.s[3])])
-            agent.R += agent.R_blame[(agent.s[0], agent.s[1], agent.s[3])]
+        while agent.s != s_goal:
+            agent.s = do_action(agent, agent.s, Pi[agent.s])
+            agent.R += agent.R_blame[agent.s]
         RR_blame_dist[agent.label] = round(agent.R, 2)
     return RR_blame_dist
 
