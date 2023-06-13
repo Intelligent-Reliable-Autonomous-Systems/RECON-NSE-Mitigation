@@ -3,7 +3,7 @@ from timeit import default_timer as timer
 from blame_assignment import Blame
 import init_env
 from init_env import Environment, take_step
-from init_env import get_joint_state, get_reward_by_following_policy
+from init_env import get_joint_state, get_blame_reward_by_following_policy
 from init_agent import Agent
 import value_iteration
 from display_lib import display_values, display_policy, display_grid_layout
@@ -11,7 +11,7 @@ from display_lib import display_agent_log, display_just_grid
 from blame_assignment import generate_counterfactuals, get_joint_NSEs_for_list
 from calculation_lib import all_have_reached_goal
 import copy
-from heapq import nsmallest
+from heapq import nsmallest, nlargest
 
 # from blame_assigment import Blame
 # from remove_NSE import NSE_action_ban
@@ -134,15 +134,16 @@ for agent in Agents:
 
 for agent in Agents:
     agent.Generalize_Rblame()
+    agent.agent_reset()
     # print('\nR_blame_gen for Agent', agent.label)
     # display_values(agent.R_blame_gen)
 # print(Agents[0].R_blame_gen)
 
 
 # getting R_blame rewards for each agent by re-simulating original policies
-agent_Rblame_dict = get_reward_by_following_policy(Agents)
+agent_Rblame_dict = get_blame_reward_by_following_policy(Agents)
 print("\n--------Total Agent NSE --------\n", agent_Rblame_dict)
-agent_labels_to_be_corrected = nsmallest(M, agent_Rblame_dict, key=agent_Rblame_dict.get)
+agent_labels_to_be_corrected = nlargest(M, agent_Rblame_dict, key=agent_Rblame_dict.get)
 print("\nAgents to be corrected: ", agent_labels_to_be_corrected)
 Agents_to_be_corrected = [Agents[int(i) - 1] for i in agent_labels_to_be_corrected]
 

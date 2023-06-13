@@ -170,14 +170,15 @@ def take_step(Grid, Agents):
     return Agents, joint_NSE_val
 
 
-def get_reward_by_following_policy(Agents):
+def get_blame_reward_by_following_policy(Agents):
     RR_blame_dist = {}
     for agent in Agents:
+        RR = 0
         Pi = copy.copy(agent.Pi)
         while agent.s != s_goal:
+            RR += agent.R_blame[agent.s]
             agent.s = do_action(agent, agent.s, Pi[agent.s])
-            agent.R += agent.R_blame[agent.s]
-        RR_blame_dist[agent.label] = round(agent.R, 2)
+        RR_blame_dist[agent.label] = -round(RR, 2)
     return RR_blame_dist
 
 
