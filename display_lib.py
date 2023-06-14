@@ -97,3 +97,43 @@ def display_agent_log(agent, flag='before'):
               agent.R)
     # print("\n NSE accumulated by Agent " + str(agent.label) + " starting from " + str(agent.startLoc) + " is: ",
     #       agent.NSE)
+
+
+def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen):
+    index = np.arange(2)
+    bar_width = 0.2
+
+    fig, ax = plt.subplots()
+    R_values = ax.bar(index, R_before_mit, bar_width, label="Before Mitigation")
+    R_values_with_blame = ax.bar(index + bar_width, R_after_mit, bar_width, label="After Mitigation")
+    R_values_with_blame_gen = ax.bar(index + 2 * bar_width, R_after_mit_gen, bar_width, label="After Gen Mitigation")
+
+    ax.set_xlabel('Agents')
+    ax.set_ylabel('R')
+    plt.ylim(0, 150)
+    ax.set_title('Rewards accumulated by each Agent across different modes')
+    ax.set_xticks(index + bar_width)
+    ax.set_xticklabels(["Agent 1", "Agent 2"])
+    ax.legend()
+
+    plt.show()
+
+
+def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen):
+    index = np.arange(2)
+    bar_width = 0.2
+
+    fig, ax = plt.subplots()
+    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Before Mitigation")
+    NSE_values_with_blame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="After Mitigation")
+    NSE_values_with_blame_gen = ax.bar(index + 2 * bar_width, NSE_after_mit_gen, bar_width,
+                                       label="After Gen Mitigation")
+
+    ax.set_xlabel('Agents')
+    ax.set_ylabel('NSE')
+    ax.set_title('NSE from each Agent across mitigation Techniques')
+    ax.set_xticks(index + bar_width)
+    ax.set_xticklabels(["Agent 1", "Agent 2"])
+    ax.legend()
+
+    plt.show()
