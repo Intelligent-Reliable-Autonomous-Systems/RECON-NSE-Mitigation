@@ -89,7 +89,7 @@ print('______________________________________')
 agentWise_cfs = []
 start_timer = timer()
 for js_nse in joint_NSE_states:
-    agentWise_cfs, cfs = generate_counterfactuals(js_nse, Grid, Agents)
+    agentWise_cfs, _ = generate_counterfactuals(js_nse, Agents)
     print("\n==== in joint state === : " + str(js_nse) + ": " + str(Grid.give_joint_NSE_value(js_nse)))
     for i in range(len(agentWise_cfs)):
         print("CounterFactual states for Agent " + str(i + 1))
@@ -120,10 +120,10 @@ for js_nse in joint_NSE_states:
         blame_array_for_js = -blame_distribution[js_nse]
         s = js_nse[agent_idx]
         agent.R_blame[s] = blame_array_for_js[agent_idx]
-        agent.blame_training_data_x.append([weighting[s[2]], int(s[3]), s[4][0], s[4][1]])
-        agent.blame_training_data_y.append(blame_array_for_js[agent_idx])
 
-    # Loop for computing R_blame, printing it, and resetting all agents
+blame.get_training_data(Agents, joint_NSE_states)
+
+# Loop for computing R_blame, printing it, and resetting all agents
 for agent in Agents:
     agent = Grid.add_goal_reward(agent)
     print("--------------\nR_blame for Agent ", agent.label)
@@ -134,6 +134,7 @@ for agent in Agents:
     for i in range(len(agent.blame_training_data_x)):
         print(str(agent.blame_training_data_x[i]) + ": " + str(agent.blame_training_data_y[i]))
 
+exit(0)
 for agent in Agents:
     agent.Generalize_Rblame()
     agent.agent_reset()
@@ -277,7 +278,7 @@ if all_have_reached_goal(Agents):
 print('-----------------------------------')
 
 Complete_sim_end_timer = timer()
-Complete_sim_time = round((Complete_sim_end_timer - Complete_sim_start_timer) , 3)
+Complete_sim_time = round((Complete_sim_end_timer - Complete_sim_start_timer), 3)
 print("-------------------- TIME KEEPING ----------------------")
 print("Complete Simulation: " + str(Complete_sim_time) + " sec")
 print("CF generation for Blame Assignment (without Generalization): " + str(time_for_blame_without_gen) + " ms")

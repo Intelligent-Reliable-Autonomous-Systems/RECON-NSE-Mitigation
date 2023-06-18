@@ -6,6 +6,7 @@ from sklearn.linear_model import LinearRegression
 
 s_goals = init_env.s_goals
 s_goal = init_env.s_goal
+weighting = init_env.weighting
 
 
 class Agent:
@@ -131,7 +132,6 @@ class Agent:
         self.R = 0.0
 
     def Generalize_Rblame(self):
-        weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
         X = copy.deepcopy(self.blame_training_data_x)
         N = len(X)
         y = copy.deepcopy(self.blame_training_data_y)
