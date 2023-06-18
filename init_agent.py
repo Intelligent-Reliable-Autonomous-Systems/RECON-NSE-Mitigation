@@ -131,7 +131,7 @@ class Agent:
         self.plan = ""
         self.R = 0.0
 
-    def Generalize_Rblame(self):
+    def generalize_Rblame_linearReg(self):
         X = copy.deepcopy(self.blame_training_data_x)
         N = len(X)
         y = copy.deepcopy(self.blame_training_data_y)

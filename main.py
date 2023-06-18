@@ -21,8 +21,8 @@ rows = init_env.rows
 columns = init_env.columns
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
-M = 2
-num_of_agents = 2
+M = 3
+num_of_agents = 3
 
 # initialize the environment
 trash_repository = {'S': 1, 'L': 1}
@@ -134,11 +134,11 @@ for agent in Agents:
     for i in range(len(agent.blame_training_data_x)):
         print(str(agent.blame_training_data_x[i]) + ": " + str(agent.blame_training_data_y[i]))
 
-exit(0)
 for agent in Agents:
-    agent.Generalize_Rblame()
+    agent.generalize_Rblame_linearReg()
     agent.agent_reset()
 
+# exit(0)
 # getting R_blame rewards for each agent by re-simulating original policies
 NSE_blame_per_agent_before_mitigation = get_blame_reward_by_following_policy(Agents)
 print("\n--------Agent-wise NSE (before mitigation) --------\n", NSE_blame_per_agent_before_mitigation)
