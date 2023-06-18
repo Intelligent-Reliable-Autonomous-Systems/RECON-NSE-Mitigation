@@ -15,7 +15,7 @@ import copy
 import read_grid
 import numpy as np
 
-goal_deposit = (2, 1)
+goal_deposit = (1, 1)
 weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
 All_States, rows, columns = read_grid.grid_read_from_file()
 all_states = copy.copy(All_States)

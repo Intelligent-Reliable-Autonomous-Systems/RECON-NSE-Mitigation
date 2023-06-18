@@ -1,11 +1,13 @@
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import init_env
 
 rows = init_env.rows
 columns = init_env.columns
 V_arr = np.zeros((rows, columns))
+COLOR = mcolors.CSS4_COLORS
 
 
 def disp_colormap(V):
@@ -103,20 +105,30 @@ def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen):
     num_agents = len(R_after_mit)  # this could be obtained from length of any other parameter above as well
     index = np.arange(num_agents)
     bar_width = 0.5 / num_agents
+    color1 = COLOR['indianred']
+    color2 = COLOR['darkorange']
+    color3 = COLOR['seagreen']
 
     fig, ax = plt.subplots()
-    R_values = ax.bar(index, R_before_mit, bar_width, label="Before Mitigation")
-    R_values_with_blame = ax.bar(index + bar_width, R_after_mit, bar_width, label="After Mitigation")
-    R_values_with_blame_gen = ax.bar(index + 2 * bar_width, R_after_mit_gen, bar_width, label="After Gen Mitigation")
+    R_values = ax.bar(index, R_before_mit, bar_width, label="Before Mitigation", color=color1)
+    R_values_with_blame = ax.bar(index + bar_width, R_after_mit, bar_width, label="After Mitigation", color=color2)
+    R_values_with_blame_gen = ax.bar(index + 2 * bar_width, R_after_mit_gen, bar_width, label="After Gen Mitigation",
+                                     color=color3)
 
     ax.set_xlabel('Agents')
     ax.set_ylabel('R')
-    plt.ylim(0, 150)
-    ax.set_title('Rewards accumulated by each Agent across different modes')
+    plt.ylim([0, plt.ylim()[1] + 50])
+    ax.set_title('Reward accumulated by each agent \nacross different mitigation techniques')
     ax.set_xticks(index + bar_width)
     x_labels = []
     for i in range(num_agents):
-        x_labels.append("Agent " + str(i))
+        x_labels.append("Agent " + str(i + 1))
+
+    for bar in R_values_with_blame:
+        height = bar.get_height()
+        ax.annotate(f'{height}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom')
+
     ax.set_xticklabels(x_labels)
     ax.legend()
 
@@ -128,18 +140,37 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen):
     index = np.arange(num_agents)
     bar_width = 0.5 / num_agents
     fig, ax = plt.subplots()
-    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Before Mitigation")
-    NSE_values_with_blame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="After Mitigation")
+    fsize = 10
+    color1 = COLOR['indianred']
+    color2 = COLOR['darkorange']
+    color3 = COLOR['seagreen']
+    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Before Mitigation", color=color1)
+    NSE_values_with_blame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="After Mitigation", color=color2)
     NSE_values_with_blame_gen = ax.bar(index + 2 * bar_width, NSE_after_mit_gen, bar_width,
-                                       label="After Gen Mitigation")
+                                       label="After Gen Mitigation", color=color3)
 
     ax.set_xlabel('Agents')
     ax.set_ylabel('NSE')
     ax.set_title('NSE from each agent \nacross different mitigation techniques')
     ax.set_xticks(index + bar_width)
+    plt.ylim([0, plt.ylim()[1] + 5])
     x_labels = []
     for i in range(num_agents):
-        x_labels.append("Agent " + str(i))
+        x_labels.append("Agent " + str(i + 1))
+
+    for bar in NSE_values:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color1, fontsize=fsize)
+    for bar in NSE_values_with_blame:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color2, fontsize=fsize)
+    for bar in NSE_values_with_blame_gen:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color3, fontsize=fsize)
+
     ax.set_xticklabels(x_labels)
     ax.legend()
 

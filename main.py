@@ -21,8 +21,8 @@ rows = init_env.rows
 columns = init_env.columns
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
-M = 3
-num_of_agents = 3
+M = 2
+num_of_agents = 2
 
 # initialize the environment
 trash_repository = {'S': 1, 'L': 1}
@@ -138,43 +138,25 @@ for agent in Agents:
     agent.generalize_Rblame_linearReg()
     agent.agent_reset()
 
-# exit(0)
 # getting R_blame rewards for each agent by re-simulating original policies
 NSE_blame_per_agent_before_mitigation = get_blame_reward_by_following_policy(Agents)
 print("\n--------Agent-wise NSE (before mitigation) --------\n", NSE_blame_per_agent_before_mitigation)
-agent_labels_to_be_corrected = [NSE_blame_per_agent_before_mitigation.index(x) + 1 for x in
-                                sorted(NSE_blame_per_agent_before_mitigation, reverse=True)[:M]]
-print("\nAgents to be corrected: ", agent_labels_to_be_corrected)
-Agents_to_be_corrected = [Agents[int(i) - 1] for i in agent_labels_to_be_corrected]
+sorted_indices = sorted(range(len(NSE_blame_per_agent_before_mitigation)),
+                        key=lambda a: NSE_blame_per_agent_before_mitigation[a], reverse=True)
+top_values = [NSE_blame_per_agent_before_mitigation[i] for i in sorted_indices[:3]]
+top_offender_agents = [i + 1 for i, value in enumerate(NSE_blame_per_agent_before_mitigation) if value in top_values]
+print("\nAgents to be corrected: ", top_offender_agents)
+Agents_to_be_corrected = [Agents[i - 1] for i in top_offender_agents]
 
 for agent in Agents:
     agent.agent_reset()
 
 print("\n---- Now doing Lexicographic Value Iteration with R_blame for selected agents ----\n ")
-for agent in Agents_to_be_corrected:
-    agent = value_iteration.action_set_value_iteration(agent, Grid.S)
-    agent.V, agent.Pi = value_iteration.blame_value_iteration(agent, Grid.S, agent.R_blame)
-
-for agent in Agents:
-    agent.s = copy.deepcopy(agent.s0)
-    agent.follow_policy()
-
-print("Environment:")
-display_just_grid(Grid.All_States)
-for agent in Agents:
-    print("Corrected Plan for Agent " + agent.label + ":")
-    print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '
-    print("________________________________________________\n")
-
-for agent in Agents:
-    agent.agent_reset()
-
+value_iteration.LVI(Agents, Agents_to_be_corrected, mode='R_blame')
 path_joint_states = [get_joint_state(Agents)]
 path_joint_NSE_values = [Grid.give_joint_NSE_value(get_joint_state(Agents))]
 joint_NSE_states = []
 joint_NSE_values = []
-# print(Grid.R)
-
 
 while all_have_reached_goal(Agents) is False:
     Agents, joint_NSE = take_step(Grid, Agents)
@@ -215,24 +197,7 @@ for agent in Agents:
     agent.agent_reset()
 
 print("\n---- Now doing Lexicographic Value Iteration with R_blame_gen for selected agents ----\n ")
-for agent in Agents_to_be_corrected:
-    agent = value_iteration.action_set_value_iteration(agent, Grid.S)
-    agent.V, agent.Pi = value_iteration.blame_value_iteration(agent, Grid.S, agent.R_blame_gen)
-
-for agent in Agents:
-    agent.s = copy.deepcopy(agent.s0)
-    agent.follow_policy()
-
-print("Environment:")
-display_just_grid(Grid.All_States)
-for agent in Agents:
-    print("Corrected Plan for Agent " + agent.label + ":")
-    print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '
-    print("________________________________________________\n")
-
-for agent in Agents:
-    agent.agent_reset()
-
+value_iteration.LVI(Agents, Agents_to_be_corrected, mode='R_blame_gen')
 path_joint_states = [get_joint_state(Agents)]
 path_joint_NSE_values = [Grid.give_joint_NSE_value(get_joint_state(Agents))]
 joint_NSE_states = []

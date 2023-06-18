@@ -1,5 +1,8 @@
+import copy
+
 import calculation_lib
 import init_env
+from display_lib import display_just_grid
 from init_env import check_if_in
 import numpy as np
 
@@ -129,3 +132,32 @@ def action_set_value_iteration(agent, S):
         # print(str(s) + "--------------------> " + str(Q[s]) + " ==== optimal action set: " + str(action_set))
         agent.A[s] = action_set
     return agent
+
+
+def LVI(Agents, Agents_to_be_corrected, mode):
+    """
+    :param Agents: All agents
+    :param Agents_to_be_corrected: Indices of agents that have been selected to be corrected
+    :param mode: 'R_blame' or 'R_blame_gen'
+    :return:
+    """
+    for agent in Agents_to_be_corrected:
+        agent = action_set_value_iteration(agent, agent.Grid.S)
+        if mode == 'R_blame':
+            agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame)
+        elif mode == 'R_blame_gen':
+            agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_gen)
+
+    for agent in Agents:
+        agent.s = copy.deepcopy(agent.s0)
+        agent.follow_policy()
+
+    print("Environment:")
+    display_just_grid(Agents[0].Grid.All_States)
+    for agent in Agents:
+        print("Corrected Plan for Agent " + agent.label + ":")
+        print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '
+        print("________________________________________________\n")
+
+    for agent in Agents:
+        agent.agent_reset()
