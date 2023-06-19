@@ -82,18 +82,18 @@ print('______________________________________\nAgent Logs:')
 for agent in Agents:
     print("\nAgent " + agent.label + ":")
     display_agent_log(agent, 'before')
-print('______________________________________')
+# print('______________________________________')
 
 agentWise_cfs = []
 start_timer = timer()
 for js_nse in joint_NSE_states:
     agentWise_cfs, _ = generate_counterfactuals(js_nse, Agents)
-    print("\n==== in joint state === : " + str(js_nse) + ": " + str(Grid.give_joint_NSE_value(js_nse)))
+    # print("\n==== in joint state === : " + str(js_nse) + ": " + str(Grid.give_joint_NSE_value(js_nse)))
     for i in range(len(agentWise_cfs)):
-        print("CounterFactual states for Agent " + str(i + 1))
+        # print("CounterFactual states for Agent " + str(i + 1))
         for cf in agentWise_cfs[i]:
             cf_nse = Grid.give_joint_NSE_value(cf)
-            print(str(cf) + ": " + str(cf_nse))
+            # print(str(cf) + ": " + str(cf_nse))
 
 end_timer = timer()
 cf_generation_time = round((end_timer - start_timer) * 1000, 3)
@@ -101,16 +101,16 @@ print("-------------------------------------------------------")
 print("Time taken for generating counterfactuals: " + str(cf_generation_time) + " ms")
 print("-------------------------------------------------------")
 
-print("============== BLAME ASSIGNMENT ==============")
+# print("============== BLAME ASSIGNMENT ==============")
 blame = Blame(Agents, Grid)
 blame_distribution = {}  # dict to store blame distributions of joint states as an array [A1_blame, A2_blame,...]
 weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
 for js_nse in joint_NSE_states:
-    print("-------\nBlame distribution for " + str(js_nse) + " =")  # , end="")
+    # print("-------\nBlame distribution for " + str(js_nse) + " =")  # , end="")
     original_NSE = Grid.give_joint_NSE_value(js_nse)
     blame_values = blame.get_blame(original_NSE, js_nse)
     blame_distribution[js_nse] = np.around(blame_values, 2)
-    print("\t" + str(round(original_NSE, 2)) + " : " + str(np.around(blame_values, 2)))
+    # print("\t" + str(round(original_NSE, 2)) + " : " + str(np.around(blame_values, 2)))
 
 for js_nse in joint_NSE_states:
     for agent_idx in range(len(Agents)):
@@ -244,6 +244,6 @@ print("-------------------------------------------------------")
 ########### PLOTTING SECTION #############
 ##########################################
 
-plot_reward_bar_comparisons(R_old, R_new, R_new_gen)
+plot_reward_bar_comparisons(R_old, R_new, R_new_gen, Grid)
 plot_NSE_bar_comparisons(NSE_blame_per_agent_before_mitigation, NSE_blame_per_agent_after_R_blame,
-                         NSE_blame_per_agent_after_R_blame_gen)
+                         NSE_blame_per_agent_after_R_blame_gen, Grid)

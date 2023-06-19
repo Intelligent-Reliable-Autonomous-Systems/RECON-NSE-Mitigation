@@ -101,13 +101,16 @@ def display_agent_log(agent, flag='before'):
     #       agent.NSE)
 
 
-def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen):
+def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen, Grid):
     num_agents = len(R_after_mit)  # this could be obtained from length of any other parameter above as well
     index = np.arange(num_agents)
     bar_width = 0.5 / num_agents
     color1 = COLOR['indianred']
     color2 = COLOR['darkorange']
     color3 = COLOR['seagreen']
+
+    title_str = 'Reward accumulated by each agent across \ndifferent mitigation techniques for (' + str(
+        Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
 
     fig, ax = plt.subplots()
     R_values = ax.bar(index, R_before_mit, bar_width, label="Before Mitigation", color=color1)
@@ -118,7 +121,7 @@ def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen):
     ax.set_xlabel('Agents')
     ax.set_ylabel('R')
     plt.ylim([0, plt.ylim()[1] + 50])
-    ax.set_title('Reward accumulated by each agent \nacross different mitigation techniques')
+    ax.set_title(title_str)
     ax.set_xticks(index + bar_width)
     x_labels = []
     for i in range(num_agents):
@@ -135,7 +138,7 @@ def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen):
     plt.show()
 
 
-def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen):
+def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, Grid):
     num_agents = len(NSE_after_mit)  # this could be obtained from length of any other parameter above as well
     index = np.arange(num_agents)
     bar_width = 0.5 / num_agents
@@ -144,6 +147,10 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen):
     color1 = COLOR['indianred']
     color2 = COLOR['darkorange']
     color3 = COLOR['seagreen']
+
+    title_str = 'NSE from each agent across different \nmitigation techniques for (' + str(
+        Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
+
     NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Before Mitigation", color=color1)
     NSE_values_with_blame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="After Mitigation", color=color2)
     NSE_values_with_blame_gen = ax.bar(index + 2 * bar_width, NSE_after_mit_gen, bar_width,
@@ -151,7 +158,7 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen):
 
     ax.set_xlabel('Agents')
     ax.set_ylabel('NSE')
-    ax.set_title('NSE from each agent \nacross different mitigation techniques')
+    ax.set_title(title_str)
     ax.set_xticks(index + bar_width)
     plt.ylim([0, plt.ylim()[1] + 5])
     x_labels = []
