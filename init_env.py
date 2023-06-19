@@ -180,6 +180,11 @@ def get_blame_reward_by_following_policy(Agents):
             RR += agent.R_blame[agent.s]
             agent.s = do_action(agent, agent.s, Pi[agent.s])
         NSE_blame_dist.append(round(-RR, 2))
+
+    if not NSE_blame_dist:
+        for _ in range(len(Agents)):
+            NSE_blame_dist.append(0.0)
+
     return NSE_blame_dist
 
 

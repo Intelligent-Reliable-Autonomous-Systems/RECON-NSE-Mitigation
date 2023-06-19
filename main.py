@@ -12,10 +12,9 @@ from display_lib import plot_reward_bar_comparisons, plot_NSE_bar_comparisons
 from blame_assignment import generate_counterfactuals, get_joint_NSEs_for_list
 from calculation_lib import all_have_reached_goal
 import copy
-from heapq import nsmallest, nlargest
+import warnings
 
-# from blame_assigment import Blame
-# from remove_NSE import NSE_action_ban
+warnings.filterwarnings('ignore')
 
 rows = init_env.rows
 columns = init_env.columns
@@ -62,9 +61,8 @@ while all_have_reached_goal(Agents) is False:
     joint_state = get_joint_state(Agents)
     path_joint_states.append(joint_state)
     path_joint_NSE_values.append(joint_NSE)
-    if joint_NSE != 0:
-        joint_NSE_states.append(joint_state)
-        joint_NSE_values.append(joint_NSE)
+    joint_NSE_states.append(joint_state)
+    joint_NSE_values.append(joint_NSE)
 
 print('NSE Report:')
 for x in range(len(path_joint_states)):
@@ -126,13 +124,8 @@ blame.get_training_data(Agents, joint_NSE_states)
 # Loop for computing R_blame, printing it, and resetting all agents
 for agent in Agents:
     agent = Grid.add_goal_reward(agent)
-    print("--------------\nR_blame for Agent ", agent.label)
     agent.R = 0
     agent.s = copy.deepcopy(agent.s0)
-    # display_values(agent.R_blame)
-    print("Training data for Agent ", agent.label)
-    for i in range(len(agent.blame_training_data_x)):
-        print(str(agent.blame_training_data_x[i]) + ": " + str(agent.blame_training_data_y[i]))
 
 for agent in Agents:
     agent.generalize_Rblame_linearReg()
@@ -163,9 +156,8 @@ while all_have_reached_goal(Agents) is False:
     joint_state = get_joint_state(Agents)
     path_joint_states.append(joint_state)
     path_joint_NSE_values.append(joint_NSE)
-    if joint_NSE != 0:
-        joint_NSE_states.append(joint_state)
-        joint_NSE_values.append(joint_NSE)
+    joint_NSE_states.append(joint_state)
+    joint_NSE_values.append(joint_NSE)
 
 blame_distribution_stepwise = []
 start_timer_for_blame_without_gen = timer()
@@ -208,9 +200,8 @@ while all_have_reached_goal(Agents) is False:
     joint_state = get_joint_state(Agents)
     path_joint_states.append(joint_state)
     path_joint_NSE_values.append(joint_NSE)
-    if joint_NSE != 0:
-        joint_NSE_states.append(joint_state)
-        joint_NSE_values.append(joint_NSE)
+    joint_NSE_states.append(joint_state)
+    joint_NSE_values.append(joint_NSE)
 
 print('NSE Report (after R_blame_gen):')
 for x in range(len(path_joint_states)):
