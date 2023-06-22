@@ -3,9 +3,6 @@ import copy
 import calculation_lib
 import init_env
 from display_lib import display_just_grid
-from init_env import check_if_in
-import numpy as np
-
 
 def value_iteration(agent, S):
     """
@@ -17,7 +14,7 @@ def value_iteration(agent, S):
     V = {s: 0 for s in S}
     Residual = {s: 0 for s in S}
     PI = {s: ' ' for s in S}
-    s_goal = init_env.s_goal
+    s_goal = agent.s_goal
     Q = {}
     for s in S:
         # print(s)
@@ -59,7 +56,7 @@ def blame_value_iteration(agent, S, R_blame):
     V = {s: 0 for s in S}
     Residual = {s: 0 for s in S}
     PI = {s: ' ' for s in S}
-    s_goal = init_env.s_goal
+    s_goal = agent.s_goal
     Q = {}
     for s in S:
         # print(s)
@@ -99,7 +96,7 @@ def action_set_value_iteration(agent, S):
     V = {s: 0 for s in S}
     Residual = {s: 0 for s in S}
     PI = {s: ' ' for s in S}
-    s_goal = init_env.s_goal
+    s_goal = agent.s_goal
     Q = {}
     for s in S:
         Q[s] = {}

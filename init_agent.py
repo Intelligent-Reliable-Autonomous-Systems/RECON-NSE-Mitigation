@@ -4,8 +4,6 @@ from calculation_lib import do_action
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-s_goals = init_env.s_goals
-s_goal = init_env.s_goal
 weighting = init_env.weighting
 
 
@@ -21,6 +19,7 @@ class Agent:
         self.startLoc = start_loc
         self.best_performance_flag = False
         self.goal_states = Grid.goal_states
+        self.s_goal = Grid.s_goal
         self.Grid = Grid
         self.P = 1.0
         self.R = 0.0
@@ -44,6 +43,7 @@ class Agent:
         self.blame_training_data_x = []
         self.blame_training_data_y = []
         self.R_blame_gen = {}
+        self.model = []
         for s in Grid.S:
             self.A[s] = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']  # operation actions
             self.A2[s] = ['switch_compare']  # action for counterfactuals comparison
@@ -78,16 +78,16 @@ class Agent:
             if Grid.All_States[s[0]][s[1]] != 'G':
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
-            if s[4][0] >= s_goal[4][0]:
+            if s[4][0] >= self.s_goal[4][0]:
                 if 'pick_S' in self.A[s]:
                     self.A[s].remove('pick_S')
-            if s[4][1] >= s_goal[4][1]:
+            if s[4][1] >= self.s_goal[4][1]:
                 if 'pick_L' in self.A[s]:
                     self.A[s].remove('pick_L')
-            if s[2] == 'S' and s[4][0] >= s_goal[4][0]:
+            if s[2] == 'S' and s[4][0] >= self.s_goal[4][0]:
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
-            if s[2] == 'L' and s[4][1] >= s_goal[4][1]:
+            if s[2] == 'L' and s[4][1] >= self.s_goal[4][1]:
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
             if Grid.All_States[s[0]][s[1]] == 'j':
@@ -100,7 +100,7 @@ class Agent:
     def Reward(self, s, a):
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
         # state of an agent: <x,y,trash_box_size,coral_flag,list_of_boxes_at_goal>
-        if init_env.do_action(self, s, a) == s_goal:
+        if self.Grid.do_action(self, s, a) == self.s_goal:
             if a == 'drop':
                 R = 100
             else:
@@ -112,7 +112,7 @@ class Agent:
     def follow_policy(self):
         Pi = copy.copy(self.Pi)
 
-        while self.s != s_goal:
+        while self.s != self.s_goal:
             R = self.Reward(self.s, Pi[self.s])
             self.R += R
             self.trajectory.append((self.s, Pi[self.s], R))
@@ -138,10 +138,9 @@ class Agent:
         X, y = np.array(X).reshape((N, 4)), np.array(y).reshape((N, 1))
         model = LinearRegression()
         model.fit(X, y)
-        # print('--------------------------------------------\nWeights for Agent ' + self.label)
-        # print(model.coef_)
+        self.model = model
         for s in self.Grid.S:
             R_blame_prediction_for_s = float(model.predict(np.array([[weighting[s[2]], int(s[3]), s[4][0], s[4][1]]])))
             self.R_blame_gen[s] = round(R_blame_prediction_for_s, 1)
 
-        self.R_blame_gen[s_goal] = 100
+        self.R_blame_gen[self.s_goal] = 100

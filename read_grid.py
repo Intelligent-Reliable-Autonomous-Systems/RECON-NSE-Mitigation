@@ -2,8 +2,8 @@
 import numpy as np
 
 
-def grid_read_from_file():
-    my_file = open("grid.txt", "r+")
+def grid_read_from_file(filename):
+    my_file = open(filename, "r+")
     content = my_file.read()
     content = content.rstrip('\n')
     my_file.seek(0)

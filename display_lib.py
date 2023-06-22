@@ -4,21 +4,21 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import init_env
 
-rows = init_env.rows
-columns = init_env.columns
-V_arr = np.zeros((rows, columns))
+# rows = init_env.rows
+# columns = init_env.columns
+# V_arr = np.zeros((rows, columns))
 COLOR = mcolors.CSS4_COLORS
 
 
-def disp_colormap(V):
-    for s in V:
-        V_arr[s[0]][s[1]] = V[s]
-    # creating a colormap
-    colormap = sns.color_palette("Greens")
-
-    # creating a heatmap using the colormap
-    ax = sns.heatmap(V_arr, cmap=colormap)
-    plt.show()
+# def disp_colormap(V):
+#     for s in V:
+#         V_arr[s[0]][s[1]] = V[s]
+#     # creating a colormap
+#     colormap = sns.color_palette("Greens")
+#
+#     # creating a heatmap using the colormap
+#     ax = sns.heatmap(V_arr, cmap=colormap)
+#     plt.show()
 
 
 def display_grid_layout(Grid, Agents):
@@ -44,7 +44,7 @@ def display_grid_layout(Grid, Agents):
             else:
                 print('%8s' % str(Grid[i][j]), end=" ")
             print_counter += 1
-            if print_counter == columns:
+            if print_counter == Grid.columns:
                 print_counter = 0
                 print()
                 print()
@@ -60,28 +60,28 @@ def display_just_grid(Environment):
     print('\n')
 
 
-def display_values(V):
+def display_values(Grid, V):
     # print('\n  Grid Values:\n')
     print_counter = 0
     for s in V:
         # print('   ' + str(round(V[s])) + '   ', end=" ")
         print('%7s' % str(round(V[s], 1)), end=" ")
         print_counter += 1
-        if print_counter == columns:
+        if print_counter == Grid.columns:
             print_counter = 0
             print()
             print()
     print('\n')
 
 
-def display_policy(PI):
+def display_policy(Grid, PI):
     # print('\n  Policy :\n')
     print_counter = 0
     for a in PI:
         # print('   ' + str(PI[a]) + '   ', end=" ")
         print('%7s' % str(PI[a]), end=" ")
         print_counter += 1
-        if print_counter == columns:
+        if print_counter == Grid.columns:
             print_counter = 0
             print()
             print()
@@ -138,8 +138,55 @@ def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen, Grid
     plt.show()
 
 
-def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, Grid):
-    num_agents = len(NSE_after_mit)  # this could be obtained from length of any other parameter above as well
+def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, num_agents_tracker, Grid):
+    num_agents = len(NSE_before_mit)  # this could be obtained from length of any other parameter above as well
+    index = np.arange(num_agents)
+    bar_width = 0.5 / num_agents
+    fsize = 10
+    color1 = COLOR['indianred']
+    color2 = COLOR['darkorange']
+    color3 = COLOR['seagreen']
+
+    title_str = 'Total NSE accumulated across \ndifferent mitigation techniques for (' + str(
+        Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
+
+    fig, ax = plt.subplots()
+    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Before Mitigation", color=color1)
+    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="After Mitigation", color=color2)
+    NSE_values_with_Rblame_gen = ax.bar(index + 2 * bar_width, NSE_after_mit_gen, bar_width,
+                                        label="After Gen Mitigation",
+                                        color=color3)
+
+    ax.set_xlabel('Number of Agents')
+    ax.set_ylabel('NSE')
+    plt.ylim([0, plt.ylim()[1] + 50])
+    ax.set_title(title_str)
+    ax.set_xticks(index + bar_width)
+    x_labels = []
+    for i in num_agents_tracker:
+        x_labels.append(str(i) + " Agents ")
+
+    for bar in NSE_values:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color1, fontsize=fsize)
+    for bar in NSE_values_with_Rblame:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color2, fontsize=fsize)
+    for bar in NSE_values_with_Rblame_gen:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color3, fontsize=fsize)
+
+    ax.set_xticklabels(x_labels)
+    ax.legend()
+
+    plt.show()
+
+
+def plot_blame_bar_comparisons(blame_before_mit, blame_after_mit, blame_after_mit_gen, Grid):
+    num_agents = len(blame_after_mit)  # this could be obtained from length of any other parameter above as well
     index = np.arange(num_agents)
     bar_width = 0.5 / num_agents
     fig, ax = plt.subplots()
@@ -148,16 +195,17 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, G
     color2 = COLOR['darkorange']
     color3 = COLOR['seagreen']
 
-    title_str = 'NSE from each agent across different \nmitigation techniques for (' + str(
+    title_str = 'Agent-wise blame across different \nmitigation techniques for (' + str(
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
 
-    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Before Mitigation", color=color1)
-    NSE_values_with_blame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="After Mitigation", color=color2)
-    NSE_values_with_blame_gen = ax.bar(index + 2 * bar_width, NSE_after_mit_gen, bar_width,
-                                       label="After Gen Mitigation", color=color3)
+    Blame_values = ax.bar(index, blame_before_mit, bar_width, label="Before Mitigation", color=color1)
+    Blame_values_with_Rblame = ax.bar(index + bar_width, blame_after_mit, bar_width, label="After Mitigation",
+                                      color=color2)
+    Blame_values_with_Rblame_gen = ax.bar(index + 2 * bar_width, blame_after_mit_gen, bar_width,
+                                          label="After Gen Mitigation", color=color3)
 
     ax.set_xlabel('Agents')
-    ax.set_ylabel('NSE')
+    ax.set_ylabel('Blame')
     ax.set_title(title_str)
     ax.set_xticks(index + bar_width)
     plt.ylim([0, plt.ylim()[1] + 5])
@@ -165,15 +213,15 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, G
     for i in range(num_agents):
         x_labels.append("Agent " + str(i + 1))
 
-    for bar in NSE_values:
+    for bar in Blame_values:
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color1, fontsize=fsize)
-    for bar in NSE_values_with_blame:
+    for bar in Blame_values_with_Rblame:
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color2, fontsize=fsize)
-    for bar in NSE_values_with_blame_gen:
+    for bar in Blame_values_with_Rblame_gen:
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color3, fontsize=fsize)

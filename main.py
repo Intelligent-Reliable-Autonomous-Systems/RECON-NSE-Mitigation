@@ -1,32 +1,36 @@
+import copy
+import warnings
 import numpy as np
 from timeit import default_timer as timer
 from blame_assignment import Blame
-import init_env
-from init_env import Environment, take_step
-from init_env import get_joint_state, get_blame_reward_by_following_policy
+from init_env import Environment
+from init_env import get_joint_state
 from init_agent import Agent
 import value_iteration
-from display_lib import display_values, display_policy, display_grid_layout
 from display_lib import display_agent_log, display_just_grid
-from display_lib import plot_reward_bar_comparisons, plot_NSE_bar_comparisons
-from blame_assignment import generate_counterfactuals, get_joint_NSEs_for_list
+from display_lib import plot_reward_bar_comparisons, plot_blame_bar_comparisons
+from display_lib import plot_NSE_bar_comparisons
+from blame_assignment import generate_counterfactuals
 from calculation_lib import all_have_reached_goal
-import copy
-import warnings
+from display_lib import display_values, display_policy, display_grid_layout
 
 warnings.filterwarnings('ignore')
-
-rows = init_env.rows
-columns = init_env.columns
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
 M = 2
 num_of_agents = 2
+goal_deposit = (1, 1)
+
+# Tracking NSE values with grids
+NSE_old_tracker = []
+NSE_new_tracker = []
+NSE_new_gen_tracker = []
+num_of_agents_tracker = []
 
 # initialize the environment
 trash_repository = {'S': 1, 'L': 1}
 Complete_sim_start_timer = timer()
-Grid = Environment(trash_repository, num_of_agents)
+Grid = Environment(trash_repository, num_of_agents, goal_deposit, "grid.txt")
 # initialize agents
 Agents = []
 for label in range(num_of_agents):
@@ -51,13 +55,12 @@ for agent in Agents:
     agent.agent_reset()
 
 path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states
-path_joint_NSE_values = [
-    Grid.give_joint_NSE_value(get_joint_state(Agents))]  # Store the corresponding joint NSE
+path_joint_NSE_values = [Grid.give_joint_NSE_value(get_joint_state(Agents))]  # Store the corresponding joint NSE
 joint_NSE_states = []
 joint_NSE_values = []
 
 while all_have_reached_goal(Agents) is False:
-    Agents, joint_NSE = take_step(Grid, Agents)
+    Agents, joint_NSE = Grid.take_step(Grid, Agents)
     joint_state = get_joint_state(Agents)
     path_joint_states.append(joint_state)
     path_joint_NSE_values.append(joint_NSE)
@@ -132,7 +135,7 @@ for agent in Agents:
     agent.agent_reset()
 
 # getting R_blame rewards for each agent by re-simulating original policies
-NSE_blame_per_agent_before_mitigation = get_blame_reward_by_following_policy(Agents)
+NSE_blame_per_agent_before_mitigation = Grid.get_blame_reward_by_following_policy(Agents)
 print("\n--------Agent-wise NSE (before mitigation) --------\n", NSE_blame_per_agent_before_mitigation)
 sorted_indices = sorted(range(len(NSE_blame_per_agent_before_mitigation)),
                         key=lambda a: NSE_blame_per_agent_before_mitigation[a], reverse=True)
@@ -152,7 +155,7 @@ joint_NSE_states = []
 joint_NSE_values = []
 
 while all_have_reached_goal(Agents) is False:
-    Agents, joint_NSE = take_step(Grid, Agents)
+    Agents, joint_NSE = Grid.take_step(Grid, Agents)
     joint_state = get_joint_state(Agents)
     path_joint_states.append(joint_state)
     path_joint_NSE_values.append(joint_NSE)
@@ -196,7 +199,7 @@ joint_NSE_states = []
 joint_NSE_values = []
 
 while all_have_reached_goal(Agents) is False:
-    Agents, joint_NSE = take_step(Grid, Agents)
+    Agents, joint_NSE = Grid.take_step(Grid, Agents)
     joint_state = get_joint_state(Agents)
     path_joint_states.append(joint_state)
     path_joint_NSE_values.append(joint_NSE)
@@ -219,6 +222,7 @@ time_for_blame_with_gen = round((end_timer_for_blame_with_gen - start_timer_for_
 NSE_blame_per_agent_after_R_blame_gen = [sum(x) for x in zip(*blame_distribution_stepwise)]
 print("\n--------Agent-wise NSE (with R_blame_gen mitigation) --------\n", NSE_blame_per_agent_after_R_blame_gen)
 R_new_gen = []
+NSE_new_gen = 0
 if all_have_reached_goal(Agents):
     print("-----------------------------------")
     print("Total Reward (initial): ", R_old)
@@ -233,6 +237,11 @@ if all_have_reached_goal(Agents):
     print("Total NSE (after R_blame_gen): ", NSE_new_gen)
 print('-----------------------------------')
 
+NSE_old_tracker.append(NSE_old)
+NSE_new_tracker.append(NSE_new)
+NSE_new_gen_tracker.append(NSE_new_gen)
+num_of_agents_tracker.append(num_of_agents)
+
 Complete_sim_end_timer = timer()
 Complete_sim_time = round((Complete_sim_end_timer - Complete_sim_start_timer), 3)
 print("-------------------- TIME KEEPING ----------------------")
@@ -240,10 +249,13 @@ print("Complete Simulation: " + str(Complete_sim_time) + " sec")
 print("CF generation for Blame Assignment (without Generalization): " + str(time_for_blame_without_gen) + " ms")
 print("CF generation for Blame Assignment (with Generalization): " + str(time_for_blame_with_gen) + " ms")
 print("-------------------------------------------------------")
+
 ##########################################
 ########### PLOTTING SECTION #############
 ##########################################
 
 plot_reward_bar_comparisons(R_old, R_new, R_new_gen, Grid)
-plot_NSE_bar_comparisons(NSE_blame_per_agent_before_mitigation, NSE_blame_per_agent_after_R_blame,
-                         NSE_blame_per_agent_after_R_blame_gen, Grid)
+plot_blame_bar_comparisons(NSE_blame_per_agent_before_mitigation, NSE_blame_per_agent_after_R_blame,
+                           NSE_blame_per_agent_after_R_blame_gen, Grid)
+plot_NSE_bar_comparisons(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_tracker, num_of_agents_tracker, Grid)
+print(num_of_agents_tracker)
