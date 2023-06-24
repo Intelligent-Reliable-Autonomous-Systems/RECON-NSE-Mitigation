@@ -4,6 +4,7 @@ import calculation_lib
 import init_env
 from display_lib import display_just_grid
 
+
 def value_iteration(agent, S):
     """
     :param agent: object of the agent
@@ -149,7 +150,6 @@ def LVI(Agents, Agents_to_be_corrected, mode):
         agent.s = copy.deepcopy(agent.s0)
         agent.follow_policy()
 
-    print("Environment:")
     display_just_grid(Agents[0].Grid.All_States)
     for agent in Agents:
         print("Corrected Plan for Agent " + agent.label + ":")

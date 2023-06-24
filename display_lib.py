@@ -160,15 +160,22 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, n
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
 
     fig, ax = plt.subplots()
+
     NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Before Mitigation", color=color1)
     NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="After Mitigation", color=color2)
     NSE_values_with_Rblame_gen = ax.bar(index + 2 * bar_width, NSE_after_mit_gen, bar_width,
                                         label="After Gen Mitigation",
                                         color=color3)
-
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE')
     plt.ylim([0, plt.ylim()[1] + 50])
+    if min(NSE_after_mit_gen) == 0.0:
+        ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 15, 'Avoidable NSE', color='black', weight='bold',
+                bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
+    else:
+        ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 15, 'Unavoidable NSE', color='black', weight='bold',
+                bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
+
     ax.set_title(title_str)
     ax.set_xticks(index + bar_width)
     x_labels = []
@@ -189,7 +196,7 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, n
                     textcoords="offset points", ha='center', va='bottom', color=color3, fontsize=fsize)
 
     ax.set_xticklabels(x_labels)
-    ax.legend()
+    ax.legend(fontsize=fsize)
 
     plt.show()
 
