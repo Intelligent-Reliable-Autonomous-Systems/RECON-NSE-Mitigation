@@ -15,37 +15,48 @@ import copy
 import read_grid
 import numpy as np
 
-weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
+from calculation_lib import all_have_reached_goal
+from init_agent import Agent
+import value_iteration
 
 
 class Environment:
-    def __init__(self, trash_repository, num_of_agents, goal_deposit, grid_filename):
+    def __init__(self, num_of_agents, goal_deposit, grid_filename):
 
         All_States, rows, columns = read_grid.grid_read_from_file(grid_filename)
         self.all_states = copy.copy(All_States)
 
-        # Identifying all goal states G in the All_States grid (list of lists: [[gx_1,gy_1],[gx_2,gy_2]...])
         s_goals = np.argwhere(All_States == 'G')
         s_goal = s_goals[0]
         self.s_goal = (s_goal[0], s_goal[1], 'X', False, goal_deposit)
 
         self.num_of_agents = num_of_agents
-        list_of_junk_states = np.argwhere(All_States == 'J')  # this is a list of list [[jx_1,jy_1],[jx_2,jy_2]...]
         self.S, self.coral_flag = initialize_grid_params(All_States, rows, columns, goal_deposit)
         self.rows = rows
         self.columns = columns
         self.goal_states = s_goals  # this is a list of list [[gx_1,gy_1],[gx_2,gy_2]...]
         self.All_States = All_States
-        self.trash_repos = {}
-        for [i, j] in list_of_junk_states:
-            self.trash_repos[(i, j)] = trash_repository
         self.goal_modes = []
         i = 0
         for i in range(int(goal_deposit[0]) + 1):
             self.goal_modes.append((i, 0))
         for j in range(1, int(goal_deposit[1])):
             self.goal_modes.append((i, j))
-        # print('[from init_grid] Goal Modes: ', self.goal_modes)
+
+    def init_agents_with_initial_policy(self):
+        Agents = []
+        for label in range(self.num_of_agents):
+            Agents.append(Agent((0, 0), self, str(label + 1)))
+
+        # value iteration for all agents
+        for agent in Agents:
+            agent.V, agent.Pi = value_iteration.value_iteration(agent, self.S)
+
+        for agent in Agents:
+            agent.s = copy.deepcopy(agent.s0)
+            agent.follow_policy()
+
+        return Agents
 
     def give_joint_NSE_value(self, joint_state):
         # joint_NSE_val = basic_joint_NSE(joint_state)
@@ -140,8 +151,45 @@ class Environment:
 
         return NSE_blame_dist
 
-    # function to find 2d index of any item in the list
-    # here being used for finding Goal state
+
+def reset_Agents(Agents):
+    for agent in Agents:
+        agent.agent_reset()
+    return Agents
+
+
+def show_joint_states_and_NSE_values(Grid, Agents, report_name):
+    path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states
+    path_joint_NSE_values = [Grid.give_joint_NSE_value(get_joint_state(Agents))]  # Store the corresponding joint NSE
+    joint_NSE_states = []
+    joint_NSE_values = []
+
+    while all_have_reached_goal(Agents) is False:
+        Agents, joint_NSE = Grid.take_step(Grid, Agents)
+        joint_state = get_joint_state(Agents)
+        path_joint_states.append(joint_state)
+        path_joint_NSE_values.append(joint_NSE)
+        joint_NSE_states.append(joint_state)
+        joint_NSE_values.append(joint_NSE)
+
+    print(report_name)
+    for x in range(len(path_joint_states)):
+        print(str(path_joint_states[x]) + ': ' + str(path_joint_NSE_values[x]))
+
+    return joint_NSE_states, path_joint_NSE_values
+
+
+def get_total_R_and_NSE_from_path(Agents, path_joint_NSE_values):
+    R = 0  # Just for storage purposes
+    NSE = 0  # Just for storage purposes
+    if all_have_reached_goal(Agents):
+        print("\nAll Agents have reached the GOAL!!!")
+        R = [round(agent.R, 2) for agent in Agents]
+        NSE = round(float(np.sum(path_joint_NSE_values)), 2)
+        print("Total Reward: ", sum(R))
+        print("Total NSE: ", NSE)
+
+    return R, NSE
 
 
 def initialize_grid_params(All_States, rows, columns, goal_deposit):

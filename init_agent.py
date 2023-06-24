@@ -4,8 +4,6 @@ from calculation_lib import do_action
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-weighting = init_env.weighting
-
 
 class Agent:
     def __init__(self, start_loc, Grid, label):
@@ -96,7 +94,6 @@ class Agent:
             if Grid.All_States[s[0]][s[1]] == 'J':
                 if 'pick_S' in self.A[s]:
                     self.A[s].remove('pick_S')
-
     def Reward(self, s, a):
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
         # state of an agent: <x,y,trash_box_size,coral_flag,list_of_boxes_at_goal>
@@ -132,6 +129,7 @@ class Agent:
         self.R = 0.0
 
     def generalize_Rblame_linearReg(self):
+        weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
         X = copy.deepcopy(self.blame_training_data_x)
         N = len(X)
         y = copy.deepcopy(self.blame_training_data_y)

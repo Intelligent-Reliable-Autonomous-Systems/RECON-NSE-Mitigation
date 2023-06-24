@@ -52,6 +52,7 @@ def display_grid_layout(Grid, Agents):
 
 
 def display_just_grid(Environment):
+    print("Environment:")
     for i in range(len(Environment)):
         for j in range(len(Environment[0])):
             print('%8s' % str(Environment[i][j]), end=" ")
@@ -88,17 +89,25 @@ def display_policy(Grid, PI):
     print('\n')
 
 
-def display_agent_log(agent, flag='before'):
+def display_agent_log(agent):
     print("Path: ", agent.path)
-    if flag == 'before':
-        print("Reward accumulated by Agent " + str(agent.label) + " starting from " + str(agent.startLoc) + " is: ",
-              agent.R)
-    else:
-        print("Reward from R_Blame accumulated by Agent " + str(agent.label) + " starting from " + str(
-            agent.startLoc) + " is: ",
-              agent.R)
-    # print("\n NSE accumulated by Agent " + str(agent.label) + " starting from " + str(agent.startLoc) + " is: ",
-    #       agent.NSE)
+    print("Reward accumulated by Agent " + str(agent.label) + " starting from " + str(agent.startLoc) + " is: ",
+          agent.R)
+
+
+def display_all_agent_logs(Agents):
+    print('______________________________________\nAgent Logs:')
+    # displaying individual logs of agents -  path, Reward, actual NSE contribution
+    for agent in Agents:
+        print("\nAgent " + agent.label + ":")
+        display_agent_log(agent)
+
+
+def show_each_agent_plan(Agents):
+    for agent in Agents:
+        print("Plan for Agent " + agent.label + ":")
+        print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '
+        print("________________________________________________\n")
 
 
 def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen, Grid):

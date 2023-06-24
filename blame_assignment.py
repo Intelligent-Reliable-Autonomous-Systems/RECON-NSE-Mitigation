@@ -1,6 +1,6 @@
 import copy
 import numpy as np
-from init_env import log_joint_NSE, weighting
+from init_env import log_joint_NSE
 from itertools import permutations
 
 
@@ -96,6 +96,7 @@ class Blame:
         return NSE_blame
 
     def get_training_data(self, Agents, Joint_NSE_states):
+        weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
         joint_NSE_states = copy.deepcopy(Joint_NSE_states)
         for js in joint_NSE_states:
             _, all_cfs_for_this_js = generate_counterfactuals(js, self.Agents)
