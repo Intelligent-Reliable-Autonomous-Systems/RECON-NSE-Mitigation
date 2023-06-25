@@ -201,6 +201,65 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, n
     plt.show()
 
 
+def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_list, NSE_after_mit_gen_list):
+    index = np.arange(1)
+    bar_width = 0.5
+    fsize = 10
+    color1 = COLOR['indianred']
+    color2 = COLOR['darkorange']
+    color3 = COLOR['seagreen']
+
+    NSE_before_mean = [np.mean(NSE_before_mit_list)]
+    NSE_after_mean = [np.mean(NSE_after_mit_list)]
+    NSE_after_gen_mean = [np.mean(NSE_after_mit_gen_list)]
+
+    NSE_before_std = np.std(NSE_before_mit_list)
+    NSE_after_std = np.std(NSE_after_mit_list)
+    NSE_after_gen_std = np.std(NSE_after_mit_gen_list)
+
+    title_str = 'Average NSE accumulated across \ndifferent mitigation techniques in 5 similar environments'
+
+    fig, ax = plt.subplots()
+
+    NSE_values = ax.bar(index, NSE_before_mean, bar_width, label="Before Mitigation", color=color1, yerr=NSE_before_std,
+                        ecolor='black', capsize=10)
+    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mean, bar_width, label="After Mitigation",
+                                    color=color2, yerr=NSE_after_std, ecolor='black', capsize=10)
+    NSE_values_with_Rblame_gen = ax.bar(index + 2 * bar_width, NSE_after_gen_mean, bar_width,
+                                        label="After Gen Mitigation",
+                                        color=color3, yerr=NSE_after_gen_std, ecolor='black', capsize=10)
+    ax.set_xlabel('Number of Agents')
+    ax.set_ylabel('NSE')
+    plt.ylim([0, plt.ylim()[1] + 20])
+    if min(NSE_after_mit_gen_list) == 0.0:
+        ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 15, 'Avoidable NSE', color='black', weight='bold',
+                bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
+    else:
+        ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 12, '  Unavoidable NSE \nin all environments', color='black', weight='bold',
+                bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.7'))
+
+    ax.set_title(title_str)
+    ax.set_xticks(index + bar_width)
+    x_labels = ["2 Agents"]
+    for bar in NSE_values:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + 1.4 * bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color1, fontsize=fsize)
+    for bar in NSE_values_with_Rblame:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + 1.4 * bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color2, fontsize=fsize)
+    for bar in NSE_values_with_Rblame_gen:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + 1.4 * bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color3, fontsize=fsize)
+
+    ax.set_xticklabels(x_labels)
+    ax.legend(fontsize=fsize)
+
+    plt.show()
+
+
 def plot_blame_bar_comparisons(blame_before_mit, blame_after_mit, blame_after_mit_gen, Grid):
     num_agents = len(blame_after_mit)  # this could be obtained from length of any other parameter above as well
     index = np.arange(num_agents)

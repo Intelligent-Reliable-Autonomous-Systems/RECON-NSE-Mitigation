@@ -5,7 +5,7 @@ from blame_assignment import Blame
 from init_env import Environment, get_total_R_and_NSE_from_path
 from init_env import reset_Agents, show_joint_states_and_NSE_values
 import value_iteration
-from display_lib import display_just_grid
+from display_lib import display_just_grid, plot_NSE_bar_comparisons_with_std_mean
 from display_lib import plot_reward_bar_comparisons, plot_blame_bar_comparisons
 from display_lib import plot_NSE_bar_comparisons, show_each_agent_plan
 from calculation_lib import all_have_reached_goal
@@ -202,7 +202,8 @@ for i in [str(x) for x in range(1, 6)]:
     NSE_new_gen_tracker.append(NSE_new_gen)
     num_of_agents_tracker.append(num_of_agents)
 
-
 print("NSE_old_tracker: ", NSE_old_tracker)
 print("NSE_new_tracker: ", NSE_new_tracker)
 print("NSE_new_gen_tracker: ", NSE_new_gen_tracker)
+
+plot_NSE_bar_comparisons_with_std_mean(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_tracker)
