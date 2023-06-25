@@ -113,6 +113,21 @@ class Blame:
                 agent.blame_training_data_x.append([weighting[s[2]], int(s[3]), s[4][0], s[4][1]])
                 agent.blame_training_data_y.append(-blame_values[agent_idx])
 
+    def compute_R_Blame_for_all_Agents(self, Agents, joint_NSE_states):
+        blame_distribution = {}  # blame distributions of joint states [Agent1_blame, Agent2_blame,..]
+
+        for js_nse in joint_NSE_states:
+            original_NSE = self.Grid.give_joint_NSE_value(js_nse)
+            blame_values = self.get_blame(original_NSE, js_nse)
+            blame_distribution[js_nse] = np.around(blame_values, 2)
+
+        for js_nse in joint_NSE_states:
+            for agent in Agents:
+                blame_array_for_js = -blame_distribution[js_nse]
+                s = js_nse[agent.IDX]
+                agent.R_blame[s] = blame_array_for_js[agent.IDX]
+                self.Grid.add_goal_reward(agent)
+
 
 def generate_counterfactuals(joint_state, Agents):
     # permuting s[2] from state s: <x,y,junk_size,coral_flag,goal_trash> in joint state (s1,s2,s3...)

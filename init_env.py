@@ -158,7 +158,7 @@ def reset_Agents(Agents):
     return Agents
 
 
-def show_joint_states_and_NSE_values(Grid, Agents, report_name):
+def show_joint_states_and_NSE_values(Grid, Agents, report_name="No Print"):
     path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states
     path_joint_NSE_values = [Grid.give_joint_NSE_value(get_joint_state(Agents))]  # Store the corresponding joint NSE
     joint_NSE_states = []
@@ -172,9 +172,10 @@ def show_joint_states_and_NSE_values(Grid, Agents, report_name):
         joint_NSE_states.append(joint_state)
         joint_NSE_values.append(joint_NSE)
 
-    print(report_name)
-    for x in range(len(path_joint_states)):
-        print(str(path_joint_states[x]) + ': ' + str(path_joint_NSE_values[x]))
+    if report_name != "No Print":
+        print(report_name)
+        for x in range(len(path_joint_states)):
+            print(str(path_joint_states[x]) + ': ' + str(path_joint_NSE_values[x]))
 
     return joint_NSE_states, path_joint_NSE_values
 

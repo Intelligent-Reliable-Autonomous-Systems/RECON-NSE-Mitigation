@@ -41,23 +41,23 @@ class Agent:
         self.blame_training_data_x = []
         self.blame_training_data_y = []
         self.R_blame_gen = {}
-        self.model = []
+        self.model = LinearRegression()
         for s in Grid.S:
             self.A[s] = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']  # operation actions
             self.A2[s] = ['switch_compare']  # action for counterfactuals comparison
             self.R_blame[s] = 0.0
             self.R_blame_gen[s] = 0.0
-        for s in Grid.S:
+        for s in self.Grid.S:
             if s[0] == 0:
                 if 'U' in self.A[s]:
                     self.A[s].remove('U')
-            if s[0] == Grid.rows - 1:
+            if s[0] == self.Grid.rows - 1:
                 if 'D' in self.A[s]:
                     self.A[s].remove('D')
             if s[1] == 0:
                 if 'L' in self.A[s]:
                     self.A[s].remove('L')
-            if s[1] == Grid.columns - 1:
+            if s[1] == self.Grid.columns - 1:
                 if 'R' in self.A[s]:
                     self.A[s].remove('R')
             if s[2] != 'X':
@@ -68,12 +68,12 @@ class Agent:
             if s[2] == 'X':
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
-            if Grid.All_States[s[0]][s[1]] != 'J' and Grid.All_States[s[0]][s[1]] != 'j':
+            if self.Grid.All_States[s[0]][s[1]] != 'J' and Grid.All_States[s[0]][s[1]] != 'j':
                 if 'pick_S' in self.A[s]:
                     self.A[s].remove('pick_S')
                 if 'pick_L' in self.A[s]:
                     self.A[s].remove('pick_L')
-            if Grid.All_States[s[0]][s[1]] != 'G':
+            if self.Grid.All_States[s[0]][s[1]] != 'G':
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
             if s[4][0] >= self.s_goal[4][0]:
@@ -88,12 +88,13 @@ class Agent:
             if s[2] == 'L' and s[4][1] >= self.s_goal[4][1]:
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
-            if Grid.All_States[s[0]][s[1]] == 'j':
+            if self.Grid.All_States[s[0]][s[1]] == 'j':
                 if 'pick_L' in self.A[s]:
                     self.A[s].remove('pick_L')
-            if Grid.All_States[s[0]][s[1]] == 'J':
+            if self.Grid.All_States[s[0]][s[1]] == 'J':
                 if 'pick_S' in self.A[s]:
                     self.A[s].remove('pick_S')
+
     def Reward(self, s, a):
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
         # state of an agent: <x,y,trash_box_size,coral_flag,list_of_boxes_at_goal>
@@ -138,7 +139,9 @@ class Agent:
         model.fit(X, y)
         self.model = model
         for s in self.Grid.S:
-            R_blame_prediction_for_s = float(model.predict(np.array([[weighting[s[2]], int(s[3]), s[4][0], s[4][1]]])))
+            R_blame_prediction_for_s = float(self.model.predict(np.array([[weighting[s[2]], int(s[3]), s[4][0], s[4][1]]])))
             self.R_blame_gen[s] = round(R_blame_prediction_for_s, 1)
 
         self.R_blame_gen[self.s_goal] = 100
+
+

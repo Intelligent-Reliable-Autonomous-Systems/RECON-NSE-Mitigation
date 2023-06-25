@@ -12,7 +12,7 @@ def grid_read_from_file(filename):
     my_file.truncate()
     my_file.close()
 
-    file = open('grid.txt', 'r')
+    file = open(filename, 'r')
     rows = 1
     columns = 0
     count = 0
