@@ -110,33 +110,38 @@ def show_each_agent_plan(Agents):
         print("________________________________________________\n")
 
 
-def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen, Grid):
+def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen_wo_cf, R_after_mit_gen_w_cf, Grid):
     num_agents = len(R_after_mit)  # this could be obtained from length of any other parameter above as well
     index = np.arange(num_agents)
-    bar_width = 0.5 / num_agents
+    bar_width = 0.4 / num_agents
     fsize = 10
     color1 = COLOR['indianred']
     color2 = COLOR['darkorange']
-    color3 = COLOR['seagreen']
+    color3 = COLOR['limegreen']
+    color4 = COLOR['seagreen']
 
     title_str = 'Reward accumulated by each agent across \ndifferent mitigation techniques for (' + str(
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
 
-    # title_str = 'Reward accumulated by each agent across different mitigation techniques\n' + "(Using pseudo state blames)"
+    # title_str = 'Reward accumulated by each agent across different mitigation techniques\n' + "(Using pseudo state 
+    # blames)"
 
     fig, ax = plt.subplots()
     R_values = ax.bar(index, R_before_mit, bar_width, label="Initial Policy", color=color1)
-    R_values_with_blame = ax.bar(index + bar_width, R_after_mit, bar_width, label="LVI Mitigation",
+    R_values_with_blame = ax.bar(index + bar_width, R_after_mit, bar_width, label="LVI",
                                  color=color2)
-    R_values_with_blame_gen = ax.bar(index + 2 * bar_width, R_after_mit_gen, bar_width,
-                                     label="Generalized LVI Mitigation",
-                                     color=color3)
+    R_values_with_blame_gen_wo_cf = ax.bar(index + 2 * bar_width, R_after_mit_gen_wo_cf, bar_width,
+                                           label="Gen LVI without cf data",
+                                           color=color3)
+    R_values_with_blame_gen_w_cf = ax.bar(index + 3 * bar_width, R_after_mit_gen_w_cf, bar_width,
+                                          label="Gen LVI with cf data",
+                                          color=color4)
 
     ax.set_xlabel('Agents')
     ax.set_ylabel('R')
     plt.ylim([0, plt.ylim()[1] + 50])
     ax.set_title(title_str)
-    ax.set_xticks(index + bar_width)
+    ax.set_xticks(index + 1.5 * bar_width)
     x_labels = []
     for i in range(num_agents):
         x_labels.append("Agent " + str(i + 1))
@@ -153,10 +158,14 @@ def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen, Grid
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color2, fontsize=fsize)
-    for bar in R_values_with_blame_gen:
+    for bar in R_values_with_blame_gen_wo_cf:
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color3, fontsize=fsize)
+    for bar in R_values_with_blame_gen_w_cf:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color4, fontsize=fsize)
 
     ax.set_xticklabels(x_labels)
     ax.legend()
@@ -164,14 +173,16 @@ def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen, Grid
     plt.show()
 
 
-def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, num_agents_tracker, Grid):
+def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen_wo_cf, NSE_after_mit_gen_w_cf,
+                             num_agents_tracker, Grid):
     num_agents = len(NSE_before_mit)  # this could be obtained from length of any other parameter above as well
     index = np.arange(num_agents)
-    bar_width = 0.5 / num_agents
+    bar_width = 0.4 / num_agents
     fsize = 10
     color1 = COLOR['indianred']
     color2 = COLOR['darkorange']
-    color3 = COLOR['seagreen']
+    color3 = COLOR['limegreen']
+    color4 = COLOR['seagreen']
 
     title_str = 'Total NSE accumulated across \ndifferent mitigation techniques for (' + str(
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
@@ -181,15 +192,18 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, n
     fig, ax = plt.subplots()
 
     NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Initial Policy", color=color1)
-    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="LVI Mitigation",
+    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="LVI",
                                     color=color2)
-    NSE_values_with_Rblame_gen = ax.bar(index + 2 * bar_width, NSE_after_mit_gen, bar_width,
-                                        label="Generalized LVI Mitigation",
-                                        color=color3)
+    NSE_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf, bar_width,
+                                              label="Gen LVI without cf data",
+                                              color=color3)
+    NSE_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf, bar_width,
+                                             label="Gen LVI with cf data",
+                                             color=color4)
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE')
     plt.ylim([0, plt.ylim()[1] + 50])
-    if min(NSE_after_mit_gen) == 0.0:
+    if min(NSE_after_mit_gen_w_cf) == 0.0:
         ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 15, 'Avoidable NSE', color='black', weight='bold',
                 bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
     else:
@@ -197,7 +211,7 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, n
                 bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
 
     ax.set_title(title_str)
-    ax.set_xticks(index + bar_width)
+    ax.set_xticks(index + 1.5 * bar_width)
     x_labels = []
     for i in num_agents_tracker:
         x_labels.append(str(i) + " Agents ")
@@ -210,10 +224,14 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, n
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color2, fontsize=fsize)
-    for bar in NSE_values_with_Rblame_gen:
+    for bar in NSE_values_with_Rblame_gen_wo_cf:
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color3, fontsize=fsize)
+    for bar in NSE_values_with_Rblame_gen_w_cf:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color4, fontsize=fsize)
 
     ax.set_xticklabels(x_labels)
     ax.legend(fontsize=fsize)
@@ -221,21 +239,25 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen, n
     plt.show()
 
 
-def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_list, NSE_after_mit_gen_list):
+def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_list, NSE_after_mit_gen_wo_cf_list,
+                                           NSE_after_mit_gen_w_cf_list):
     index = np.arange(1)
-    bar_width = 0.5
+    bar_width = 0.4
     fsize = 10
     color1 = COLOR['indianred']
     color2 = COLOR['darkorange']
-    color3 = COLOR['seagreen']
+    color3 = COLOR['limegreen']
+    color4 = COLOR['seagreen']
 
     NSE_before_mean = [np.mean(NSE_before_mit_list)]
     NSE_after_mean = [np.mean(NSE_after_mit_list)]
-    NSE_after_gen_mean = [np.mean(NSE_after_mit_gen_list)]
+    NSE_after_gen_mean_wo_cf = [np.mean(NSE_after_mit_gen_wo_cf_list)]
+    NSE_after_gen_mean_w_cf = [np.mean(NSE_after_mit_gen_w_cf_list)]
 
     NSE_before_std = np.std(NSE_before_mit_list)
     NSE_after_std = np.std(NSE_after_mit_list)
-    NSE_after_gen_std = np.std(NSE_after_mit_gen_list)
+    NSE_after_gen_std_wo_cf = np.std(NSE_after_mit_gen_wo_cf_list)
+    NSE_after_gen_std_w_cf = np.std(NSE_after_mit_gen_w_cf_list)
 
     title_str = 'Average NSE accumulated across \ndifferent mitigation techniques in 5 similar environments'
     # title_str = 'Average NSE accumulated across 5 similar environments\n' + "(Using pseudo state blames)"
@@ -246,13 +268,16 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
                         ecolor='black', capsize=10)
     NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mean, bar_width, label="LVI Mitigation",
                                     color=color2, yerr=NSE_after_std, ecolor='black', capsize=10)
-    NSE_values_with_Rblame_gen = ax.bar(index + 2 * bar_width, NSE_after_gen_mean, bar_width,
-                                        label="Generalized LVI Mitigation",
-                                        color=color3, yerr=NSE_after_gen_std, ecolor='black', capsize=10)
+    NSE_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, NSE_after_gen_mean_wo_cf, bar_width,
+                                              label="Gen LVI without cf data",
+                                              color=color3, yerr=NSE_after_gen_std_wo_cf, ecolor='black', capsize=10)
+    NSE_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, NSE_after_gen_mean_w_cf, bar_width,
+                                             label="Gen LVI with cf data",
+                                             color=color4, yerr=NSE_after_gen_std_w_cf, ecolor='black', capsize=10)
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE')
     plt.ylim([0, plt.ylim()[1] + 20])
-    if min(NSE_after_mit_gen_list) == 0.0:
+    if min(NSE_after_mit_gen_w_cf_list) == 0.0:
         ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 15, 'Avoidable NSE', color='black', weight='bold',
                 bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
     else:
@@ -261,7 +286,7 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
                 bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.7'))
 
     ax.set_title(title_str)
-    ax.set_xticks(index + bar_width)
+    ax.set_xticks(index + 1.5 * bar_width)
     x_labels = ["2 Agents"]
     for bar in NSE_values:
         height = bar.get_height()
@@ -271,10 +296,14 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + 1.4 * bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color2, fontsize=fsize)
-    for bar in NSE_values_with_Rblame_gen:
+    for bar in NSE_values_with_Rblame_gen_wo_cf:
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + 1.4 * bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color3, fontsize=fsize)
+    for bar in NSE_values_with_Rblame_gen_w_cf:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + 1.4 * bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color4, fontsize=fsize)
 
     ax.set_xticklabels(x_labels)
     ax.legend(fontsize=fsize)
@@ -282,30 +311,33 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
     plt.show()
 
 
-def plot_blame_bar_comparisons(blame_before_mit, blame_after_mit, blame_after_mit_gen, Grid):
+def plot_blame_bar_comparisons(blame_before_mit, blame_after_mit, blame_after_mit_gen_wo_cf, blame_after_mit_gen_w_cf,
+                               Grid):
     num_agents = len(blame_after_mit)  # this could be obtained from length of any other parameter above as well
     index = np.arange(num_agents)
-    bar_width = 0.5 / num_agents
+    bar_width = 0.4 / num_agents
     fig, ax = plt.subplots()
     fsize = 10
     color1 = COLOR['indianred']
     color2 = COLOR['darkorange']
-    color3 = COLOR['seagreen']
+    color3 = COLOR['limegreen']
+    color4 = COLOR['seagreen']
 
     title_str = 'Agent-wise blame across different \nmitigation techniques for (' + str(
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
     # title_str = 'Agent-wise blame across different mitigation techniques\n' + "(Using pseudo state blames)"
 
     Blame_values = ax.bar(index, blame_before_mit, bar_width, label="Initial Policy", color=color1)
-    Blame_values_with_Rblame = ax.bar(index + bar_width, blame_after_mit, bar_width, label="LVI Mitigation",
+    Blame_values_with_Rblame = ax.bar(index + bar_width, blame_after_mit, bar_width, label="LVI ",
                                       color=color2)
-    Blame_values_with_Rblame_gen = ax.bar(index + 2 * bar_width, blame_after_mit_gen, bar_width,
-                                          label="Generalized LVI Mitigation", color=color3)
-
+    Blame_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, blame_after_mit_gen_wo_cf, bar_width,
+                                                label="Gen LVI without cf data", color=color3)
+    Blame_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, blame_after_mit_gen_w_cf, bar_width,
+                                               label="Gen LVI with cf data", color=color4)
     ax.set_xlabel('Agents')
     ax.set_ylabel('Blame')
     ax.set_title(title_str)
-    ax.set_xticks(index + bar_width)
+    ax.set_xticks(index + 1.5 * bar_width)
     plt.ylim([0, plt.ylim()[1] + 50])
     x_labels = []
     for i in range(num_agents):
@@ -319,10 +351,14 @@ def plot_blame_bar_comparisons(blame_before_mit, blame_after_mit, blame_after_mi
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color2, fontsize=fsize)
-    for bar in Blame_values_with_Rblame_gen:
+    for bar in Blame_values_with_Rblame_gen_wo_cf:
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color3, fontsize=fsize)
+    for bar in Blame_values_with_Rblame_gen_w_cf:
+        height = bar.get_height()
+        ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
+                    textcoords="offset points", ha='center', va='bottom', color=color4, fontsize=fsize)
 
     ax.set_xticklabels(x_labels)
     ax.legend()

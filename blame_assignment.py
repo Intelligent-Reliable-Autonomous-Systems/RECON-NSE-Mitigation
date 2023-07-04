@@ -96,7 +96,7 @@ class Blame:
         print("Blame for " + str(joint_NSE_state) + ": " + str(original_NSE) + " = " + str(NSE_blame))
         return NSE_blame
 
-    def get_training_data(self, Agents, Joint_NSE_states):
+    def get_training_data_with_cf(self, Agents, Joint_NSE_states):
         weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
         joint_NSE_states = copy.deepcopy(Joint_NSE_states)
         for js in joint_NSE_states:
@@ -111,8 +111,23 @@ class Blame:
             for agent in Agents:
                 agent_idx = agent.IDX
                 s = js[agent_idx]
-                agent.blame_training_data_x.append([weighting[s[2]], int(s[3]), s[4][0], s[4][1]])
-                agent.blame_training_data_y.append(-blame_values[agent_idx])
+                agent.blame_training_data_x_with_cf.append([weighting[s[2]], int(s[3]), s[4][0], s[4][1]])
+                agent.blame_training_data_y_with_cf.append(-blame_values[agent_idx])
+        print("[blame_assgn.py (line 116)] Len(X_with_cf)", len(Agents[0].blame_training_data_x_with_cf))
+
+    def get_training_data_wo_cf(self, Agents, Joint_NSE_states):
+        weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
+        joint_NSE_states = copy.deepcopy(Joint_NSE_states)
+        for js in joint_NSE_states:
+            original_NSE = self.Grid.give_joint_NSE_value(js)
+            blame_values = self.get_blame(original_NSE, js)
+            blame_values = np.around(blame_values, 2)
+            for agent in Agents:
+                agent_idx = agent.IDX
+                s = js[agent_idx]
+                agent.blame_training_data_x_wo_cf.append([weighting[s[2]], int(s[3]), s[4][0], s[4][1]])
+                agent.blame_training_data_y_wo_cf.append(-blame_values[agent_idx])
+        print("[blame_assgn.py (line 130)] Len(X_wo_cf)", len(Agents[0].blame_training_data_x_wo_cf))
 
     def compute_R_Blame_for_all_Agents(self, Agents, joint_NSE_states):
         blame_distribution = {}  # blame distributions of joint states [Agent1_blame, Agent2_blame,..]
