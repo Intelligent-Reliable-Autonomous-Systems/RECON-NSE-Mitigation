@@ -12,9 +12,11 @@ Factored State Representation ->  < x , y , box_with_me , coral_flag , box_at_go
 ===============================================================================
 """
 import copy
+
+import calculation_lib
 import read_grid
 import numpy as np
-
+import random
 from calculation_lib import all_have_reached_goal
 from init_agent import Agent
 import value_iteration
@@ -26,6 +28,7 @@ class Environment:
         All_States, rows, columns = read_grid.grid_read_from_file(grid_filename)
         self.all_states = copy.copy(All_States)
 
+        self.p_success = 1
         s_goals = np.argwhere(All_States == 'G')
         s_goal = s_goals[0]
         self.s_goal = (s_goal[0], s_goal[1], 'X', False, goal_deposit)
@@ -40,7 +43,7 @@ class Environment:
         i = 0
         for i in range(int(goal_deposit[0]) + 1):
             self.goal_modes.append((i, 0))
-        for j in range(1, int(goal_deposit[1])):
+        for j in range(1, int(goal_deposit[1]+1)):
             self.goal_modes.append((i, j))
 
     def init_agents_with_initial_policy(self):
@@ -52,6 +55,7 @@ class Environment:
         for agent in Agents:
             agent.V, agent.Pi = value_iteration.value_iteration(agent, self.S)
 
+        print("[init_env.py] Initial policy for both agents has been computed!!!")
         for agent in Agents:
             agent.s = copy.deepcopy(agent.s0)
             agent.follow_policy()
@@ -77,45 +81,6 @@ class Environment:
         NSE_worst = round(NSE_worst, 2)
         return NSE_worst
 
-    def move(self, s, a):
-        if a == 'U':
-            return s[0] - 1, s[1], s[2], self.all_states[s[0] - 1][s[1]] == 'C', s[4]
-        if a == 'D':
-            return s[0] + 1, s[1], s[2], self.all_states[s[0] + 1][s[1]] == 'C', s[4]
-        if a == 'L':
-            return s[0], s[1] - 1, s[2], self.all_states[s[0]][s[1] - 1] == 'C', s[4]
-        if a == 'R':
-            return s[0], s[1] + 1, s[2], self.all_states[s[0]][s[1] + 1] == 'C', s[4]
-        if a == 'G':
-            return s
-
-    def do_action(self, agent, s, a):
-        # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
-        s = list(s)
-        if a == 'pick_S':
-            s[2] = 'S'
-        elif a == 'pick_L':
-            s[2] = 'L'
-        elif a == 'drop':
-            size_index_map = {'S': 0, 'L': 1}
-            index = agent.goal_modes.index(s[4])
-            # print('[init_env] Agent ' + agent.label + '\'s goal mode was ' + str(s[4]))
-            s[4] = list(s[4])
-            if (index + agent.num_of_agents) < len(agent.goal_modes):
-                s[4] = agent.goal_modes[index + agent.num_of_agents]
-            else:
-                s[4] = list(agent.s_goal[4])
-            s[4] = tuple(s[4])
-            s[2] = 'X'
-            # print('[init_env] Agent ' + agent.label + '\'s goal mode now is ' + str(s[4]))
-
-        elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
-            s = self.move(s, a)
-        else:
-            print("INVALID ACTION (from calc_lib): ", a)
-        s = tuple(s)
-        return s
-
     def take_step(self, Grid, Agents):
         NSE_val = 0
         for agent in Agents:
@@ -127,7 +92,7 @@ class Environment:
 
             # state of an agent: <x,y,trash_box_size,coral_flag,boxes_at_goal>
             agent.R += agent.Reward(agent.s, Pi[agent.s])
-            agent.s = self.do_action(agent, agent.s, Pi[agent.s])
+            agent.s = calculation_lib.do_action(agent, agent.s, Pi[agent.s])
             # print("\n==== After movement Agent "+agent.label+"'s state: ", agent.s)
             agent.path = agent.path + " -> " + str(agent.s)
         joint_state = get_joint_state(Agents)
@@ -142,7 +107,7 @@ class Environment:
             Pi = copy.copy(agent.Pi)
             while agent.s != agent.s_goal:
                 RR += agent.R_blame[agent.s]
-                agent.s = self.do_action(agent, agent.s, Pi[agent.s])
+                agent.s = calculation_lib.do_action(agent, agent.s, Pi[agent.s])
             NSE_blame_dist.append(round(-RR, 2))
 
         if not NSE_blame_dist:

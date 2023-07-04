@@ -17,21 +17,25 @@ def value_iteration(agent, S):
     PI = {s: ' ' for s in S}
     s_goal = agent.s_goal
     Q = {}
+    iterations = 0
     for s in S:
-        # print(s)
         Q[s] = {}
     for s in S:
         for a in agent.A[s]:
             Q[s][a] = 0.0
     while True:
+        iterations += 1
         oldV = V.copy()
         for s in S:
+            # print(" -> ", s)
             for a in agent.A[s]:
-                if s == s_goal:
-                    V[s] = agent.Reward(s, a)
-                    PI[s] = a
-                    continue
+                # if s == s_goal:
+                #     print(" --------------------> ", s)
+                #     V[s] = agent.Reward(s, a)
+                #     PI[s] = a
+                #     continue
                 QQ = 0
+                # print(" -----> ", s)
                 T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
@@ -41,7 +45,8 @@ def value_iteration(agent, S):
             act = max(Q[s], key=Q[s].get)  # Storing the Action corresponding to max Q_value
             PI[s] = act
 
-        if max(Residual[s] for s in S) < 0.001:
+        if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
+            print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
     return V, PI
 
@@ -59,6 +64,7 @@ def blame_value_iteration(agent, S, R_blame):
     PI = {s: ' ' for s in S}
     s_goal = agent.s_goal
     Q = {}
+    iterations = 0
     for s in S:
         # print(s)
         Q[s] = {}
@@ -66,13 +72,14 @@ def blame_value_iteration(agent, S, R_blame):
         for a in agent.A[s]:
             Q[s][a] = 0.0
     while True:
+        iterations += 1
         oldV = V.copy()
         for s in S:
             for a in agent.A[s]:
-                if s == s_goal:
-                    V[s] = R_blame[s]
-                    PI[s] = a
-                    continue
+                # if s == s_goal:
+                #     V[s] = R_blame[s]
+                #     PI[s] = a
+                #     continue
                 QQ = 0
                 T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
@@ -83,7 +90,8 @@ def blame_value_iteration(agent, S, R_blame):
             act = max(Q[s], key=Q[s].get)  # Storing the Action corresponding to max Q_value
             PI[s] = act
 
-        if max(Residual[s] for s in S) < 0.001:
+        if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
+            print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
     return V, PI
 
@@ -99,19 +107,21 @@ def action_set_value_iteration(agent, S):
     PI = {s: ' ' for s in S}
     s_goal = agent.s_goal
     Q = {}
+    iterations = 0
     for s in S:
         Q[s] = {}
     for s in S:
         for a in agent.A[s]:
             Q[s][a] = 0.0
     while True:
+        iterations += 1
         oldV = V.copy()
         for s in S:
             for a in agent.A[s]:
-                if s == s_goal:
-                    V[s] = agent.Reward(s, a)
-                    PI[s] = a
-                    continue
+                # if s == s_goal:
+                #     V[s] = agent.Reward(s, a)
+                #     PI[s] = a
+                #     continue
                 # print("============= A[" + str(s) + "]: " + str(agent.A[s]))
                 QQ = 0
                 T = calculation_lib.get_transition_prob(agent, s, a)
@@ -123,7 +133,8 @@ def action_set_value_iteration(agent, S):
             act = max(Q[s], key=Q[s].get)  # Storing the Action corresponding to max Q_value
             PI[s] = act
 
-        if max(Residual[s] for s in S) < 0.001:
+        if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
+            print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
     for s in S:
         action_set = [k for k, v in Q[s].items() if round(v, 2) == round(V[s], 2)]

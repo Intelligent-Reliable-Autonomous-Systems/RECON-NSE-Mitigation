@@ -1,6 +1,7 @@
 import warnings
 import numpy as np
 from timeit import default_timer as timer
+import random
 from blame_assignment import Blame
 from init_env import Environment, get_total_R_and_NSE_from_path
 from init_env import reset_Agents, show_joint_states_and_NSE_values
@@ -8,6 +9,7 @@ import value_iteration
 from display_lib import display_just_grid, plot_NSE_bar_comparisons_with_std_mean
 from display_lib import plot_reward_bar_comparisons, plot_blame_bar_comparisons
 from display_lib import plot_NSE_bar_comparisons, show_each_agent_plan
+
 from calculation_lib import all_have_reached_goal
 
 warnings.filterwarnings('ignore')
@@ -31,8 +33,10 @@ Grid = Environment(num_of_agents, goal_deposit, "grids/train_grid.txt")
 Agents = Grid.init_agents_with_initial_policy()
 
 # displaying grid for visual
-display_just_grid(Grid.All_States)
+# display_just_grid(Grid.All_States)
 show_each_agent_plan(Agents)
+print("Agent 1: \n", Agents[0].path)
+print("Agent 2: \n", Agents[1].path)
 Agents = reset_Agents(Agents)
 
 joint_NSE_states, path_joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents, 'NSE Report:')
@@ -134,6 +138,7 @@ plot_blame_bar_comparisons(NSE_blame_per_agent_before_mitigation, NSE_blame_per_
 plot_NSE_bar_comparisons(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_tracker, num_of_agents_tracker, Grid)
 print("Num of agents array = ", num_of_agents_tracker)
 
+exit(0)
 ##########################################
 #            TESTING SECTION             #
 ##########################################

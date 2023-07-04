@@ -93,6 +93,7 @@ class Blame:
         # else:
         # print("Agent " + agent.label + " did NOT do it's best!")
         # print("[blame_assignment.py (line 93)] NSE_blame = ", NSE_blame)
+        print("Blame for " + str(joint_NSE_state) + ": " + str(original_NSE) + " = " + str(NSE_blame))
         return NSE_blame
 
     def get_training_data(self, Agents, Joint_NSE_states):

@@ -1,3 +1,6 @@
+import copy
+import random
+
 import init_env
 import numpy as np
 
@@ -8,41 +11,73 @@ import numpy as np
 
 def get_transition_prob(agent, s, a):
     # actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
-    p_success = 1.0
-    p_fail = 0.0
+    p_success = copy.copy(agent.p_success)
+    p_fail = 1 - p_success
+    action = {0: 'U', 1: 'R', 2: 'D', 3: 'L'}
+    action_key = {'U': 0, 'R': 1, 'D': 2, 'L': 3}
+    # print("[calc_lib.py] Agent" + agent.label + "'s cleaning mode:     : ", s[4])
+    # print("[calc_lib.py] agent.s_goal     : ", agent.s_goal)
+    # print("[calc_lib.py] agent.s          : ", s)
+    # print("[calc_lib.py] s == agent.s_goal: ", s == agent.s_goal)
+    # print("[calc_lib.py] goal_modes: ", agent.goal_modes)
+    # print("")
+    T = {}
     if s == agent.s_goal:
+        # print("[calc_lib.py] Here at the goal!!")
         T = {s: 1}  # stay at the goal with prob = 1
+    elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
+        # for i in [-1, 0, 1]:
+        #     if move_correctly(agent.Grid, s, action[(action_key[a] + i) % 4]) in T:
+        #         if i == 0:
+        #             T[move_correctly(agent.Grid, s, action[(action_key[a] + i) % 4])] = p_success
+        #         else:
+        #             T[move_correctly(agent.Grid, s, action[(action_key[a] + i) % 4])] = p_fail
+
+        T = {move_correctly(agent.Grid, s, a):  p_success,
+             move_correctly(agent.Grid, s, action[(action_key[a] - 1) % 4]): p_fail/2,
+             move_correctly(agent.Grid, s, action[(action_key[a] - 1) % 4]): p_fail/2}
     else:
-        T = {s: p_fail, do_action(agent, s, a): p_success}  # (same: 0.2, next: 0.8)
+        T = {do_action(agent, s, a): 1}  # (same: 0.2, next: 0.8)
     return T
 
 
-def get_neighbours(agent, s, a):
-    if s == agent.s_goal:
-        return [s]
-    else:
-        return [s, do_action(agent, s, a)]
-
-
-def get_All_neighbours(agent, s):
-    Neighbours = []
-    for a in agent.A[s]:
-        Neighbours.append(do_action(agent, s, a))
-    return Neighbours
-
-
 def move(Grid, s, a):
+    action = {0: 'U', 1: 'R', 2: 'D', 3: 'L'}
+    action_key = {'U': 0, 'R': 1, 'D': 2, 'L': 3}
+    p = random.uniform(0, 1)
+    if p < 1:
+        act = a
+    else:
+        act = random.choice([action[(action_key[a] - 1) % 4], action[(action_key[a] + 1) % 4]])
+    return move_correctly(Grid, s, act)
+
+
+def move_correctly(Grid, s, a):
     # note that movement cannot change s[4] (boxes_list_at_goal) so we reuse it from pre-move state itself
+    p = random.uniform(0, 1)
+    # action = {'U': 0, 'R': 1, 'D': 2, 'L': 3}
+    s_next = 0
     if a == 'U':
-        return s[0] - 1, s[1], s[2], Grid.all_states[s[0] - 1][s[1]] == 'C', s[4]
-    if a == 'D':
-        return s[0] + 1, s[1], s[2], Grid.all_states[s[0] + 1][s[1]] == 'C', s[4]
-    if a == 'L':
-        return s[0], s[1] - 1, s[2], Grid.all_states[s[0]][s[1] - 1] == 'C', s[4]
-    if a == 'R':
-        return s[0], s[1] + 1, s[2], Grid.all_states[s[0]][s[1] + 1] == 'C', s[4]
-    if a == 'G':
-        return s
+        if s[0] == 0:
+            s_next = s
+        else:
+            s_next = (s[0] - 1, s[1], s[2], Grid.all_states[s[0] - 1][s[1]] == 'C', s[4])
+    elif a == 'D':
+        if s[0] == Grid.rows - 1:
+            s_next = s
+        else:
+            s_next = (s[0] + 1, s[1], s[2], Grid.all_states[s[0] + 1][s[1]] == 'C', s[4])
+    elif a == 'L':
+        if s[1] == 0:
+            s_next = s
+        else:
+            s_next = (s[0], s[1] - 1, s[2], Grid.all_states[s[0]][s[1] - 1] == 'C', s[4])
+    elif a == 'R':
+        if s[1] == Grid.columns - 1:
+            s_next = s
+        else:
+            s_next = (s[0], s[1] + 1, s[2], Grid.all_states[s[0]][s[1] + 1] == 'C', s[4])
+    return s_next
 
 
 def do_action(agent, s, a):
