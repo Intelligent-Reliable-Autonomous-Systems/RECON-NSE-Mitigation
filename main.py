@@ -250,6 +250,14 @@ for i in [str(x) for x in range(1, 6)]:
     NSE_new_gen_with_cf_tracker.append(NSE_new_gen_with_cf)
     num_of_agents_tracker.append(num_of_agents)
 
+
+Complete_sim_end_timer = timer()
+Complete_sim_time = round((Complete_sim_end_timer - Complete_sim_start_timer), 3)
+print("-------------------- TIME KEEPING ----------------------")
+print("Complete Simulation: " + str(Complete_sim_time) + " sec")
+print("CF generation for Blame Assignment: " + str(time_for_blame_without_gen) + " ms")
+print("-------------------------------------------------------")
+
 print("NSE_old_tracker: ", NSE_old_tracker)
 print("NSE_new_tracker: ", NSE_new_tracker)
 print("NSE_new_gen_wo_cf_tracker: ", NSE_new_gen_wo_cf_tracker)

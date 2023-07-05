@@ -55,7 +55,7 @@ class Environment:
         for agent in Agents:
             agent.V, agent.Pi = value_iteration.value_iteration(agent, self.S)
 
-        print("[init_env.py] Initial policy for both agents has been computed!!!")
+        # print("[init_env.py] Initial policy for both agents has been computed!!!")
         for agent in Agents:
             agent.s = copy.deepcopy(agent.s0)
             agent.follow_policy()

@@ -1,13 +1,7 @@
 import copy
 import random
-
-import init_env
 import numpy as np
 
-
-# rows = init_env.rows
-# columns = init_env.columns
-# all_states = init_env.All_States
 
 def get_transition_prob(agent, s, a):
     # actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
@@ -15,27 +9,13 @@ def get_transition_prob(agent, s, a):
     p_fail = 1 - p_success
     action = {0: 'U', 1: 'R', 2: 'D', 3: 'L'}
     action_key = {'U': 0, 'R': 1, 'D': 2, 'L': 3}
-    # print("[calc_lib.py] Agent" + agent.label + "'s cleaning mode:     : ", s[4])
-    # print("[calc_lib.py] agent.s_goal     : ", agent.s_goal)
-    # print("[calc_lib.py] agent.s          : ", s)
-    # print("[calc_lib.py] s == agent.s_goal: ", s == agent.s_goal)
-    # print("[calc_lib.py] goal_modes: ", agent.goal_modes)
-    # print("")
     T = {}
     if s == agent.s_goal:
-        # print("[calc_lib.py] Here at the goal!!")
         T = {s: 1}  # stay at the goal with prob = 1
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
-        # for i in [-1, 0, 1]:
-        #     if move_correctly(agent.Grid, s, action[(action_key[a] + i) % 4]) in T:
-        #         if i == 0:
-        #             T[move_correctly(agent.Grid, s, action[(action_key[a] + i) % 4])] = p_success
-        #         else:
-        #             T[move_correctly(agent.Grid, s, action[(action_key[a] + i) % 4])] = p_fail
-
-        T = {move_correctly(agent.Grid, s, a):  p_success,
-             move_correctly(agent.Grid, s, action[(action_key[a] - 1) % 4]): p_fail/2,
-             move_correctly(agent.Grid, s, action[(action_key[a] - 1) % 4]): p_fail/2}
+        T = {move_correctly(agent.Grid, s, a): p_success,
+             move_correctly(agent.Grid, s, action[(action_key[a] - 1) % 4]): p_fail / 2,
+             move_correctly(agent.Grid, s, action[(action_key[a] - 1) % 4]): p_fail / 2}
     else:
         T = {do_action(agent, s, a): 1}  # (same: 0.2, next: 0.8)
     return T
@@ -129,10 +109,4 @@ def all_have_reached_goal(Agents):
     mission_over = True
     for agent in Agents:
         mission_over = mission_over and (agent.s == agent.s_goal)
-    # if mission_over:
-    # print("[calc_lib] Both Agents are at goal!!")
-    # else:
-    # print("[calc_lib] It's not over yet!!")
-    # print('agent.s: ', Agents[0].s)
-    # print('s_goal: ', s_goal)
     return mission_over

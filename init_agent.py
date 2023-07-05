@@ -133,21 +133,28 @@ class Agent:
         y_with_cf = copy.deepcopy(self.blame_training_data_y_with_cf)
         N1 = len(X_wo_cf)
         N2 = len(X_with_cf)
-        print("-----------------[init_agent.py] len(X_wo_cf)", N1)
-        print("-----------------[init_agent.py] len(X_with_cf)", N2)
         X1, y1 = np.array(X_wo_cf).reshape((N1, 4)), np.array(y_wo_cf).reshape((N1, 1))
         X2, y2 = np.array(X_with_cf).reshape((N2, 4)), np.array(y_with_cf).reshape((N2, 1))
-        print("-----------------[init_agent.py] len(X1)", len(X1))
-        print("-----------------[init_agent.py] len(y1)", len(y1))
-        print("-----------------[init_agent.py] len(X2)", len(X2))
-        print("-----------------[init_agent.py] len(y2)", len(y2))
+
+        #####################################
+        # Saving training data as text files
+        filename_X1 = 'training_data/Agent' + self.label + '_X_wo_cf.txt'
+        filename_y1 = 'training_data/Agent' + self.label + '_y_wo_cf.txt'
+        filename_X2 = 'training_data/Agent' + self.label + '_X_with_cf.txt'
+        filename_y2 = 'training_data/Agent' + self.label + '_y_with_cf.txt'
+
+        np.savetxt(filename_X1, X1)
+        np.savetxt(filename_y1, y1)
+        np.savetxt(filename_X2, X2)
+        np.savetxt(filename_y2, y2)
+        #####################################
 
         model_wo_cf_data = LinearRegression()
         model_with_cf_data = LinearRegression()
         model_wo_cf_data.fit(X1, y1)
         model_with_cf_data.fit(X2, y2)
-        print("=================[init_agent.py] model1 == model1: ", model_wo_cf_data == model_wo_cf_data)
-        print("=================[init_agent.py] model1 == model2: ", model_wo_cf_data == model_with_cf_data)
+        # print("=================[init_agent.py] model1 == model1: ", model_wo_cf_data == model_wo_cf_data)
+        # print("=================[init_agent.py] model1 == model2: ", model_wo_cf_data == model_with_cf_data)
         self.model_wo_cf = model_wo_cf_data
         self.model_with_cf = model_with_cf_data
         for s in self.Grid.S:
@@ -158,7 +165,7 @@ class Agent:
             self.R_blame_gen_wo_cf[s] = round(R_blame_gen_wo_cf, 1)
             self.R_blame_gen_with_cf[s] = round(R_blame_gen_with_cf, 1)
 
-        print("%%%%%%%%%%[init_agent.py] RBlame1 == RBlame1: ", self.R_blame_gen_wo_cf == self.R_blame_gen_wo_cf)
-        print("%%%%%%%%%%[init_agent.py] RBlame1 == RBlame2: ", self.R_blame_gen_wo_cf == self.R_blame_gen_with_cf)
+        # print("%%%%%%%%%%[init_agent.py] RBlame1 == RBlame1: ", self.R_blame_gen_wo_cf == self.R_blame_gen_wo_cf)
+        # print("%%%%%%%%%%[init_agent.py] RBlame1 == RBlame2: ", self.R_blame_gen_wo_cf == self.R_blame_gen_with_cf)
         self.R_blame_gen_wo_cf[self.s_goal] = 100
         self.R_blame_gen_with_cf[self.s_goal] = 100

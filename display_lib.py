@@ -120,7 +120,7 @@ def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen_wo_cf
     color3 = COLOR['limegreen']
     color4 = COLOR['seagreen']
 
-    title_str = 'Reward accumulated by each agent across \ndifferent mitigation techniques for (' + str(
+    title_str = 'Total reward by each agent across \nmitigation techniques for (' + str(
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
 
     # title_str = 'Reward accumulated by each agent across different mitigation techniques\n' + "(Using pseudo state 
@@ -184,7 +184,7 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen_wo
     color3 = COLOR['limegreen']
     color4 = COLOR['seagreen']
 
-    title_str = 'Total NSE accumulated across \ndifferent mitigation techniques for (' + str(
+    title_str = 'Total NSE across \nmitigation techniques for (' + str(
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
 
     # title_str = 'Total NSE accumulated across different mitigation techniques\n' + "(Using pseudo state blames)"
@@ -259,7 +259,7 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
     NSE_after_gen_std_wo_cf = np.std(NSE_after_mit_gen_wo_cf_list)
     NSE_after_gen_std_w_cf = np.std(NSE_after_mit_gen_w_cf_list)
 
-    title_str = 'Average NSE accumulated across \ndifferent mitigation techniques in 5 similar environments'
+    title_str = 'Average total NSE across \nmitigation techniques in 5 similar environments'
     # title_str = 'Average NSE accumulated across 5 similar environments\n' + "(Using pseudo state blames)"
 
     fig, ax = plt.subplots()
@@ -323,7 +323,7 @@ def plot_blame_bar_comparisons(blame_before_mit, blame_after_mit, blame_after_mi
     color3 = COLOR['limegreen']
     color4 = COLOR['seagreen']
 
-    title_str = 'Agent-wise blame across different \nmitigation techniques for (' + str(
+    title_str = 'Agent-wise blame across \nmitigation techniques for (' + str(
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid'
     # title_str = 'Agent-wise blame across different mitigation techniques\n' + "(Using pseudo state blames)"
 
