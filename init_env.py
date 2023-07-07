@@ -28,7 +28,7 @@ class Environment:
         All_States, rows, columns = read_grid.grid_read_from_file(grid_filename)
         self.all_states = copy.copy(All_States)
 
-        self.p_success = 0.8
+        self.p_success = 1
         s_goals = np.argwhere(All_States == 'G')
         s_goal = s_goals[0]
         self.s_goal = (s_goal[0], s_goal[1], 'X', False, goal_deposit)

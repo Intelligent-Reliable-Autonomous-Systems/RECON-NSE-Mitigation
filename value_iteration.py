@@ -15,7 +15,6 @@ def value_iteration(agent, S):
     V = {s: 0 for s in S}
     Residual = {s: 0 for s in S}
     PI = {s: ' ' for s in S}
-    s_goal = agent.s_goal
     Q = {}
     iterations = 0
     for s in S:
@@ -32,9 +31,11 @@ def value_iteration(agent, S):
                 T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
-                Q[s][a] = QQ + agent.Reward(s, a)
+                Q[s][a] = agent.Reward(s, a) + QQ
             V[s] = max(Q[s].values())  # V = max(Q_values)
             Residual[s] = abs(V[s] - oldV[s])
+            for aa in agent.A[s]:
+                Q[s][aa] = round(Q[s][aa])
             act = max(Q[s], key=Q[s].get)  # Storing the Action corresponding to max Q_value
             PI[s] = act
 
@@ -72,7 +73,7 @@ def blame_value_iteration(agent, S, R_blame):
                 T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
-                Q[s][a] = QQ + R_blame[s]
+                Q[s][a] = R_blame[s] + QQ
             V[s] = max(Q[s].values())  # V = max(Q_values)
             Residual[s] = abs(V[s] - oldV[s])
             act = max(Q[s], key=Q[s].get)  # Storing the Action corresponding to max Q_value
@@ -109,7 +110,7 @@ def action_set_value_iteration(agent, S):
                 T = calculation_lib.get_transition_prob(agent, s, a)
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
-                Q[s][a] = QQ + agent.Reward(s, a)
+                Q[s][a] = agent.Reward(s, a) + QQ
             V[s] = max(Q[s].values())  # V = max(Q_values)
             Residual[s] = abs(V[s] - oldV[s])
             act = max(Q[s], key=Q[s].get)  # Storing the Action corresponding to max Q_value

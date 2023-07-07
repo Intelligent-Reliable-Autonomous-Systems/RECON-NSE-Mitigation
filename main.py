@@ -153,7 +153,8 @@ print("Complete Simulation: " + str(Complete_sim_time) + " sec")
 print("CF generation for Blame Assignment (without Generalization): " + str(time_for_blame_without_gen) + " ms")
 print("CF generation for Blame Assignment (with Generalization): " + str(time_for_blame_with_gen) + " ms")
 print("-------------------------------------------------------")
-
+print(Agents[0].R_blame_gen_with_cf == Agents[0].R_blame_gen_wo_cf)
+print(Agents[1].R_blame_gen_with_cf == Agents[1].R_blame_gen_wo_cf)
 ##########################################
 #           PLOTTING SECTION             #
 ##########################################
@@ -170,8 +171,8 @@ print("Num of agents array = ", num_of_agents_tracker)
 ##########################################
 
 for i in [str(x) for x in range(1, 6)]:
-    filename = 'grids/test_grid' + i + '.txt'
-    print("======= Now in test_grid" + i + ".txt =======")
+    filename = 'grids/test_grid' + str(i) + '.txt'
+    print("======= Now in test_grid" + str(i) + ".txt =======")
     Grid = Environment(num_of_agents, goal_deposit, filename)
 
     # initialize agents with the initial coordinating policies
@@ -249,7 +250,6 @@ for i in [str(x) for x in range(1, 6)]:
     NSE_new_gen_wo_cf_tracker.append(NSE_new_gen_wo_cf)
     NSE_new_gen_with_cf_tracker.append(NSE_new_gen_with_cf)
     num_of_agents_tracker.append(num_of_agents)
-
 
 Complete_sim_end_timer = timer()
 Complete_sim_time = round((Complete_sim_end_timer - Complete_sim_start_timer), 3)

@@ -16,10 +16,15 @@ def get_transition_prob(agent, s, a):
         s_next_correct = move_correctly(agent.Grid, s, a)
         s_next_slide_left = move_correctly(agent.Grid, s, action[(action_key[a] - 1) % 4])
         s_next_slide_right = move_correctly(agent.Grid, s, action[(action_key[a] + 1) % 4])
+        if s_next_correct == s_next_slide_left:
+            T = {s_next_correct: round(p_success + p_fail / 2, 3), s_next_slide_right: round(p_fail / 2, 3)}
+        elif s_next_correct == s_next_slide_right:
+            T = {s_next_correct: round(p_success + p_fail / 2, 3), s_next_slide_left: round(p_fail / 2, 3)}
+        else:
+            T = {s_next_correct: round(p_success, 3),
+                 s_next_slide_left: round(p_fail / 2, 3),
+                 s_next_slide_right: round(p_fail / 2, 3)}
 
-        T = {s_next_correct: p_success,
-             s_next_slide_left: p_fail / 2,
-             s_next_slide_right: p_fail / 2}
         # T = {s: p_fail, move_correctly(agent.Grid, s, a): p_success}
         # print("T: len = " + str(len(T)) + ":   " + str(T))
     else:
