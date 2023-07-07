@@ -27,15 +27,8 @@ def value_iteration(agent, S):
         iterations += 1
         oldV = V.copy()
         for s in S:
-            # print(" -> ", s)
             for a in agent.A[s]:
-                # if s == s_goal:
-                #     print(" --------------------> ", s)
-                #     V[s] = agent.Reward(s, a)
-                #     PI[s] = a
-                #     continue
                 QQ = 0
-                # print(" -----> ", s)
                 T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
@@ -62,7 +55,6 @@ def blame_value_iteration(agent, S, R_blame):
     V = {s: 0 for s in S}
     Residual = {s: 0 for s in S}
     PI = {s: ' ' for s in S}
-    s_goal = agent.s_goal
     Q = {}
     iterations = 0
     for s in S:
@@ -76,10 +68,6 @@ def blame_value_iteration(agent, S, R_blame):
         oldV = V.copy()
         for s in S:
             for a in agent.A[s]:
-                # if s == s_goal:
-                #     V[s] = R_blame[s]
-                #     PI[s] = a
-                #     continue
                 QQ = 0
                 T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
@@ -105,7 +93,6 @@ def action_set_value_iteration(agent, S):
     V = {s: 0 for s in S}
     Residual = {s: 0 for s in S}
     PI = {s: ' ' for s in S}
-    s_goal = agent.s_goal
     Q = {}
     iterations = 0
     for s in S:
@@ -118,11 +105,6 @@ def action_set_value_iteration(agent, S):
         oldV = V.copy()
         for s in S:
             for a in agent.A[s]:
-                # if s == s_goal:
-                #     V[s] = agent.Reward(s, a)
-                #     PI[s] = a
-                #     continue
-                # print("============= A[" + str(s) + "]: " + str(agent.A[s]))
                 QQ = 0
                 T = calculation_lib.get_transition_prob(agent, s, a)
                 for ss in list(T.keys()):
@@ -136,10 +118,14 @@ def action_set_value_iteration(agent, S):
         if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
             print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
+
+    # After computing Q values for all actions in each state, we select all optimal actions
     for s in S:
-        action_set = [k for k, v in Q[s].items() if round(v, 2) == round(V[s], 2)]
-        # print(str(s) + "--------------------> " + str(Q[s]) + " ==== optimal action set: " + str(action_set))
+        action_set = [k for k, v in Q[s].items() if round(v) == round(V[s])]
         agent.A[s] = action_set
+        # print(str(s) + "------> " + str(Q[s]) + " ==== optimal action set: " + str(action_set))
+        # print(str(s) + ": " + str(action_set))
+
     return agent
 
 

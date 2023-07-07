@@ -105,7 +105,7 @@ class Agent:
 
     def follow_policy(self):
         Pi = copy.copy(self.Pi)
-
+        # print("[init_agent.py(line 108)] Path debug")
         while self.s != self.s_goal:
             R = self.Reward(self.s, Pi[self.s])
             self.R += R
@@ -117,6 +117,7 @@ class Agent:
             # x, y, _, _, _ = self.s
             # loc = (x, y)
             self.path = self.path + "->" + str(self.s)
+            # print(self.s)
 
     def agent_reset(self):
         self.NSE = 0.0
@@ -137,16 +138,16 @@ class Agent:
         X2, y2 = np.array(X_with_cf).reshape((N2, 4)), np.array(y_with_cf).reshape((N2, 1))
 
         #####################################
-        # Saving training data as text files
-        filename_X1 = 'training_data/Agent' + self.label + '_X_wo_cf.txt'
-        filename_y1 = 'training_data/Agent' + self.label + '_y_wo_cf.txt'
-        filename_X2 = 'training_data/Agent' + self.label + '_X_with_cf.txt'
-        filename_y2 = 'training_data/Agent' + self.label + '_y_with_cf.txt'
-
-        np.savetxt(filename_X1, X1)
-        np.savetxt(filename_y1, y1)
-        np.savetxt(filename_X2, X2)
-        np.savetxt(filename_y2, y2)
+        # # Saving training data as text files
+        # filename_X1 = 'training_data/Agent' + self.label + '_X_wo_cf.txt'
+        # filename_y1 = 'training_data/Agent' + self.label + '_y_wo_cf.txt'
+        # filename_X2 = 'training_data/Agent' + self.label + '_X_with_cf.txt'
+        # filename_y2 = 'training_data/Agent' + self.label + '_y_with_cf.txt'
+        #
+        # np.savetxt(filename_X1, X1)
+        # np.savetxt(filename_y1, y1)
+        # np.savetxt(filename_X2, X2)
+        # np.savetxt(filename_y2, y2)
         #####################################
 
         model_wo_cf_data = LinearRegression()

@@ -13,9 +13,15 @@ def get_transition_prob(agent, s, a):
     if s == agent.s_goal:
         T = {s: 1}  # stay at the goal with prob = 1
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
-        T = {move_correctly(agent.Grid, s, a): p_success,
-             move_correctly(agent.Grid, s, action[(action_key[a] - 1) % 4]): p_fail / 2,
-             move_correctly(agent.Grid, s, action[(action_key[a] - 1) % 4]): p_fail / 2}
+        s_next_correct = move_correctly(agent.Grid, s, a)
+        s_next_slide_left = move_correctly(agent.Grid, s, action[(action_key[a] - 1) % 4])
+        s_next_slide_right = move_correctly(agent.Grid, s, action[(action_key[a] + 1) % 4])
+
+        T = {s_next_correct: p_success,
+             s_next_slide_left: p_fail / 2,
+             s_next_slide_right: p_fail / 2}
+        # T = {s: p_fail, move_correctly(agent.Grid, s, a): p_success}
+        # print("T: len = " + str(len(T)) + ":   " + str(T))
     else:
         T = {do_action(agent, s, a): 1}  # (same: 0.2, next: 0.8)
     return T
