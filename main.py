@@ -1,4 +1,5 @@
 import warnings
+import simple_colors
 import numpy as np
 from timeit import default_timer as timer
 import random
@@ -18,7 +19,7 @@ warnings.filterwarnings('ignore')
 M = 2
 num_of_agents = 2
 goal_deposit = (1, 1)
-
+mode = 'stochastic'
 # Tracking NSE values with grids
 NSE_old_tracker = []
 NSE_new_tracker = []
@@ -28,7 +29,7 @@ num_of_agents_tracker = []
 
 # initialize the environment
 Complete_sim_start_timer = timer()
-Grid = Environment(num_of_agents, goal_deposit, "grids/train_grid.txt")
+Grid = Environment(num_of_agents, goal_deposit, "grids/train_grid.txt", mode)
 
 # initialize agents with the initial coordinating policies
 Agents = Grid.init_agents_with_initial_policy()
@@ -165,7 +166,6 @@ plot_blame_bar_comparisons(blame_before_mitigation, blame_after_R_blame,
 plot_NSE_bar_comparisons(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker, NSE_new_gen_with_cf_tracker,
                          num_of_agents_tracker, Grid)
 print("Num of agents array = ", num_of_agents_tracker)
-
 ##########################################
 #            TESTING SECTION             #
 ##########################################
@@ -173,7 +173,7 @@ print("Num of agents array = ", num_of_agents_tracker)
 for i in [str(x) for x in range(1, 6)]:
     filename = 'grids/test_grid' + str(i) + '.txt'
     print("======= Now in test_grid" + str(i) + ".txt =======")
-    Grid = Environment(num_of_agents, goal_deposit, filename)
+    Grid = Environment(num_of_agents, goal_deposit, filename, mode)
 
     # initialize agents with the initial coordinating policies
     Agents = Grid.init_agents_with_initial_policy()
@@ -258,10 +258,10 @@ print("Complete Simulation: " + str(Complete_sim_time) + " sec")
 print("CF generation for Blame Assignment: " + str(time_for_blame_without_gen) + " ms")
 print("-------------------------------------------------------")
 
-print("NSE_old_tracker: ", NSE_old_tracker)
-print("NSE_new_tracker: ", NSE_new_tracker)
-print("NSE_new_gen_wo_cf_tracker: ", NSE_new_gen_wo_cf_tracker)
-print("NSE_new_gen_with_cf_tracker: ", NSE_new_gen_with_cf_tracker)
+print(simple_colors.red('NSE_old_tracker: ' + str(NSE_old_tracker), ['bold']))
+print(simple_colors.magenta('NSE_new_tracker: ' + str(NSE_new_tracker), ['bold']))
+print(simple_colors.blue('NSE_new_gen_wo_cf_tracker: ' + str(NSE_new_gen_wo_cf_tracker), ['bold']))
+print(simple_colors.green('NSE_new_gen_with_cf_tracker: ' + str(NSE_new_gen_with_cf_tracker), ['bold']))
 
 plot_NSE_bar_comparisons_with_std_mean(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker,
                                        NSE_new_gen_with_cf_tracker)

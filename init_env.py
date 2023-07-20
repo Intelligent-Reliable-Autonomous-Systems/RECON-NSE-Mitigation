@@ -12,7 +12,6 @@ Factored State Representation ->  < x , y , box_with_me , coral_flag , box_at_go
 ===============================================================================
 """
 import copy
-
 import calculation_lib
 import read_grid
 import numpy as np
@@ -20,15 +19,29 @@ import random
 from calculation_lib import all_have_reached_goal
 from init_agent import Agent
 import value_iteration
+import simple_colors
 
 
 class Environment:
-    def __init__(self, num_of_agents, goal_deposit, grid_filename):
+    def __init__(self, num_of_agents, goal_deposit, grid_filename, mode):
 
         All_States, rows, columns = read_grid.grid_read_from_file(grid_filename)
         self.all_states = copy.copy(All_States)
 
-        self.p_success = 1
+        if mode == 'stochastic':
+            self.p_success = 0.9
+            print(simple_colors.green('mode: STOCHASTIC', ['bold', 'underlined']))
+            print(simple_colors.green('p_success = ' + str(self.p_success), ['bold']))
+        elif mode == 'deterministic':
+            self.p_success = 1.0
+            print(simple_colors.green('mode: DETERMINISTIC', ['bold', 'underlined']))
+            print(simple_colors.green('p_success = ' + str(self.p_success), ['bold']))
+        else:  # defaulting to deterministic
+            # print("\u001b[32;1m" + "UNKNOWN mode: Defaulting to DETERMINISTIC" + "\u001b")
+            self.p_success = 1.0
+            print(simple_colors.red('UNKNOWN mode: Defaulting to DETERMINISTIC', ['bold', 'underlined']))
+            print(simple_colors.red('p_success = ' + str(self.p_success), ['bold']))
+
         s_goals = np.argwhere(All_States == 'G')
         s_goal = s_goals[0]
         self.s_goal = (s_goal[0], s_goal[1], 'X', False, goal_deposit)
@@ -43,7 +56,7 @@ class Environment:
         i = 0
         for i in range(int(goal_deposit[0]) + 1):
             self.goal_modes.append((i, 0))
-        for j in range(1, int(goal_deposit[1]+1)):
+        for j in range(1, int(goal_deposit[1] + 1)):
             self.goal_modes.append((i, j))
 
     def init_agents_with_initial_policy(self):

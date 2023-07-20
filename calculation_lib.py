@@ -9,7 +9,6 @@ def get_transition_prob(agent, s, a):
     p_fail = 1 - p_success
     action = {0: 'U', 1: 'R', 2: 'D', 3: 'L'}
     action_key = {'U': 0, 'R': 1, 'D': 2, 'L': 3}
-    T = {}
     if s == agent.s_goal:
         T = {s: 1}  # stay at the goal with prob = 1
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
