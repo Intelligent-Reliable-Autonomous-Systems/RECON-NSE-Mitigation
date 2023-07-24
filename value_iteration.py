@@ -40,7 +40,7 @@ def value_iteration(agent, S):
             PI[s] = act
 
         if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
-            print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
+            # print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
     return V, PI
 
@@ -80,7 +80,7 @@ def blame_value_iteration(agent, S, R_blame):
             PI[s] = act
 
         if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
-            print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
+            # print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
     return V, PI
 
@@ -117,7 +117,7 @@ def action_set_value_iteration(agent, S):
             PI[s] = act
 
         if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
-            print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
+            # print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
 
     # After computing Q values for all actions in each state, we select all optimal actions
@@ -150,7 +150,7 @@ def LVI(Agents, Agents_to_be_corrected, mode):
         agent.s = copy.deepcopy(agent.s0)
         agent.follow_policy()
 
-    display_just_grid(Agents[0].Grid.All_States)
+    # display_just_grid(Agents[0].Grid.All_States)
     for agent in Agents:
         print("Corrected Plan for Agent " + agent.label + ":")
         print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '

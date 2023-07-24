@@ -3,19 +3,18 @@
 This script initialized the grid with goal, obstacles and corresponding actions
 also other parameters such as gamma
 
-Factored State Representation ->  < x , y , box_with_me , coral_flag , box_at_goal >
+Factored State Representation ->  < x , y , sample_with_me , coral_flag , samples_at_goal_condition >
     x: denoting x-coordinate of the grid cell
     y: denoting y-coordinate of the grid cell
-    box_with_me: junk unit size being carried by the agent {'S','L'}
+    sample_with_me: junk unit size being carried by the agent {'S','L'}
     coral_flag: boolean denoting presence of coral at the location {True, False}
-    box_at_goal: what the goal deposit looks like to this particular agent
+    sample_at_goal_condition: what the goal deposit looks like to this particular agent
 ===============================================================================
 """
 import copy
 import calculation_lib
 import read_grid
 import numpy as np
-import random
 from calculation_lib import all_have_reached_goal
 from init_agent import Agent
 import value_iteration
@@ -88,7 +87,7 @@ class Environment:
 
     def max_log_joint_NSE(self, Agents):
         # this function returns worst NSE in the log NSE formulation
-        # state s: < x , y , box_with_the_agent , coral_flag(True or False), tuple_of_boxes_at_goal >
+        # state s: < x , y , sample_with_the_agent , coral_flag(True or False), tuple_of_samples_at_goal >
         NSE_worst = 10 * np.log(len(Agents) / 20.0 + 1)
         NSE_worst *= 25  # rescaling it to get good values
         NSE_worst = round(NSE_worst, 2)
@@ -103,7 +102,7 @@ class Environment:
                 # print("Agent "+agent.label+" is at GOAL!")
                 continue
 
-            # state of an agent: <x,y,trash_box_size,coral_flag,boxes_at_goal>
+            # state of an agent: <x,y,trash_sample_size,coral_flag,samples_at_goal>
             agent.R += agent.Reward(agent.s, Pi[agent.s])
             agent.s = calculation_lib.do_action(agent, agent.s, Pi[agent.s])
             # print("\n==== After movement Agent "+agent.label+"'s state: ", agent.s)
@@ -136,7 +135,23 @@ def reset_Agents(Agents):
     return Agents
 
 
+def compare_all_plans_from_all_methods(Agents):
+    for agent in Agents:
+        methods = ['Normal initial plan:', 'Rblame mitigation:', 'Generalized mit wo cf data:',
+                   'Generalized mit with cf data:']
+        print(simple_colors.red("Agent " + agent.label + " plans:", ['bold']))
+        while '' in agent.plan_from_all_methods:
+            agent.plan_from_all_methods.remove('')
+        for i in [0, 1, 2, 3]:
+            plan = agent.plan_from_all_methods[i]
+            print(simple_colors.yellow(methods[i], ['underlined']))
+            print(plan[4:])
+        print("=============================")
+
+
 def show_joint_states_and_NSE_values(Grid, Agents, report_name="No Print"):
+    for agent in Agents:
+        agent.s = copy.deepcopy(agent.s0)
     path_joint_states = [get_joint_state(Agents)]  # Store the starting joint states
     path_joint_NSE_values = [Grid.give_joint_NSE_value(get_joint_state(Agents))]  # Store the corresponding joint NSE
     joint_NSE_states = []
@@ -173,7 +188,7 @@ def get_total_R_and_NSE_from_path(Agents, path_joint_NSE_values):
 
 def initialize_grid_params(All_States, rows, columns, goal_deposit):
     # Initializing all states
-    # s = < x, y, box_with_me, coral_flag, list_of_boxes_at_goal>
+    # s = < x, y, sample_with_me, coral_flag, list_of_samples_at_goal>
     S = []
     goal_modes = []
     i = 0
@@ -183,9 +198,9 @@ def initialize_grid_params(All_States, rows, columns, goal_deposit):
         goal_modes.append((i, j))
     for i in range(rows):
         for j in range(columns):
-            for box_onboard in ['X', 'L', 'S']:
+            for sample_onboard in ['X', 'L', 'S']:
                 for goal_configurations in goal_modes:
-                    S.append((i, j, box_onboard, All_States[i][j] == 'C', goal_configurations))
+                    S.append((i, j, sample_onboard, All_States[i][j] == 'C', goal_configurations))
 
     # recording coral on the floor
     coral = np.zeros((rows, columns), dtype=bool)
@@ -226,7 +241,7 @@ def log_joint_NSE(joint_state):
     X = {'X': 0, 'S': 0, 'L': 0}
     Joint_State = list(copy.deepcopy(joint_state))
 
-    # state s: < x , y , junk_size_being_carried_by_the_agent , coral_flag(True or False) >
+    # state s: < x , y , sample_with_agent , coral_flag(True or False), samples_at_goal_condition >
     for s in Joint_State:
         if s[3] is True:
             X[s[2]] += 1

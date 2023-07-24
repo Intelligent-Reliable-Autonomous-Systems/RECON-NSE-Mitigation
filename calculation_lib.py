@@ -43,7 +43,7 @@ def move(Grid, s, a):
 
 
 def move_correctly(Grid, s, a):
-    # note that movement cannot change s[4] (boxes_list_at_goal) so we reuse it from pre-move state itself
+    # note that movement cannot change s[4] (samples_list_at_goal) so we reuse it from pre-move state itself
     p = random.uniform(0, 1)
     # action = {'U': 0, 'R': 1, 'D': 2, 'L': 3}
     s_next = 0

@@ -3,10 +3,10 @@ import simple_colors
 import numpy as np
 from timeit import default_timer as timer
 import random
+import value_iteration
 from blame_assignment import Blame
 from init_env import Environment, get_total_R_and_NSE_from_path
-from init_env import reset_Agents, show_joint_states_and_NSE_values
-import value_iteration
+from init_env import reset_Agents, show_joint_states_and_NSE_values, compare_all_plans_from_all_methods
 from display_lib import display_just_grid, plot_NSE_bar_comparisons_with_std_mean
 from display_lib import plot_reward_bar_comparisons, plot_blame_bar_comparisons
 from display_lib import plot_NSE_bar_comparisons, show_each_agent_plan
@@ -29,7 +29,7 @@ num_of_agents_tracker = []
 
 # initialize the environment
 Complete_sim_start_timer = timer()
-Grid = Environment(num_of_agents, goal_deposit, "grids/train_grid.txt", mode)
+Grid = Environment(num_of_agents, goal_deposit, "grids/test_grid_debug.txt", mode)
 
 # initialize agents with the initial coordinating policies
 Agents = Grid.init_agents_with_initial_policy()
@@ -166,6 +166,9 @@ plot_blame_bar_comparisons(blame_before_mitigation, blame_after_R_blame,
 plot_NSE_bar_comparisons(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker, NSE_new_gen_with_cf_tracker,
                          num_of_agents_tracker, Grid)
 print("Num of agents array = ", num_of_agents_tracker)
+print("-------------------------------------")
+compare_all_plans_from_all_methods(Agents)
+exit(0)
 ##########################################
 #            TESTING SECTION             #
 ##########################################

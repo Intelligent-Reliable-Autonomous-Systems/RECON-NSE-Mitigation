@@ -13,7 +13,7 @@ class Agent:
         self.p_success = Grid.p_success
         self.label = label
         self.IDX = int(label) - 1
-        # state of an agent: <x,y,box_with_me,coral_flag,box_at_goal>
+        # state of an agent: <x,y,sample_with_me,coral_flag,sample_at_goal_condition>
         coral_flag = Grid.coral_flag[start_loc[0]][start_loc[1]]
         self.s = (start_loc[0], start_loc[1], 'X', coral_flag, self.goal_modes[self.IDX])
         self.s0 = (start_loc[0], start_loc[1], 'X', coral_flag, self.goal_modes[self.IDX])
@@ -31,6 +31,7 @@ class Agent:
         self.NSE_gen = 0.0
         self.path = str(self.s)  # + "->"
         self.plan = ""
+        self.plan_from_all_methods = []
         self.trajectory = []
         self.num_of_agents = Grid.num_of_agents
         self.done_flag = False
@@ -93,7 +94,7 @@ class Agent:
 
     def Reward(self, s, a):
         # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
-        # state of an agent: <x,y,trash_box_size,coral_flag,list_of_boxes_at_goal>
+        # state of an agent: <x,y,sample_with_agent,coral_flag,list_of_samples_at_goal>
         if calculation_lib.do_action(self, s, a) == self.s_goal:
             if a == 'drop':
                 R = 100
@@ -105,24 +106,19 @@ class Agent:
 
     def follow_policy(self):
         Pi = copy.copy(self.Pi)
-        # print("[init_agent.py(line 108)] Path debug")
         while self.s != self.s_goal:
             R = self.Reward(self.s, Pi[self.s])
             self.R += R
             self.trajectory.append((self.s, Pi[self.s], R))
             self.plan += " -> " + str(Pi[self.s])
-            # print("Action: ", Pi[self.s])
-            # print("Plan till here: ", self.plan)
             self.s = do_action(self, self.s, Pi[self.s])
-            # x, y, _, _, _ = self.s
-            # loc = (x, y)
             self.path = self.path + "->" + str(self.s)
-            # print(self.s)
 
     def agent_reset(self):
         self.NSE = 0.0
         self.s = copy.deepcopy(self.s0)
         self.path = str(self.s)  # + "->"
+        self.plan_from_all_methods.append(self.plan)
         self.plan = ""
         self.R = 0.0
 
