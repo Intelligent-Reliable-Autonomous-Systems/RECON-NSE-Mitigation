@@ -3,6 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import init_env
+import simple_colors
 
 # rows = init_env.rows
 # columns = init_env.columns
