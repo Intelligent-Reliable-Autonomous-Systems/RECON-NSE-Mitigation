@@ -97,7 +97,7 @@ class Blame:
         return NSE_blame
 
     def get_training_data_with_cf(self, Agents, Joint_NSE_states):
-        weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
+        weighting = copy.deepcopy(self.Grid.weighting)
         joint_NSE_states = copy.deepcopy(Joint_NSE_states)
         for js in joint_NSE_states:
             _, all_cfs_for_this_js = generate_counterfactuals(js, self.Agents)
@@ -115,7 +115,7 @@ class Blame:
                 agent.blame_training_data_y_with_cf.append(-blame_values[agent_idx])
 
     def get_training_data_wo_cf(self, Agents, Joint_NSE_states):
-        weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
+        weighting = copy.deepcopy(self.Grid.weighting)
         joint_NSE_states = copy.deepcopy(Joint_NSE_states)
         for js in joint_NSE_states:
             original_NSE = self.Grid.give_joint_NSE_value(js)

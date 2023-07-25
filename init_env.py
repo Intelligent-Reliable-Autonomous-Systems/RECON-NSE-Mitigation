@@ -27,6 +27,8 @@ class Environment:
         All_States, rows, columns = read_grid.grid_read_from_file(grid_filename)
         self.all_states = copy.copy(All_States)
 
+        self.weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
+
         if mode == 'stochastic':
             self.p_success = 0.9
             print(simple_colors.green('mode: STOCHASTIC', ['bold', 'underlined']))
@@ -36,11 +38,12 @@ class Environment:
             print(simple_colors.green('mode: DETERMINISTIC', ['bold', 'underlined']))
             print(simple_colors.green('p_success = ' + str(self.p_success), ['bold']))
         else:  # defaulting to deterministic
-            # print("\u001b[32;1m" + "UNKNOWN mode: Defaulting to DETERMINISTIC" + "\u001b")
             self.p_success = 1.0
             print(simple_colors.red('UNKNOWN mode: Defaulting to DETERMINISTIC', ['bold', 'underlined']))
             print(simple_colors.red('p_success = ' + str(self.p_success), ['bold']))
+            mode = 'deterministic'
 
+        self.mode = mode
         s_goals = np.argwhere(All_States == 'G')
         s_goal = s_goals[0]
         self.s_goal = (s_goal[0], s_goal[1], 'X', False, goal_deposit)
@@ -77,7 +80,7 @@ class Environment:
     def give_joint_NSE_value(self, joint_state):
         # joint_NSE_val = basic_joint_NSE(joint_state)
         # joint_NSE_val = gaussian_joint_NSE(self, joint_state)
-        joint_NSE_val = log_joint_NSE(joint_state)
+        joint_NSE_val = log_joint_NSE(self, joint_state)
         return joint_NSE_val
 
     def add_goal_reward(self, agent):
@@ -234,10 +237,8 @@ def get_joint_state(Agents):
     return tuple(Joint_State)
 
 
-def log_joint_NSE(joint_state):
+def log_joint_NSE(Grid, joint_state):
     joint_NSE_val = 0
-
-    weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
     X = {'X': 0, 'S': 0, 'L': 0}
     Joint_State = list(copy.deepcopy(joint_state))
 
@@ -245,7 +246,8 @@ def log_joint_NSE(joint_state):
     for s in Joint_State:
         if s[3] is True:
             X[s[2]] += 1
-    joint_NSE_val = weighting['S'] * np.log(X['S'] / 20.0 + 1) + weighting['L'] * np.log(X['L'] / 20.0 + 1)
+    for sample_type in X.keys():
+        joint_NSE_val += Grid.weighting[sample_type] * np.log(X[sample_type] / 20.0 + 1)
     joint_NSE_val *= 25  # rescaling it to get good values
     joint_NSE_val = round(joint_NSE_val, 2)
 

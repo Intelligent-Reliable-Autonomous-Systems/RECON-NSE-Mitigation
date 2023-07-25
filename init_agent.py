@@ -123,7 +123,7 @@ class Agent:
         self.R = 0.0
 
     def generalize_Rblame_linearReg(self):
-        weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
+        weighting = self.Grid.weighting
         X_wo_cf = copy.deepcopy(self.blame_training_data_x_wo_cf)
         y_wo_cf = copy.deepcopy(self.blame_training_data_y_wo_cf)
         X_with_cf = copy.deepcopy(self.blame_training_data_x_with_cf)

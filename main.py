@@ -19,7 +19,7 @@ warnings.filterwarnings('ignore')
 M = 2
 num_of_agents = 2
 goal_deposit = (1, 1)
-mode = 'stochastic'
+mode = 'stochastic'  # 'deterministic' or 'stochastic'
 # Tracking NSE values with grids
 NSE_old_tracker = []
 NSE_new_tracker = []
@@ -160,7 +160,7 @@ print(Agents[1].R_blame_gen_with_cf == Agents[1].R_blame_gen_wo_cf)
 #           PLOTTING SECTION             #
 ##########################################
 
-plot_reward_bar_comparisons(R_old, R_new, R_new_gen_wo_cf, R_new_gen_with_cf, Grid)
+# plot_reward_bar_comparisons(R_old, R_new, R_new_gen_wo_cf, R_new_gen_with_cf, Grid)
 plot_blame_bar_comparisons(blame_before_mitigation, blame_after_R_blame,
                            blame_after_R_blame_gen_wo_cf, blame_after_R_blame_gen_with_cf, Grid)
 plot_NSE_bar_comparisons(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker, NSE_new_gen_with_cf_tracker,
@@ -168,7 +168,7 @@ plot_NSE_bar_comparisons(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tra
 print("Num of agents array = ", num_of_agents_tracker)
 print("-------------------------------------")
 compare_all_plans_from_all_methods(Agents)
-exit(0)
+# exit(0)
 ##########################################
 #            TESTING SECTION             #
 ##########################################
@@ -267,4 +267,4 @@ print(simple_colors.blue('NSE_new_gen_wo_cf_tracker: ' + str(NSE_new_gen_wo_cf_t
 print(simple_colors.green('NSE_new_gen_with_cf_tracker: ' + str(NSE_new_gen_with_cf_tracker), ['bold']))
 
 plot_NSE_bar_comparisons_with_std_mean(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker,
-                                       NSE_new_gen_with_cf_tracker)
+                                       NSE_new_gen_with_cf_tracker, Grid.mode)
