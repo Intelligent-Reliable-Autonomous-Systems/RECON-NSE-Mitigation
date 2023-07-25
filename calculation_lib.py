@@ -4,7 +4,7 @@ import numpy as np
 
 
 def get_transition_prob(agent, s, a):
-    # actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
+    # actions = ['pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']
     p_success = copy.copy(agent.p_success)
     p_fail = 1 - p_success
     action = {0: 'U', 1: 'R', 2: 'D', 3: 'L'}
@@ -71,14 +71,13 @@ def move_correctly(Grid, s, a):
 
 
 def do_action(agent, s, a):
-    # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
+    # operation actions = ['pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']
     s = list(s)
-    if a == 'pick_S':
-        s[2] = 'S'
-    elif a == 'pick_L':
-        s[2] = 'L'
+    if a == 'pick_A':
+        s[2] = 'A'
+    elif a == 'pick_B':
+        s[2] = 'B'
     elif a == 'drop':
-        size_index_map = {'S': 0, 'L': 1}
         index = agent.goal_modes.index(s[4])
         # print("calc_lib.py DEBUG: 'drop' action at state ", s)
         s[4] = list(s[4])
@@ -109,10 +108,10 @@ def get_action(from_state, to_state):
         return 'U'
     elif from_state[2] != 'X' and to_state[2] == 'X':
         return 'drop'
-    elif from_state[2] == 'X' and to_state[2] == 'S':
-        return 'pick_S'
-    elif from_state[2] == 'X' and to_state[2] == 'L':
-        return 'pick_L'
+    elif from_state[2] == 'X' and to_state[2] == 'A':
+        return 'pick_A'
+    elif from_state[2] == 'X' and to_state[2] == 'B':
+        return 'pick_B'
 
 
 def all_have_reached_goal(Agents):

@@ -152,7 +152,7 @@ def generate_counterfactuals(joint_state, Agents):
         cf_joint_state = []
         Joint_State = copy.deepcopy(joint_state)
         agent_idx = int(agent.label) - 1
-        size_options = ['S', 'L']
+        size_options = ['A', 'B']
         # print('BEFORE size options for Agent ' + agent.label + ' cfs: ' + str(size_options))
         # print(Joint_State[agent_idx][2])
         if Joint_State[agent_idx][2] in size_options:

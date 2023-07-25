@@ -37,7 +37,7 @@ class Agent:
         self.done_flag = False
         # print('[from init_agent] Goal Mode for Agent ' + self.label + ' at initialization is: ' + str(self.s0[4]))
 
-        # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
+        # operation actions = ['pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']
         self.A = {}
         # counterfactual comparison actions = ['switch_compare']
         self.A2 = {}
@@ -51,49 +51,49 @@ class Agent:
         self.model_wo_cf = LinearRegression()
         self.model_with_cf = LinearRegression()
         for s in Grid.S:
-            self.A[s] = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']  # operation actions
+            self.A[s] = ['pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']  # operation actions
             self.A2[s] = ['switch_compare']  # action for counterfactuals comparison
             self.R_blame[s] = 0.0
             self.R_blame_gen_with_cf[s] = 0.0
             self.R_blame_gen_wo_cf[s] = 0.0
         for s in self.Grid.S:
             if s[2] != 'X':
-                if 'pick_S' in self.A[s]:
-                    self.A[s].remove('pick_S')
-                if 'pick_L' in self.A[s]:
-                    self.A[s].remove('pick_L')
+                if 'pick_A' in self.A[s]:
+                    self.A[s].remove('pick_A')
+                if 'pick_B' in self.A[s]:
+                    self.A[s].remove('pick_B')
             if s[2] == 'X':
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
-            if self.Grid.All_States[s[0]][s[1]] != 'J' and Grid.All_States[s[0]][s[1]] != 'j':
-                if 'pick_S' in self.A[s]:
-                    self.A[s].remove('pick_S')
-                if 'pick_L' in self.A[s]:
-                    self.A[s].remove('pick_L')
+            if self.Grid.All_States[s[0]][s[1]] != 'A' and Grid.All_States[s[0]][s[1]] != 'B':
+                if 'pick_A' in self.A[s]:
+                    self.A[s].remove('pick_A')
+                if 'pick_B' in self.A[s]:
+                    self.A[s].remove('pick_B')
             if self.Grid.All_States[s[0]][s[1]] != 'G':
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
             if s[4][0] >= self.s_goal[4][0]:
-                if 'pick_S' in self.A[s]:
-                    self.A[s].remove('pick_S')
+                if 'pick_A' in self.A[s]:
+                    self.A[s].remove('pick_A')
             if s[4][1] >= self.s_goal[4][1]:
-                if 'pick_L' in self.A[s]:
-                    self.A[s].remove('pick_L')
+                if 'pick_B' in self.A[s]:
+                    self.A[s].remove('pick_B')
             if s[2] == 'S' and s[4][0] > self.s_goal[4][0]:
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
             if s[2] == 'L' and s[4][1] > self.s_goal[4][1]:
                 if 'drop' in self.A[s]:
                     self.A[s].remove('drop')
-            if self.Grid.All_States[s[0]][s[1]] == 'j':
-                if 'pick_L' in self.A[s]:
-                    self.A[s].remove('pick_L')
-            if self.Grid.All_States[s[0]][s[1]] == 'J':
-                if 'pick_S' in self.A[s]:
-                    self.A[s].remove('pick_S')
+            if self.Grid.All_States[s[0]][s[1]] == 'A':
+                if 'pick_B' in self.A[s]:
+                    self.A[s].remove('pick_B')
+            if self.Grid.All_States[s[0]][s[1]] == 'B':
+                if 'pick_A' in self.A[s]:
+                    self.A[s].remove('pick_A')
 
     def Reward(self, s, a):
-        # operation actions = ['pick_S', 'pick_L', 'drop', 'U', 'D', 'L', 'R']
+        # operation actions = ['pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']
         # state of an agent: <x,y,sample_with_agent,coral_flag,list_of_samples_at_goal>
         if calculation_lib.do_action(self, s, a) == self.s_goal:
             if a == 'drop':

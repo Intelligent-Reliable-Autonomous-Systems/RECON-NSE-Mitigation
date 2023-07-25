@@ -6,7 +6,7 @@ also other parameters such as gamma
 Factored State Representation ->  < x , y , sample_with_me , coral_flag , samples_at_goal_condition >
     x: denoting x-coordinate of the grid cell
     y: denoting y-coordinate of the grid cell
-    sample_with_me: junk unit size being carried by the agent {'S','L'}
+    sample_with_me: junk unit size being carried by the agent {'X','A','B'}
     coral_flag: boolean denoting presence of coral at the location {True, False}
     sample_at_goal_condition: what the goal deposit looks like to this particular agent
 ===============================================================================
@@ -27,7 +27,7 @@ class Environment:
         All_States, rows, columns = read_grid.grid_read_from_file(grid_filename)
         self.all_states = copy.copy(All_States)
 
-        self.weighting = {'X': 0.0, 'S': 3.0, 'L': 10.0}
+        self.weighting = {'X': 0.0, 'A': 3.0, 'B': 10.0}
 
         if mode == 'stochastic':
             self.p_success = 0.9
@@ -49,7 +49,7 @@ class Environment:
         self.s_goal = (s_goal[0], s_goal[1], 'X', False, goal_deposit)
 
         self.num_of_agents = num_of_agents
-        self.S, self.coral_flag = initialize_grid_params(All_States, rows, columns, goal_deposit)
+        self.S, self.coral_flag = initialize_grid_params(All_States, rows, columns, goal_deposit, self.weighting)
         self.rows = rows
         self.columns = columns
         self.goal_states = s_goals  # this is a list of list [[gx_1,gy_1],[gx_2,gy_2]...]
@@ -189,7 +189,7 @@ def get_total_R_and_NSE_from_path(Agents, path_joint_NSE_values):
     return R, NSE
 
 
-def initialize_grid_params(All_States, rows, columns, goal_deposit):
+def initialize_grid_params(All_States, rows, columns, goal_deposit, weighting):
     # Initializing all states
     # s = < x, y, sample_with_me, coral_flag, list_of_samples_at_goal>
     S = []
@@ -201,7 +201,7 @@ def initialize_grid_params(All_States, rows, columns, goal_deposit):
         goal_modes.append((i, j))
     for i in range(rows):
         for j in range(columns):
-            for sample_onboard in ['X', 'L', 'S']:
+            for sample_onboard in weighting.keys():
                 for goal_configurations in goal_modes:
                     S.append((i, j, sample_onboard, All_States[i][j] == 'C', goal_configurations))
 
@@ -239,7 +239,9 @@ def get_joint_state(Agents):
 
 def log_joint_NSE(Grid, joint_state):
     joint_NSE_val = 0
-    X = {'X': 0, 'S': 0, 'L': 0}
+    X = {}
+    for sample_type in Grid.weighting.keys():
+        X[sample_type] = 0
     Joint_State = list(copy.deepcopy(joint_state))
 
     # state s: < x , y , sample_with_agent , coral_flag(True or False), samples_at_goal_condition >
@@ -253,7 +255,7 @@ def log_joint_NSE(Grid, joint_state):
 
     return joint_NSE_val
 
-# Grid = Environment({'S': 2, 'L': 3}, 2)
+# Grid = Environment({'A': 2, 'B': 3}, 2)
 # print(All_States)
 # for s in Grid.S:
 #     print(s)
