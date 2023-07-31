@@ -245,6 +245,7 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
     index = np.arange(1)
     bar_width = 0.4
     fsize = 10
+    num_grid = len(NSE_before_mit_list)
     color1 = COLOR['indianred']
     color2 = COLOR['darkorange']
     color3 = COLOR['limegreen']
@@ -260,7 +261,8 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
     NSE_after_gen_std_wo_cf = np.std(NSE_after_mit_gen_wo_cf_list)
     NSE_after_gen_std_w_cf = np.std(NSE_after_mit_gen_w_cf_list)
 
-    title_str = 'Average total NSE across mitigation techniques\n in 5 similar environments in ' + mode + ' mode'
+    title_str = 'Average total NSE across mitigation techniques\n in ' + str(
+        num_grid) + ' similar environments in ' + mode + ' mode'
     # title_str = 'Average NSE accumulated across 5 similar environments\n' + "(Using pseudo state blames)"
 
     fig, ax = plt.subplots()

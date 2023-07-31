@@ -19,7 +19,8 @@ warnings.filterwarnings('ignore')
 M = 2
 num_of_agents = 2
 goal_deposit = (1, 1)
-mode = 'stochastic'  # 'deterministic' or 'stochastic'
+mode = 'deterministic'  # 'deterministic' or 'stochastic'
+prob = 0.8
 # Tracking NSE values with grids
 NSE_old_tracker = []
 NSE_new_tracker = []
@@ -29,7 +30,7 @@ num_of_agents_tracker = []
 
 # initialize the environment
 Complete_sim_start_timer = timer()
-Grid = Environment(num_of_agents, goal_deposit, "grids/test_grid_debug.txt", mode)
+Grid = Environment(num_of_agents, goal_deposit, "grids/train_grid.txt", mode, prob)
 
 # initialize agents with the initial coordinating policies
 Agents = Grid.init_agents_with_initial_policy()
@@ -58,7 +59,8 @@ for agent in Agents:
 
 # getting R_blame rewards for each agent by re-simulating original policies
 blame_before_mitigation = Grid.get_blame_reward_by_following_policy(Agents)
-print("\n--------Agent-wise NSE blames (before mitigation) --------\n", blame_before_mitigation)
+print("\n--------Agent-wise NSE blames (before mitigation) --------\n" + str(
+    blame_before_mitigation) + " = " + simple_colors.red(str(sum(blame_before_mitigation)), ['bold']))
 sorted_indices = sorted(range(len(blame_before_mitigation)),
                         key=lambda a: blame_before_mitigation[a], reverse=True)
 top_values = [blame_before_mitigation[i] for i in sorted_indices[:3]]
@@ -85,7 +87,9 @@ R_new, NSE_new = get_total_R_and_NSE_from_path(Agents, path_joint_NSE_values)
 # display_all_agent_logs(Agents)
 
 blame_after_R_blame = [sum(x) for x in zip(*blame_distribution_stepwise)]
-print("\n--------Agent-wise NSE (with R_blame mitigation) --------\n", blame_after_R_blame)
+print("\n--------Agent-wise NSE (with R_blame mitigation) --------\n" + str(
+    blame_after_R_blame) + " = " + simple_colors.red(str(sum(blame_after_R_blame)),
+                                                     ['bold']))
 
 Agents = reset_Agents(Agents)
 
@@ -104,7 +108,8 @@ end_timer_for_blame_with_gen = timer()
 time_for_blame_with_gen = round((end_timer_for_blame_with_gen - start_timer_for_blame_with_gen) * 1000, 3)
 
 blame_after_R_blame_gen_wo_cf = [sum(x) for x in zip(*blame_distribution_stepwise)]
-print("\n--------Agent-wise NSE (with R_blame_gen mitigation) --------\n", blame_after_R_blame_gen_wo_cf)
+print("\n--------Agent-wise NSE (with R_blame_gen mitigation) --------\n" + str(
+    blame_after_R_blame_gen_wo_cf) + " = " + simple_colors.red(str(sum(blame_after_R_blame_gen_wo_cf)), ['bold']))
 R_new_gen_wo_cf, NSE_new_gen_wo_cf = get_total_R_and_NSE_from_path(Agents, path_joint_NSE_values)
 Agents = reset_Agents(Agents)
 
@@ -123,7 +128,8 @@ end_timer_for_blame_with_gen = timer()
 time_for_blame_with_gen = round((end_timer_for_blame_with_gen - start_timer_for_blame_with_gen) * 1000, 3)
 
 blame_after_R_blame_gen_with_cf = [sum(x) for x in zip(*blame_distribution_stepwise)]
-print("\n-----Agent-wise NSE (with R_blame_gen mitigation) ------\n", blame_after_R_blame_gen_with_cf)
+print("\n-----Agent-wise NSE (with R_blame_gen mitigation) ------\n" + str(
+    blame_after_R_blame_gen_with_cf) + " = " + simple_colors.red(str(sum(blame_after_R_blame_gen_with_cf)), ['bold']))
 R_new_gen_with_cf, NSE_new_gen_with_cf = get_total_R_and_NSE_from_path(Agents, path_joint_NSE_values)
 
 if all_have_reached_goal(Agents):
@@ -160,7 +166,7 @@ print(Agents[1].R_blame_gen_with_cf == Agents[1].R_blame_gen_wo_cf)
 #           PLOTTING SECTION             #
 ##########################################
 
-# plot_reward_bar_comparisons(R_old, R_new, R_new_gen_wo_cf, R_new_gen_with_cf, Grid)
+plot_reward_bar_comparisons(R_old, R_new, R_new_gen_wo_cf, R_new_gen_with_cf, Grid)
 plot_blame_bar_comparisons(blame_before_mitigation, blame_after_R_blame,
                            blame_after_R_blame_gen_wo_cf, blame_after_R_blame_gen_with_cf, Grid)
 plot_NSE_bar_comparisons(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker, NSE_new_gen_with_cf_tracker,
@@ -173,10 +179,10 @@ compare_all_plans_from_all_methods(Agents)
 #            TESTING SECTION             #
 ##########################################
 
-for i in [str(x) for x in range(1, 6)]:
+for i in [str(x) for x in range(1, 10)]:
     filename = 'grids/test_grid' + str(i) + '.txt'
     print("======= Now in test_grid" + str(i) + ".txt =======")
-    Grid = Environment(num_of_agents, goal_deposit, filename, mode)
+    Grid = Environment(num_of_agents, goal_deposit, filename, mode, prob)
 
     # initialize agents with the initial coordinating policies
     Agents = Grid.init_agents_with_initial_policy()
@@ -252,6 +258,9 @@ for i in [str(x) for x in range(1, 6)]:
     NSE_new_tracker.append(NSE_new)
     NSE_new_gen_wo_cf_tracker.append(NSE_new_gen_wo_cf)
     NSE_new_gen_with_cf_tracker.append(NSE_new_gen_with_cf)
+    print(filename + ": [" + simple_colors.red(str(NSE_old), ['bold']) + ", " + simple_colors.magenta(str(NSE_new), [
+        'bold']) + ", " + simple_colors.blue(str(NSE_new_gen_wo_cf), ['bold']) + ", " + simple_colors.green(
+        str(NSE_new_gen_with_cf), ['bold']) + "]")
     num_of_agents_tracker.append(num_of_agents)
 
 Complete_sim_end_timer = timer()

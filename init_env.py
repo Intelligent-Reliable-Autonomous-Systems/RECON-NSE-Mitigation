@@ -22,7 +22,7 @@ import simple_colors
 
 
 class Environment:
-    def __init__(self, num_of_agents, goal_deposit, grid_filename, mode):
+    def __init__(self, num_of_agents, goal_deposit, grid_filename, mode, p):
 
         All_States, rows, columns = read_grid.grid_read_from_file(grid_filename)
         self.all_states = copy.copy(All_States)
@@ -30,7 +30,7 @@ class Environment:
         self.weighting = {'X': 0.0, 'A': 3.0, 'B': 10.0}
 
         if mode == 'stochastic':
-            self.p_success = 0.9
+            self.p_success = p
             print(simple_colors.green('mode: STOCHASTIC', ['bold', 'underlined']))
             print(simple_colors.green('p_success = ' + str(self.p_success), ['bold']))
         elif mode == 'deterministic':
