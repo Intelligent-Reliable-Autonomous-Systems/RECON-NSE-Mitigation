@@ -188,8 +188,6 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen_wo
     title_str = 'Total NSE across mitigation techniques \nfor (' + str(
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid in ' + Grid.mode + ' mode'
 
-    # title_str = 'Total NSE accumulated across different mitigation techniques\n' + "(Using pseudo state blames)"
-
     fig, ax = plt.subplots()
 
     NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Initial Policy", color=color1)
@@ -233,6 +231,47 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen_wo
         height = bar.get_height()
         ax.annotate(f'{round(height, 1)}', xy=(bar.get_x() + bar.get_width() / 2, height), xytext=(0, 3),
                     textcoords="offset points", ha='center', va='bottom', color=color4, fontsize=fsize)
+
+    ax.set_xticklabels(x_labels)
+    ax.legend(fontsize=fsize)
+
+    plt.show()
+
+
+def plot_NSE_bars_with_num_agents(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen_wo_cf, NSE_after_mit_gen_w_cf,
+                                  num_agents_tracker, Grid):
+    num_agents = len(NSE_before_mit)  # this could be obtained from length of any other parameter above as well
+    index = np.arange(num_agents)
+    bar_width = 0.4 / num_agents
+    fsize = 10
+    color1 = COLOR['indianred']
+    color2 = COLOR['darkorange']
+    color3 = COLOR['limegreen']
+    color4 = COLOR['seagreen']
+
+    title_str = 'NSE mitigation trend across varying #agents \n for (' + str(
+        Grid.rows) + ' x ' + str(Grid.columns) + ') grid in ' + Grid.mode + ' mode'
+
+    fig, ax = plt.subplots()
+
+    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Initial Policy", color=color1)
+    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="LVI",
+                                    color=color2)
+    NSE_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf, bar_width,
+                                              label="Gen LVI without cf data",
+                                              color=color3)
+    NSE_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf, bar_width,
+                                             label="Gen LVI with cf data",
+                                             color=color4)
+    ax.set_xlabel('Number of Agents')
+    ax.set_ylabel('NSE')
+    plt.ylim([0, plt.ylim()[1] + 50])
+
+    ax.set_title(title_str)
+    ax.set_xticks(index + 1.5 * bar_width)
+    x_labels = []
+    for i in num_agents_tracker:
+        x_labels.append(str(i) + " Agents ")
 
     ax.set_xticklabels(x_labels)
     ax.legend(fontsize=fsize)
@@ -366,4 +405,45 @@ def plot_blame_bar_comparisons(blame_before_mit, blame_after_mit, blame_after_mi
     ax.set_xticklabels(x_labels)
     ax.legend()
 
+    plt.show()
+
+
+def time_plot(number_of_agents_tracker, time_tracker):
+    title_str = 'Simulation Time vs Number of Agents\n(stochastic transitions)'
+
+    fig, ax = plt.subplots()
+
+    ax.set_xlabel('Number of Agents')
+    plt.xticks(number_of_agents_tracker, number_of_agents_tracker)
+    ax.set_ylabel('Time (min)')
+    # plt.ylim([0, plt.ylim()[1] + 10])
+    ax.set_title(title_str)
+
+    plt.plot(number_of_agents_tracker, time_tracker)
+
+    plt.show()
+
+
+def separated_time_plot(number_of_agents_tracker, time_tracker1, time_tracker2, time_tracker3, time_tracker4):
+    title_str = 'Process Times vs Number of Agents\n(stochastic transitions)'
+
+    color1 = COLOR['indianred']
+    color2 = COLOR['darkorange']
+    color3 = COLOR['limegreen']
+    color4 = COLOR['seagreen']
+
+    fig, ax = plt.subplots()
+
+    ax.set_xlabel('Number of Agents')
+    plt.xticks(number_of_agents_tracker, number_of_agents_tracker)
+    ax.set_ylabel('Time (min)')
+
+    ax.set_title(title_str)
+
+    plt.plot(number_of_agents_tracker, time_tracker1, color=color1, label='Initial Policy')
+    plt.plot(number_of_agents_tracker, time_tracker2, color=color2, label='LVI Mitigation')
+    plt.plot(number_of_agents_tracker, time_tracker3, color=color3, label='Gen LVI without cf data')
+    plt.plot(number_of_agents_tracker, time_tracker4, color=color4, label='Gen LVI with cf data')
+
+    ax.legend()
     plt.show()
