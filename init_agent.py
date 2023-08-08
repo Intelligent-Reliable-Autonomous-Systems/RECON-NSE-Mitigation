@@ -166,3 +166,38 @@ class Agent:
         # print("%%%%%%%%%%[init_agent.py] RBlame1 == RBlame2: ", self.R_blame_gen_wo_cf == self.R_blame_gen_with_cf)
         self.R_blame_gen_wo_cf[self.s_goal] = 100
         self.R_blame_gen_with_cf[self.s_goal] = 100
+
+    def generalize_Rblame_wo_cf(self):
+        weighting = self.Grid.weighting
+        X_wo_cf = copy.deepcopy(self.blame_training_data_x_wo_cf)
+        y_wo_cf = copy.deepcopy(self.blame_training_data_y_wo_cf)
+        N1 = len(X_wo_cf)
+        X1, y1 = np.array(X_wo_cf).reshape((N1, 4)), np.array(y_wo_cf).reshape((N1, 1))
+
+        model_wo_cf_data = LinearRegression()
+        model_wo_cf_data.fit(X1, y1)
+        self.model_wo_cf = model_wo_cf_data
+        for s in self.Grid.S:
+            R_blame_gen_wo_cf = float(
+                self.model_wo_cf.predict(np.array([[weighting[s[2]], int(s[3]), s[4][0], s[4][1]]])))
+            self.R_blame_gen_wo_cf[s] = round(R_blame_gen_wo_cf, 1)
+
+        self.R_blame_gen_wo_cf[self.s_goal] = 100
+
+    def generalize_Rblame_with_cf(self):
+        weighting = self.Grid.weighting
+
+        X_with_cf = copy.deepcopy(self.blame_training_data_x_with_cf)
+        y_with_cf = copy.deepcopy(self.blame_training_data_y_with_cf)
+        N2 = len(X_with_cf)
+        X2, y2 = np.array(X_with_cf).reshape((N2, 4)), np.array(y_with_cf).reshape((N2, 1))
+
+        model_with_cf_data = LinearRegression()
+        model_with_cf_data.fit(X2, y2)
+        self.model_with_cf = model_with_cf_data
+        for s in self.Grid.S:
+            R_blame_gen_with_cf = float(
+                self.model_with_cf.predict(np.array([[weighting[s[2]], int(s[3]), s[4][0], s[4][1]]])))
+            self.R_blame_gen_with_cf[s] = round(R_blame_gen_with_cf, 1)
+
+        self.R_blame_gen_with_cf[self.s_goal] = 100
