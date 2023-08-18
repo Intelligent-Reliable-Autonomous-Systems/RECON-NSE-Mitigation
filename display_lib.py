@@ -242,7 +242,7 @@ def plot_NSE_bars_with_num_agents(NSE_before_mit, NSE_after_mit, NSE_after_mit_g
                                   num_agents_tracker, Grid):
     num_agents = len(NSE_before_mit)  # this could be obtained from length of any other parameter above as well
     index = np.arange(num_agents)
-    bar_width = 0.4 / num_agents
+    bar_width = 0.9 / num_agents
     fsize = 10
     color1 = COLOR['indianred']
     color2 = COLOR['darkorange']
@@ -264,14 +264,14 @@ def plot_NSE_bars_with_num_agents(NSE_before_mit, NSE_after_mit, NSE_after_mit_g
                                              label="Gen LVI with cf data",
                                              color=color4)
     ax.set_xlabel('Number of Agents')
-    ax.set_ylabel('NSE')
+    ax.set_ylabel('NSE Penalty')
     plt.ylim([0, plt.ylim()[1] + 50])
 
     ax.set_title(title_str)
     ax.set_xticks(index + 1.5 * bar_width)
     x_labels = []
     for i in num_agents_tracker:
-        x_labels.append(str(i) + " Agents ")
+        x_labels.append(str(i))
 
     ax.set_xticklabels(x_labels)
     ax.legend(fontsize=fsize)
@@ -317,7 +317,7 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
                                              label="Gen LVI with cf data",
                                              color=color4, yerr=NSE_after_gen_std_w_cf, ecolor='black', capsize=10)
     ax.set_xlabel('Number of Agents')
-    ax.set_ylabel('NSE')
+    ax.set_ylabel('NSE Penalty')
     plt.ylim([0, plt.ylim()[1] + 20])
     if min(NSE_after_mit_gen_w_cf_list) == 0.0:
         ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 15, 'Avoidable NSE', color='black', weight='bold',
@@ -424,10 +424,11 @@ def time_plot(number_of_agents_tracker, time_tracker):
     plt.show()
 
 
-def separated_time_plot(number_of_agents_tracker, time_tracker1, time_tracker2, time_tracker3, time_tracker4):
+def separated_time_plot(number_of_agents_tracker, total_experiment_time, LVI_time_tracker, LVI_wo_cf_time_tracker,
+                        LVI_w_cf_time_tracker):
     title_str = 'Process Times vs Number of Agents\n(stochastic transitions)'
 
-    color1 = COLOR['indianred']
+    # color1 = COLOR['indianred']
     color2 = COLOR['darkorange']
     color3 = COLOR['limegreen']
     color4 = COLOR['seagreen']
@@ -440,10 +441,10 @@ def separated_time_plot(number_of_agents_tracker, time_tracker1, time_tracker2, 
 
     ax.set_title(title_str)
 
-    plt.plot(number_of_agents_tracker, time_tracker1, color=color1, label='Initial Policy')
-    plt.plot(number_of_agents_tracker, time_tracker2, color=color2, label='LVI Mitigation')
-    plt.plot(number_of_agents_tracker, time_tracker3, color=color3, label='Gen LVI without cf data')
-    plt.plot(number_of_agents_tracker, time_tracker4, color=color4, label='Gen LVI with cf data')
+    # plt.plot(number_of_agents_tracker, total_experiment_time, color=color1, label='Initial Policy')
+    plt.plot(number_of_agents_tracker, LVI_time_tracker, color=color2, label='LVI Mitigation')
+    plt.plot(number_of_agents_tracker, LVI_wo_cf_time_tracker, color=color3, label='Gen LVI without cf data')
+    plt.plot(number_of_agents_tracker, LVI_w_cf_time_tracker, color=color4, label='Gen LVI with cf data')
 
     ax.legend()
     plt.show()

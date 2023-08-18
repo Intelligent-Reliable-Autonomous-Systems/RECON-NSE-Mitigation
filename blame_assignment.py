@@ -96,6 +96,41 @@ class Blame:
         # print("Blame for " + str(joint_NSE_state) + ": " + str(original_NSE) + " = " + str(NSE_blame))
         return NSE_blame
 
+    def get_blame_baseline(self, original_NSE, joint_NSE_state):
+        """
+        :param original_NSE: Scalar value of NSE from a single joint state "joint_NSE_state"
+        :param joint_NSE_state: the joint state under investigation
+        :return: numpy 1d array of individual agent blames
+        """
+        blame = np.zeros(len(self.Agents))
+        NSE_blame = np.zeros(len(self.Agents))
+
+        for agent_idx in range(len(self.Agents)):
+            counterfactual_constant_state = copy.deepcopy(joint_NSE_state)
+            counterfactual_constant_state = list(counterfactual_constant_state)
+            counterfactual_constant_state[agent_idx] = list(counterfactual_constant_state[agent_idx])
+            counterfactual_constant_state[agent_idx][2] = 'A'  # replacing i^th agents state with constant cf state
+            counterfactual_constant_state[agent_idx] = tuple(counterfactual_constant_state[agent_idx])
+            counterfactual_constant_state = tuple(counterfactual_constant_state)
+            baseline_performance_by_agent = self.Grid.give_joint_NSE_value(counterfactual_constant_state)
+
+            if original_NSE <= baseline_performance_by_agent:
+                self.Agents[agent_idx].best_performance_flag = True
+            else:
+                self.Agents[agent_idx].best_performance_flag = False
+
+            blame_val = round(original_NSE - baseline_performance_by_agent, 2)
+            blame[agent_idx] = blame_val + self.epsilon + self.NSE_worst
+            blame[agent_idx] = round(blame[agent_idx] / 2, 2)
+            if joint_NSE_state[agent_idx][2] == 'X':
+                blame[agent_idx] = 0.0
+        for agent_idx in range(len(self.Agents)):
+            NSE_blame[agent_idx] = round((((blame[agent_idx]) / (np.sum(blame[:]))) * original_NSE), 2)
+            if np.isnan(NSE_blame[agent_idx]):
+                NSE_blame[agent_idx] = 0.0
+
+        return NSE_blame
+
     def get_training_data_with_cf(self, Agents, Joint_NSE_states):
         weighting = copy.deepcopy(self.Grid.weighting)
         joint_NSE_states = copy.deepcopy(Joint_NSE_states)

@@ -27,7 +27,7 @@ class Environment:
         All_States, rows, columns = read_grid.grid_read_from_file(grid_filename)
         self.all_states = copy.copy(All_States)
 
-        self.weighting = {'X': 0.0, 'A': 3.0, 'B': 10.0}
+        self.weighting = {'X': 0.0, 'A': 2.0, 'B': 10.0}
 
         if mode == 'stochastic':
             self.p_success = p
@@ -118,6 +118,7 @@ class Environment:
     def get_blame_reward_by_following_policy(self, Agents):
         NSE_blame_dist = []
         for agent in Agents:
+            agent.s = copy.copy(agent.s0)
             RR = 0
             Pi = copy.copy(agent.Pi)
             while agent.s != agent.s_goal:
@@ -125,7 +126,7 @@ class Environment:
                 agent.s = calculation_lib.do_action(agent, agent.s, Pi[agent.s])
             NSE_blame_dist.append(round(-RR, 2))
 
-        if not NSE_blame_dist:
+        if len(NSE_blame_dist) == 0:
             for _ in range(len(Agents)):
                 NSE_blame_dist.append(0.0)
 

@@ -1,6 +1,8 @@
 import warnings
 import simple_colors
+import numpy as np
 from timeit import default_timer as timer
+import random
 import value_iteration
 from blame_assignment import Blame
 from init_env import Environment, get_total_R_and_NSE_from_path
@@ -17,7 +19,7 @@ warnings.filterwarnings('ignore')
 M = 2
 num_of_agents = 2
 goal_deposit = (1, 1)
-mode = 'deterministic'  # 'deterministic' or 'stochastic'
+mode = 'stochastic'  # 'deterministic' or 'stochastic'
 prob = 0.8
 # Tracking NSE values with grids
 NSE_old_tracker = []
@@ -25,7 +27,6 @@ NSE_new_tracker = []
 NSE_new_gen_wo_cf_tracker = []
 NSE_new_gen_with_cf_tracker = []
 num_of_agents_tracker = []
-time_tracker = []
 
 # initialize the environment
 Complete_sim_start_timer = timer()
@@ -62,7 +63,7 @@ print("\n--------Agent-wise NSE blames (before mitigation) --------\n" + str(
     blame_before_mitigation) + " = " + simple_colors.red(str(sum(blame_before_mitigation)), ['bold']))
 sorted_indices = sorted(range(len(blame_before_mitigation)),
                         key=lambda a: blame_before_mitigation[a], reverse=True)
-top_values = [blame_before_mitigation[i] for i in sorted_indices[:M]]
+top_values = [blame_before_mitigation[i] for i in sorted_indices[:3]]
 top_offender_agents = [i + 1 for i, value in enumerate(blame_before_mitigation) if value in top_values]
 print("\nAgents to be corrected: ", top_offender_agents)
 Agents_to_be_corrected = [Agents[i - 1] for i in top_offender_agents]
@@ -88,7 +89,7 @@ R_new, NSE_new = get_total_R_and_NSE_from_path(Agents, path_joint_NSE_values)
 blame_after_R_blame = [sum(x) for x in zip(*blame_distribution_stepwise)]
 print("\n--------Agent-wise NSE (with R_blame mitigation) --------\n" + str(
     blame_after_R_blame) + " = " + simple_colors.magenta(str(sum(blame_after_R_blame)),
-                                                         ['bold']))
+                                                     ['bold']))
 
 Agents = reset_Agents(Agents)
 
@@ -128,8 +129,7 @@ time_for_blame_with_gen = round((end_timer_for_blame_with_gen - start_timer_for_
 
 blame_after_R_blame_gen_with_cf = [sum(x) for x in zip(*blame_distribution_stepwise)]
 print("\n-----Agent-wise NSE (with R_blame_gen mitigation) ------\n" + str(
-    blame_after_R_blame_gen_with_cf) + " = " + simple_colors.green(str(sum(blame_after_R_blame_gen_with_cf)),
-                                                                   ['bold']))
+    blame_after_R_blame_gen_with_cf) + " = " + simple_colors.green(str(sum(blame_after_R_blame_gen_with_cf)), ['bold']))
 R_new_gen_with_cf, NSE_new_gen_with_cf = get_total_R_and_NSE_from_path(Agents, path_joint_NSE_values)
 
 if all_have_reached_goal(Agents):
@@ -160,8 +160,8 @@ print("Complete Simulation: " + str(Complete_sim_time) + " sec")
 print("CF generation for Blame Assignment (without Generalization): " + str(time_for_blame_without_gen) + " ms")
 print("CF generation for Blame Assignment (with Generalization): " + str(time_for_blame_with_gen) + " ms")
 print("-------------------------------------------------------")
-
-time_tracker.append(Complete_sim_time)
+print(Agents[0].R_blame_gen_with_cf == Agents[0].R_blame_gen_wo_cf)
+print(Agents[1].R_blame_gen_with_cf == Agents[1].R_blame_gen_wo_cf)
 ##########################################
 #           PLOTTING SECTION             #
 ##########################################
@@ -174,7 +174,7 @@ plot_NSE_bar_comparisons(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tra
 print("Num of agents array = ", num_of_agents_tracker)
 print("-------------------------------------")
 compare_all_plans_from_all_methods(Agents)
-# exit(0)
+exit(0)
 ##########################################
 #            TESTING SECTION             #
 ##########################################
