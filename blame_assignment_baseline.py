@@ -4,7 +4,7 @@ from init_env import log_joint_NSE
 from itertools import permutations
 
 
-class Blame:
+class BlameBaseline:
     def __init__(self, Agents, Grid):
         self.blame = np.array(len(Agents))
         self.Agents = Agents
@@ -14,86 +14,45 @@ class Blame:
         self.NSE_window = (self.NSE_best, self.NSE_worst)  # formulation where NSE is positive
         self.epsilon = 0.01
 
-    def assign_blame_using_clone(self, joint_state):
-        # clone agent 1 by deep-copying it
-        clone_agent = copy.deepcopy(self.Agents[0])
-        clone_agent.s = joint_state[0]
-        Agents = copy.deepcopy(self.Agents)
-        index = 0
-        for agent in Agents:
-            agent.s = joint_state[index]
-            index += 1
-        Agents_augmented = copy.deepcopy(Agents)
-        Agents_augmented.append(
-            clone_agent)  # this is not a list of all agents at the joint state under investigation + clone agent1
-        NSE_original = self.get_NSE(Agents)
-        NSE_with_clone = self.get_NSE(Agents_augmented)
-        b1 = NSE_with_clone - NSE_original
-        b2 = 2 * NSE_original - NSE_with_clone
-        self.blame = np.array([b1, b2])
-        return [b1, b2]
-
-    def get_NSE(self, Agents):
-        NSE_val = 0
-        for agent in Agents:
-            NSE_val += self.Grid.NSE[agent.s]
-        return NSE_val
-
     def get_blame(self, original_NSE, joint_NSE_state):
         """
         :param original_NSE: Scalar value of NSE from a single joint state "joint_NSE_state"
         :param joint_NSE_state: the joint state under investigation
         :return: numpy 1d array of individual agent blames
         """
-        agentWise_cfs_NSEs = []
         blame = np.zeros(len(self.Agents))
         NSE_blame = np.zeros(len(self.Agents))
-        # print("~~~~~~     Original NSE: ", original_NSE)
-        # print("joint_NSE_state in the function(line 47): ", joint_NSE_state)
-        # print("~~~~~~     Original NSE: ", get_joint_NSEs_for_list(joint_NSE_state))
-        agentWise_cfs, _ = generate_counterfactuals(joint_NSE_state, self.Agents)
-        for cf_state in agentWise_cfs:
-            # print('[blame_assignment] cf_state: ', cf_state)
-            NSEs_for_cf_state = get_joint_NSEs_for_list(cf_state, self.Grid)
-            # print("[blame_assignment] ****cf_NSEs for agent: " + str(NSEs_for_cf_state))
-            agentWise_cfs_NSEs.append(NSEs_for_cf_state)
-        # print('[blame_assignment] agentWise_cfs_NSEs: ', agentWise_cfs_NSEs)
-        # print("&&&&&&&&&&&&&&&&&&&&&&&")
-        for agent_idx in range(len(self.Agents)):
-            cf_nse_set_for_agent = agentWise_cfs_NSEs[agent_idx]
-            # print("[blame_assignment] cf_nse_set_for_agent: ", cf_nse_set_for_agent)
-            # print("min(cf_nse_set_for_agent): ", min(cf_nse_set_for_agent))
-            best_performance_by_agent = min(list(cf_nse_set_for_agent))
 
-            if original_NSE <= best_performance_by_agent:
+        for agent_idx in range(len(self.Agents)):
+            counterfactual_constant_state = copy.deepcopy(joint_NSE_state)
+            counterfactual_constant_state = list(counterfactual_constant_state)
+            counterfactual_constant_state[agent_idx] = list(counterfactual_constant_state[agent_idx])
+            counterfactual_constant_state[agent_idx][2] = 'B'  # replacing i^th agents state with constant cf state
+            counterfactual_constant_state[agent_idx] = tuple(counterfactual_constant_state[agent_idx])
+            counterfactual_constant_state = tuple(counterfactual_constant_state)
+            baseline_performance_by_agent = self.Grid.give_joint_NSE_value(counterfactual_constant_state)
+
+            if original_NSE <= baseline_performance_by_agent:
                 self.Agents[agent_idx].best_performance_flag = True
             else:
                 self.Agents[agent_idx].best_performance_flag = False
 
-            blame_val = round(original_NSE - best_performance_by_agent, 2)  # the worst blame can be 0
-            # print("[blame_assignment.py (line 74)] blame_val = ", blame_val)
-            # print('[blame_assignment]          blame_val: ', blame_val)
-            # print("min(CF_NSEs Agent" + str(agent_idx + 1) + ") -> " + str(best_performance_by_agent))
-            # print("Blame = OG_NSE - min(CF_NSEs Agent" + str(agent_idx + 1) + ") -> ", blame_val)
-            blame[agent_idx] = blame_val + self.epsilon + self.NSE_worst
-            blame[agent_idx] = round(blame[agent_idx] / 2, 2)  # rescale Blame from [0, 2*NSE_worst] to [0,NSE_worst]
-            # print("[blame_assignment.py (line 80)] blame[" + str(agent_idx) + "] = " + str(blame_val))
-            if joint_NSE_state[agent_idx][2] == 'X':
-                blame[agent_idx] = 0.0
-            # print("---- AFTER Blame Value =", blame[agent_idx])
-        # print("&&&&&&&&&&&&&&&&&&&&&&&")
+            blame_val = round(original_NSE - baseline_performance_by_agent, 2)
+            blame[agent_idx] = blame_val + self.epsilon  # + self.NSE_worst
+            # blame[agent_idx] = round(blame[agent_idx] / 2, 2)
+            # if joint_NSE_state[agent_idx][2] == 'X':
+            #     blame[agent_idx] = 0.0
         for agent_idx in range(len(self.Agents)):
-            # print("[blame_assignment.py (line 86)] np.sum(blame[:]))) = ", np.sum(blame[:]))
-            NSE_blame[agent_idx] = round((((blame[agent_idx]) / (np.sum(blame[:]))) * original_NSE), 2)
+            NSE_blame[agent_idx] = blame[agent_idx]  # * original_NSE / np.sum(blame[:])
             if np.isnan(NSE_blame[agent_idx]):
                 NSE_blame[agent_idx] = 0.0
-        # for agent in self.Agents:
-        # if agent.best_performance_flag is True:
-        # print("Agent " + agent.label + " did it's best!")
-        # else:
-        # print("Agent " + agent.label + " did NOT do it's best!")
-        # print("[blame_assignment.py (line 93)] NSE_blame = ", NSE_blame)
-        # print("Blame for " + str(joint_NSE_state) + ": " + str(original_NSE) + " = " + str(NSE_blame))
+        # factor = original_NSE / np.sum(blame[:])
+        # print(str(NSE_blame) + ": " + str(sum(NSE_blame)))
+        # print("Original NSE: ", original_NSE)
+        # print("Factor: ", factor)
+        # NSE_Blame = [factor * i for i in NSE_blame]
+
+        # NSE_Blame = np.zeros(len(self.Agents))
         return NSE_blame
 
     def get_training_data_with_cf(self, Agents, Joint_NSE_states):
@@ -176,11 +135,3 @@ def generate_counterfactuals(joint_state, Agents):
         counterfactual_jointStates = []
 
     return agent_wise_cfStates, all_cf_joint_states
-
-
-def get_joint_NSEs_for_list(joint_states, Grid):
-    joint_NSEs = []
-    for js in joint_states:
-        nse = Grid.give_joint_NSE_value(js)
-        joint_NSEs.append(nse)
-    return joint_NSEs

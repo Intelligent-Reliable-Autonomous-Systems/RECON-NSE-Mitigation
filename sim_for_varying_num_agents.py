@@ -188,3 +188,14 @@ for i in range(len(time_tracker)):
 #                                 LVI_wo_cf_time_tracker, LVI_w_cf_time_tracker)
 plot_NSE_bars_with_num_agents(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker, NSE_new_gen_with_cf_tracker,
                               num_of_agents_tracker, Grid)
+
+
+# CA Baseline Results
+# NSE_old_tracker
+# [43.92, 50.91, 85.8, 92.46, 164.1, 279.72, 402.96]
+# NSE_new_tracker
+# [46.36, 55.67, 90.56, 99.45, 173.22, 270.3, 386.4]
+# NSE_new_gen_wo_cf_tracker
+# [46.36, 55.67, 90.56, 99.45, 173.22, 288.83, 419.78]
+# NSE_new_gen_with_cf_tracker
+# [46.36, 55.67, 90.56, 99.45, 173.22, 270.3, 386.4]

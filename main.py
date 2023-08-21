@@ -19,7 +19,7 @@ warnings.filterwarnings('ignore')
 M = 2
 num_of_agents = 2
 goal_deposit = (1, 1)
-mode = 'stochastic'  # 'deterministic' or 'stochastic'
+mode = 'deterministic'  # 'deterministic' or 'stochastic'
 prob = 0.8
 # Tracking NSE values with grids
 NSE_old_tracker = []

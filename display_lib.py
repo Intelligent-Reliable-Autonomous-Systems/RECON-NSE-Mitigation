@@ -279,6 +279,59 @@ def plot_NSE_bars_with_num_agents(NSE_before_mit, NSE_after_mit, NSE_after_mit_g
     plt.show()
 
 
+def plot_NSE_against_CA_baseline(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen_wo_cf, NSE_after_mit_gen_w_cf,
+                                 NSE_before_mit_b, NSE_after_mit_b, NSE_after_mit_gen_wo_cf_b, NSE_after_mit_gen_w_cf_b,
+                                 num_agents_tracker, Grid):
+    num_agents = len(NSE_before_mit)  # this could be obtained from length of any other parameter above as well
+    index = np.arange(num_agents)
+    bar_width = 0.9 / num_agents
+    fsize = 10
+    color1 = COLOR['indianred']
+    color2 = COLOR['darkorange']
+    color3 = COLOR['limegreen']
+    color4 = COLOR['seagreen']
+    color1b = COLOR['darkorchid']  # ['lightsalmon']
+    color2b = COLOR['darkorchid']  # ['wheat']
+    color3b = COLOR['darkorchid']  # ['springgreen']
+    color4b = COLOR['darkorchid']  # ['mediumspringgreen']
+
+    title_str = 'NSE mitigation trend across varying #agents \n for (' + str(
+        Grid.rows) + ' x ' + str(Grid.columns) + ') grid in ' + Grid.mode + ' mode against baseline'
+
+    fig, ax = plt.subplots()
+
+    NSE_values_b = ax.bar(index, NSE_before_mit_b, 0.77 * bar_width, color=color1b)
+    NSE_values_with_Rblame_b = ax.bar(index + bar_width, NSE_after_mit_b, 0.77 * bar_width, color=color2b)
+    NSE_values_with_Rblame_gen_wo_cf_b = ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf_b, 0.77 * bar_width,
+                                                color=color3b)
+    NSE_values_with_Rblame_gen_w_cf_b = ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf_b, 0.77 * bar_width,
+                                               label="CA Baseline", color=color4b)
+
+    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Initial Policy", color=color1)
+    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="LVI",
+                                    color=color2)
+    NSE_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf, bar_width,
+                                              label="Gen LVI without cf data",
+                                              color=color3)
+    NSE_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf, bar_width,
+                                             label="Gen LVI with cf data",
+                                             color=color4)
+    ax.set_xlabel('Number of Agents')
+    ax.set_ylabel('NSE Penalty')
+    plt.ylim([0, plt.ylim()[1] + 50])
+
+    ax.set_title(title_str)
+    ax.set_xticks(index + 1.5 * bar_width)
+    x_labels = []
+    for i in num_agents_tracker:
+        x_labels.append(str(i))
+
+    ax.set_xticklabels(x_labels)
+    ax.legend(fontsize=fsize)
+
+    plt.show()
+
+
 def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_list, NSE_after_mit_gen_wo_cf_list,
                                            NSE_after_mit_gen_w_cf_list, mode):
     index = np.arange(1)
