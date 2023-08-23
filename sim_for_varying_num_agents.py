@@ -184,8 +184,8 @@ for i in range(len(time_tracker)):
     print(str(Num_of_agents[i]) + " Agents: " + str(time_tracker[i]) + " min.")
     print("-------------------------------------------------------")
 # display_lib.time_plot(num_of_agents_tracker, time_tracker)
-# display_lib.separated_time_plot(num_of_agents_tracker, initial_policy_time_tracker, LVI_time_tracker,
-#                                 LVI_wo_cf_time_tracker, LVI_w_cf_time_tracker)
+display_lib.separated_time_plot(num_of_agents_tracker, initial_policy_time_tracker, LVI_time_tracker,
+                                LVI_wo_cf_time_tracker, LVI_w_cf_time_tracker)
 plot_NSE_bars_with_num_agents(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker, NSE_new_gen_with_cf_tracker,
                               num_of_agents_tracker, Grid)
 

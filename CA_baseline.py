@@ -1,7 +1,7 @@
 import warnings
-import numpy as np
 import simple_colors
 import display_lib
+from timeit import default_timer as timer
 import value_iteration
 from blame_assignment import Blame as Blame1
 from blame_assignment_baseline import BlameBaseline as Blame2
@@ -98,7 +98,8 @@ for ctr in range(0, len(MM)):
 
     Agents = reset_Agents(Agents)
 
-    print("\n---- Now doing Lexicographic Value Iteration with R_blame_gen_wo_cf for selected agents [OUR METHOD]----\n ")
+    print(
+        "\n---- Now doing Lexicographic Value Iteration with R_blame_gen_wo_cf for selected agents [OUR METHOD]----\n ")
     value_iteration.LVI(Agents, Agents_to_be_corrected, mode='R_blame_gen_wo_cf')
     joint_NSE_states, path_joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents,
                                                                                'NSE Report (R_blame_gen_wo_cf):')
@@ -115,7 +116,8 @@ for ctr in range(0, len(MM)):
     R_new_gen_wo_cf, NSE_new_gen_wo_cf = get_total_R_and_NSE_from_path(Agents, path_joint_NSE_values)
     Agents = reset_Agents(Agents)
 
-    print("\n---- Now doing Lexicographic Value Iteration with R_blame_gen_with_cf for selected agents [OUR METHOD]----\n ")
+    print(
+        "\n---- Now doing Lexicographic Value Iteration with R_blame_gen_with_cf for selected agents [OUR METHOD]----\n ")
     value_iteration.LVI(Agents, Agents_to_be_corrected, mode='R_blame_gen_with_cf')
     joint_NSE_states, path_joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents,
                                                                                'NSE Report (R_blame_gen_with_cf):')
@@ -144,7 +146,8 @@ for ctr in range(0, len(MM)):
         print("[OUR METHOD]Total NSE (after R_blame_gen_wo_cf): ", simple_colors.blue(str(NSE_new_gen_wo_cf), ['bold']))
         print("----------------------------------------------")
         print("[OUR METHOD]Total Reward (after R_blame_gen_with_cf): ", R_new_gen_with_cf)
-        print("[OUR METHOD]Total NSE (after R_blame_gen_with_cf): ", simple_colors.green(str(NSE_new_gen_with_cf), ['bold']))
+        print("[OUR METHOD]Total NSE (after R_blame_gen_with_cf): ",
+              simple_colors.green(str(NSE_new_gen_with_cf), ['bold']))
         print("----------------------------------------------")
 
     NSE_old_tracker.append(NSE_old)
@@ -167,7 +170,7 @@ NSE_new_tracker_baseline = []
 NSE_new_gen_wo_cf_tracker_baseline = []
 NSE_new_gen_with_cf_tracker_baseline = []
 num_of_agents_tracker = []
-
+DR_time_tracker = []
 for ctr in range(0, len(MM)):
 
     M = MM[ctr]
@@ -222,7 +225,13 @@ for ctr in range(0, len(MM)):
     Agents = reset_Agents(Agents)
 
     print("\n---- Now doing Lexicographic Value Iteration with R_blame for selected agents [BASELINE]----\n ")
+
+    blame.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)
+    DR_start_time = timer()
     value_iteration.LVI(Agents, Agents_to_be_corrected, mode='R_blame')
+    DR_end_time = timer()
+    DR_time = round(float(DR_end_time - DR_start_time) / 60.0, 2)
+    DR_time_tracker.append(DR_time)
     joint_NSE_states, path_joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents, 'NSE Report (R_blame):')
 
     blame_distribution_stepwise = []
@@ -288,7 +297,8 @@ for ctr in range(0, len(MM)):
         print("[BASELINE]Total NSE (after R_blame_gen_wo_cf): ", simple_colors.blue(str(NSE_new_gen_wo_cf), ['bold']))
         print("----------------------------------------------")
         print("[BASELINE]Total Reward (after R_blame_gen_with_cf): ", R_new_gen_with_cf)
-        print("[BASELINE]Total NSE (after R_blame_gen_with_cf): ", simple_colors.green(str(NSE_new_gen_with_cf), ['bold']))
+        print("[BASELINE]Total NSE (after R_blame_gen_with_cf): ",
+              simple_colors.green(str(NSE_new_gen_with_cf), ['bold']))
         print("----------------------------------------------")
 
     NSE_old_tracker_baseline.append(NSE_old)
@@ -296,12 +306,7 @@ for ctr in range(0, len(MM)):
     NSE_new_gen_wo_cf_tracker_baseline.append(NSE_new_gen_wo_cf)
     NSE_new_gen_with_cf_tracker_baseline.append(NSE_new_gen_with_cf)
     num_of_agents_tracker.append(num_of_agents)
-
-plot_NSE_bars_with_num_agents(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker, NSE_new_gen_with_cf_tracker,
-                              num_of_agents_tracker, Grid)
-
-plot_NSE_bars_with_num_agents(NSE_old_tracker_baseline, NSE_new_tracker_baseline, NSE_new_gen_wo_cf_tracker_baseline,
-                              NSE_new_gen_with_cf_tracker_baseline, num_of_agents_tracker, Grid)
+print("DR_time_tracker = ", DR_time_tracker)
 
 plot_NSE_against_CA_baseline(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker, NSE_new_gen_with_cf_tracker,
                              NSE_old_tracker_baseline, NSE_new_tracker_baseline, NSE_new_gen_wo_cf_tracker_baseline,
@@ -316,3 +321,9 @@ plot_NSE_against_CA_baseline(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf
 # [46.36, 55.67, 90.56, 99.45, 173.22, 288.83, 419.78]
 # NSE_new_gen_with_cf_tracker
 # [46.36, 55.67, 90.56, 99.45, 173.22, 270.3, 386.4]
+
+
+# TIms for Normal methods (in minutes)
+# LVI_time_tracker = [0.2,0.3,0.4,0.5,1.45,2.2,9.0]
+# LVI_wo_cf_time_tracker = [0.21,0.32,0.43,0.53,1.5,2.4,9.8]
+# LVI_w_cf_time_tracker = [0.22,0.35,0.45,0.55,1.55,2.5,10.3]

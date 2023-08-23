@@ -124,18 +124,15 @@ def plot_reward_bar_comparisons(R_before_mit, R_after_mit, R_after_mit_gen_wo_cf
     title_str = 'Total reward by each agent across mitigation techniques\nfor (' + str(
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid in ' + Grid.mode + ' mode'
 
-    # title_str = 'Reward accumulated by each agent across different mitigation techniques\n' + "(Using pseudo state 
-    # blames)"
-
     fig, ax = plt.subplots()
-    R_values = ax.bar(index, R_before_mit, bar_width, label="Initial Policy", color=color1)
-    R_values_with_blame = ax.bar(index + bar_width, R_after_mit, bar_width, label="LVI",
+    R_values = ax.bar(index, R_before_mit, bar_width, label="Primary Objective Policy", color=color1)
+    R_values_with_blame = ax.bar(index + bar_width, R_after_mit, bar_width, label="FixNova",
                                  color=color2)
     R_values_with_blame_gen_wo_cf = ax.bar(index + 2 * bar_width, R_after_mit_gen_wo_cf, bar_width,
-                                           label="Gen LVI without cf data",
+                                           label="FixNova without cf data",
                                            color=color3)
     R_values_with_blame_gen_w_cf = ax.bar(index + 3 * bar_width, R_after_mit_gen_w_cf, bar_width,
-                                          label="Gen LVI with cf data",
+                                          label="FixNova with cf data",
                                           color=color4)
 
     ax.set_xlabel('Agents')
@@ -190,14 +187,14 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen_wo
 
     fig, ax = plt.subplots()
 
-    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Initial Policy", color=color1)
-    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="LVI",
+    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Primary Objective Policy", color=color1)
+    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="FixNova",
                                     color=color2)
     NSE_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf, bar_width,
-                                              label="Gen LVI without cf data",
+                                              label="FixNova without cf data",
                                               color=color3)
     NSE_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf, bar_width,
-                                             label="Gen LVI with cf data",
+                                             label="FixNova with cf data",
                                              color=color4)
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE')
@@ -254,15 +251,15 @@ def plot_NSE_bars_with_num_agents(NSE_before_mit, NSE_after_mit, NSE_after_mit_g
 
     fig, ax = plt.subplots()
 
-    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Initial Policy", color=color1)
-    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="LVI",
-                                    color=color2)
-    NSE_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf, bar_width,
-                                              label="Gen LVI without cf data",
-                                              color=color3)
-    NSE_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf, bar_width,
-                                             label="Gen LVI with cf data",
-                                             color=color4)
+    ax.bar(index, NSE_before_mit, bar_width, label="Primary Objective Policy", color=color1)
+    ax.bar(index + bar_width, NSE_after_mit, bar_width, label="FixNova",
+           color=color2)
+    ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf, bar_width,
+           label="FixNova without cf data",
+           color=color3)
+    ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf, bar_width,
+           label="FixNova with cf data",
+           color=color4)
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE Penalty')
     plt.ylim([0, plt.ylim()[1] + 50])
@@ -300,22 +297,18 @@ def plot_NSE_against_CA_baseline(NSE_before_mit, NSE_after_mit, NSE_after_mit_ge
 
     fig, ax = plt.subplots()
 
-    NSE_values_b = ax.bar(index, NSE_before_mit_b, 0.77 * bar_width, color=color1b)
-    NSE_values_with_Rblame_b = ax.bar(index + bar_width, NSE_after_mit_b, 0.77 * bar_width, color=color2b)
-    NSE_values_with_Rblame_gen_wo_cf_b = ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf_b, 0.77 * bar_width,
-                                                color=color3b)
-    NSE_values_with_Rblame_gen_w_cf_b = ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf_b, 0.77 * bar_width,
-                                               label="CA Baseline", color=color4b)
+    ax.bar(index, NSE_before_mit, bar_width, label="Primary Objective Policy", color=color1)
+    ax.bar(index + bar_width, NSE_after_mit, bar_width, label="FixNova",
+           color=color2)
+    ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf, bar_width,
+           label="FixNova without cf data",
+           color=color3)
+    ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf, bar_width,
+           label="FixNova with cf data",
+           color=color4)
+    ax.bar(index + 4 * bar_width, NSE_after_mit_gen_wo_cf_b, bar_width,
+           label="Difference Reward", color=color3b)
 
-    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Initial Policy", color=color1)
-    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="LVI",
-                                    color=color2)
-    NSE_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf, bar_width,
-                                              label="Gen LVI without cf data",
-                                              color=color3)
-    NSE_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf, bar_width,
-                                             label="Gen LVI with cf data",
-                                             color=color4)
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE Penalty')
     plt.ylim([0, plt.ylim()[1] + 50])
@@ -355,19 +348,19 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
 
     title_str = 'Average total NSE across mitigation techniques\n in ' + str(
         num_grid) + ' similar environments in ' + mode + ' mode'
-    # title_str = 'Average NSE accumulated across 5 similar environments\n' + "(Using pseudo state blames)"
 
     fig, ax = plt.subplots()
 
-    NSE_values = ax.bar(index, NSE_before_mean, bar_width, label="Initial Policy", color=color1, yerr=NSE_before_std,
+    NSE_values = ax.bar(index, NSE_before_mean, bar_width, label="Primary Objective Policy", color=color1,
+                        yerr=NSE_before_std,
                         ecolor='black', capsize=10)
-    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mean, bar_width, label="LVI Mitigation",
+    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mean, bar_width, label="FixNova",
                                     color=color2, yerr=NSE_after_std, ecolor='black', capsize=10)
     NSE_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, NSE_after_gen_mean_wo_cf, bar_width,
-                                              label="Gen LVI without cf data",
+                                              label="FixNova without cf data",
                                               color=color3, yerr=NSE_after_gen_std_wo_cf, ecolor='black', capsize=10)
     NSE_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, NSE_after_gen_mean_w_cf, bar_width,
-                                             label="Gen LVI with cf data",
+                                             label="FixNova with cf data",
                                              color=color4, yerr=NSE_after_gen_std_w_cf, ecolor='black', capsize=10)
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE Penalty')
@@ -422,13 +415,13 @@ def plot_blame_bar_comparisons(blame_before_mit, blame_after_mit, blame_after_mi
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid in ' + Grid.mode + ' mode'
     # title_str = 'Agent-wise blame across different mitigation techniques\n' + "(Using pseudo state blames)"
 
-    Blame_values = ax.bar(index, blame_before_mit, bar_width, label="Initial Policy", color=color1)
-    Blame_values_with_Rblame = ax.bar(index + bar_width, blame_after_mit, bar_width, label="LVI ",
+    Blame_values = ax.bar(index, blame_before_mit, bar_width, label="Primary Objective Policy", color=color1)
+    Blame_values_with_Rblame = ax.bar(index + bar_width, blame_after_mit, bar_width, label="FixNova",
                                       color=color2)
     Blame_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, blame_after_mit_gen_wo_cf, bar_width,
-                                                label="Gen LVI without cf data", color=color3)
+                                                label="FixNova without cf data", color=color3)
     Blame_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, blame_after_mit_gen_w_cf, bar_width,
-                                               label="Gen LVI with cf data", color=color4)
+                                               label="FixNova with cf data", color=color4)
     ax.set_xlabel('Agents')
     ax.set_ylabel('Blame')
     ax.set_title(title_str)
@@ -477,11 +470,11 @@ def time_plot(number_of_agents_tracker, time_tracker):
     plt.show()
 
 
-def separated_time_plot(number_of_agents_tracker, total_experiment_time, LVI_time_tracker, LVI_wo_cf_time_tracker,
+def separated_time_plot(number_of_agents_tracker, DR_time_tracker, LVI_time_tracker, LVI_wo_cf_time_tracker,
                         LVI_w_cf_time_tracker):
     title_str = 'Process Times vs Number of Agents\n(stochastic transitions)'
 
-    # color1 = COLOR['indianred']
+    color1 = COLOR['darkorchid']
     color2 = COLOR['darkorange']
     color3 = COLOR['limegreen']
     color4 = COLOR['seagreen']
@@ -494,10 +487,10 @@ def separated_time_plot(number_of_agents_tracker, total_experiment_time, LVI_tim
 
     ax.set_title(title_str)
 
-    # plt.plot(number_of_agents_tracker, total_experiment_time, color=color1, label='Initial Policy')
-    plt.plot(number_of_agents_tracker, LVI_time_tracker, color=color2, label='LVI Mitigation')
-    plt.plot(number_of_agents_tracker, LVI_wo_cf_time_tracker, color=color3, label='Gen LVI without cf data')
-    plt.plot(number_of_agents_tracker, LVI_w_cf_time_tracker, color=color4, label='Gen LVI with cf data')
+    plt.plot(number_of_agents_tracker, DR_time_tracker, color=color1, label='Difference Reward')
+    plt.plot(number_of_agents_tracker, LVI_time_tracker, color=color2, label='FixNova')
+    plt.plot(number_of_agents_tracker, LVI_wo_cf_time_tracker, color=color3, label='FixNova without cf data')
+    plt.plot(number_of_agents_tracker, LVI_w_cf_time_tracker, color=color4, label='FixNova with cf data')
 
     ax.legend()
     plt.show()

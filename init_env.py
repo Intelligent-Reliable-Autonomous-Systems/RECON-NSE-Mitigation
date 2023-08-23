@@ -26,7 +26,7 @@ class Environment:
 
         All_States, rows, columns = read_grid.grid_read_from_file(grid_filename)
         self.all_states = copy.copy(All_States)
-
+        self.file_name = grid_filename
         self.weighting = {'X': 0.0, 'A': 2.0, 'B': 10.0}
 
         if mode == 'stochastic':
