@@ -131,7 +131,7 @@ def LVI(Agents, Agents_to_be_corrected, mode):
     """
     :param Agents: All agents
     :param Agents_to_be_corrected: Indices of agents that have been selected to be corrected
-    :param mode: 'R_blame' or 'R_blame_gen'
+    :param mode: 'R_blame' or 'R_blame_gen_wo_cf' or 'R_blame_gen_with_cf'
     :return:
     """
     for agent in Agents_to_be_corrected:
