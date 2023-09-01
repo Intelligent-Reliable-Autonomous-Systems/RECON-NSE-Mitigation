@@ -45,8 +45,8 @@ for ctr in range(0, len(MM)):
     # Difference Reward Baseline NSE
     # Now this technique involves blame and generalization over counterfactuals
     blameDR = BlameBaseline(Agents, Grid)  # referring to blame calculation using Difference Reward (Baseline)
-    # blameDR.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)
-    blameDR.get_training_data_with_cf(Agents, joint_NSE_states)
+    blameDR.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)
+    # blameDR.get_training_data_with_cf(Agents, joint_NSE_states)
     Agents = reset_Agents(Agents)
 
     blame_before_mitigation = Grid.get_blame_reward_by_following_policy(Agents)
@@ -55,10 +55,10 @@ for ctr in range(0, len(MM)):
     print("\nAgents to be corrected [DR]: ", Agents_for_correction)
     Agents_to_be_corrected = [Agents[i] for i in sorted_indices[:M]]
 
-    blameDR.get_training_data_with_cf(Agents_to_be_corrected, joint_NSE_states)
-    for agent in Agents_to_be_corrected:
-        agent.generalize_Rblame_with_cf()
-    value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_with_cf')  # Diff Reward Baseline Mitigation
+    # blameDR.get_training_data_with_cf(Agents_to_be_corrected, joint_NSE_states)
+    # for agent in Agents_to_be_corrected:
+    #     agent.generalize_Rblame_with_cf()
+    value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame')  # Diff Reward Baseline Mitigation
     _, joint_NSE_values_DR = show_joint_states_and_NSE_values(Grid, Agents)
     r_dr, nse_dr = get_total_R_and_NSE_from_path(Agents, joint_NSE_values_DR)
 
@@ -86,7 +86,7 @@ for ctr in range(0, len(MM)):
     NSE_RECON[ctr] = nse_recon
 
 MMM = np.array([100 * i for i in MM])
-np.savetxt('sim_result_data/NSE_RECON.txt', NSE_RECON, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_DR.txt', NSE_DR, fmt='%.1f')
 np.savetxt('sim_result_data/NSE_Naive.txt', NSE_Naive, fmt='%.1f')
+np.savetxt('sim_result_data/NSE_DR.txt', NSE_DR, fmt='%.1f')
+np.savetxt('sim_result_data/NSE_RECON.txt', NSE_RECON, fmt='%.1f')
 np.savetxt('sim_result_data/agent_percentage_corrected.txt', MMM, fmt='%d')

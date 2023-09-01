@@ -494,3 +494,47 @@ def separated_time_plot(number_of_agents_tracker, DR_time_tracker, LVI_time_trac
 
     ax.legend()
     plt.show()
+
+
+def NSE_with_varying_corrected_agents(NSE_naive, NSE_dr, NSE_recon, agents_corrected):
+    """
+    :param NSE_naive: Scalar value of NSE encountered when Agents don't know about NSE
+    :param NSE_dr: Array of 10 NSE values when corrected agents vary from 10% to 100% under Difference Reward baseline
+    :param NSE_recon: Array of 10 NSE values when corrected agents vary from 10% to 100% under RECON (simple R_blame)
+    :param agents_corrected: Array of 10 NSE values showing percentage of agents corrected
+
+    :return: plot (Figure 1)
+    """
+    num_agents = len(agents_corrected)  # this could be obtained from length of any other parameter above as well
+    index = np.arange(num_agents)
+    bar_width = 3 / num_agents
+    fsize = 10
+    color1 = COLOR['indianred']  # color for Naive NSE
+    color2 = COLOR['darkorchid']  # color for DR NSE
+    color3 = COLOR['darkorange']  # color for RECON NSE
+
+    title_str = 'NSE penalty for 20 agents \nwith increasing number of corrected agents'
+
+    fig, ax = plt.subplots()
+
+    ax.bar(-0.8, NSE_naive, bar_width, label="Naive Policy", color=color1)
+    ax.bar(index, NSE_dr, bar_width, label="Difference Reward", color=color2)
+    ax.bar(index + bar_width, NSE_recon, bar_width, label="RECON", color=color3)
+
+    ax.set_xlabel('Percentage of Agents Corrected')
+    ax.set_ylabel('NSE Penalty')
+    plt.ylim([0, plt.ylim()[1] + 50])
+    plt.xlim([-1.5, plt.xlim()[1]])
+
+    ax.set_title(title_str)
+    x_ticks = list(index + 0.5 * bar_width)
+    first_tick = [-0.8] + x_ticks
+    ax.set_xticks(first_tick)
+    x_labels = ['0%']
+    for i in agents_corrected:
+        x_labels.append(str(i) + '%')
+
+    ax.set_xticklabels(x_labels)
+    ax.legend(fontsize=fsize)
+
+    plt.show()
