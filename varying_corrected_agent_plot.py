@@ -35,10 +35,9 @@ R_Naive, NSE_Naive[0] = get_total_R_and_NSE_from_path(Agents, path_joint_NSE_val
 Agents = reset_Agents(Agents)  # Resetting Agents for next algorithm
 
 for ctr in range(0, len(MM)):
-
     M = Num_agents_to_correct[ctr]
     print("-----------------------------------------------------")
-    print("------------- " + str(M) + " Agents to be corrected --------------")
+    print("------------ " + str(M) + "/" + str(num_of_agents) + " Agents to be corrected ------------")
     print("-----------------------------------------------------")
 
     #####################################
