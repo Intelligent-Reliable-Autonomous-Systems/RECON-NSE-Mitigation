@@ -10,10 +10,10 @@ from init_env import reset_Agents, show_joint_states_and_NSE_values
 warnings.filterwarnings('ignore')
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
-MM = [0.1, 0.2]  # , 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]  # fractions of agents
-num_of_agents = 5  # total number of agents to be maintained as constant
+MM = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]  # fractions of agents
+num_of_agents = 20  # total number of agents to be maintained as constant
 Num_agents_to_correct = [math.ceil(num_of_agents * i) for i in MM]
-goal_deposit = (2, 3)  # (8, 12)
+goal_deposit = (8, 12)
 mode = 'stochastic'
 prob = 0.8
 
