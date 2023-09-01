@@ -30,7 +30,7 @@ NSE_RECON = np.zeros(np.shape(Num_agents_to_correct), dtype=float)
 # NAIVE POLICY FOR NAIVE NSE
 Grid = Environment(num_of_agents, goal_deposit, "grids/train_grid.txt", mode, prob)
 Agents = Grid.init_agents_with_initial_policy()
-joint_NSE_states, path_joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents, 'NSE Report:')
+joint_NSE_states, path_joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
 R_Naive, NSE_Naive[0] = get_total_R_and_NSE_from_path(Agents, path_joint_NSE_values)
 Agents = reset_Agents(Agents)  # Resetting Agents for next algorithm
 
