@@ -98,7 +98,7 @@ class BlameBaseline:
             for agent in Agents:
                 blame_array_for_js = -blame_distribution[js_nse]
                 s = js_nse[agent.IDX]
-                agent.R_blame[s] = blame_array_for_js[agent.IDX]
+                agent.R_blame_dr[s] = blame_array_for_js[agent.IDX]
                 self.Grid.add_goal_reward(agent)
 
 

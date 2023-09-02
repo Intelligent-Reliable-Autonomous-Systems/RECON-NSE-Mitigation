@@ -41,11 +41,12 @@ class Agent:
         self.A = {}
         # counterfactual comparison actions = ['switch_compare']
         self.A2 = {}
-        self.R_blame = {}
         self.blame_training_data_x_wo_cf = []
         self.blame_training_data_y_wo_cf = []
         self.blame_training_data_x_with_cf = []
         self.blame_training_data_y_with_cf = []
+        self.R_blame = {}
+        self.R_blame_dr = {}
         self.R_blame_gen_with_cf = {}
         self.R_blame_gen_wo_cf = {}
         self.model_wo_cf = LinearRegression()
@@ -56,6 +57,7 @@ class Agent:
             self.R_blame[s] = 0.0
             self.R_blame_gen_with_cf[s] = 0.0
             self.R_blame_gen_wo_cf[s] = 0.0
+            self.R_blame_dr[s] = 0.0
         for s in self.Grid.S:
             if s[2] != 'X':
                 if 'pick_A' in self.A[s]:
@@ -186,7 +188,6 @@ class Agent:
 
     def generalize_Rblame_with_cf(self):
         weighting = self.Grid.weighting
-
         X_with_cf = copy.deepcopy(self.blame_training_data_x_with_cf)
         y_with_cf = copy.deepcopy(self.blame_training_data_y_with_cf)
         N2 = len(X_with_cf)

@@ -57,7 +57,7 @@ for ctr in range(0, len(MM)):
     # blameDR.get_training_data_with_cf(Agents_to_be_corrected, joint_NSE_states)
     # for agent in Agents_to_be_corrected:
     #     agent.generalize_Rblame_with_cf()
-    value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame')  # Diff Reward Baseline Mitigation
+    value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_dr')  # Diff Reward Baseline Mitigation
     _, joint_NSE_values_DR = show_joint_states_and_NSE_values(Grid, Agents)
     r_dr, nse_dr = get_total_R_and_NSE_from_path(Agents, joint_NSE_values_DR)
 

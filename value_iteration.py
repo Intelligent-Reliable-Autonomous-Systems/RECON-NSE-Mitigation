@@ -138,6 +138,8 @@ def LVI(Agents, Agents_to_be_corrected, mode):
         agent = action_set_value_iteration(agent, agent.Grid.S)
         if mode == 'R_blame':
             agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame)
+        if mode == 'R_blame_dr':
+            agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_dr)
         elif mode == 'R_blame_gen_wo_cf':
             agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_gen_wo_cf)
         elif mode == 'R_blame_gen_with_cf':
@@ -148,10 +150,10 @@ def LVI(Agents, Agents_to_be_corrected, mode):
         agent.follow_policy()
 
     # display_just_grid(Agents[0].Grid.All_States)
-    for agent in Agents:
-        print("Corrected Plan for Agent " + agent.label + ":")
-        print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '
-        print("________________________________________________\n")
+    # for agent in Agents:
+    #     print("Corrected Plan for Agent " + agent.label + ":")
+    #     print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '
+    #     print("________________________________________________\n")
 
     for agent in Agents:
         agent.agent_reset()

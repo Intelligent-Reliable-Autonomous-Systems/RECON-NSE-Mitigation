@@ -86,6 +86,7 @@ class Environment:
     def add_goal_reward(self, agent):
         if agent.s == self.s_goal:
             agent.R_blame[agent.s] = 100
+            agent.R_blame_dr[agent.s] = 100
         return agent
 
     def max_log_joint_NSE(self, Agents):
