@@ -14,9 +14,9 @@ warnings.filterwarnings('ignore')
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
 agents_to_be_corrected = 0.3  # 30% agents will undergo policy update
-Num_of_agents = [2, 5]  # , 10, 25, 50, 75, 100]
+Num_of_agents = [2, 5, 10, 25, 50, 75, 100]
 MM = [math.ceil(i * agents_to_be_corrected) for i in Num_of_agents]
-Goal_deposit = [(1, 1), (2, 3)]  # , (5, 5), (10, 15), (25, 25), (35, 40), (55, 55)]
+Goal_deposit = [(1, 1), (2, 3), (5, 5), (10, 15), (25, 25), (35, 40), (55, 55)]
 
 # Tracking NSE values with grids
 NSE_naive_tracker = []
