@@ -496,7 +496,7 @@ def separated_time_plot(number_of_agents_tracker, DR_time_tracker, LVI_time_trac
     plt.show()
 
 
-def NSE_with_varying_corrected_agents(NSE_naive, NSE_dr, NSE_recon, agents_corrected):
+def plot_NSE_with_varying_corrected_agents(NSE_naive, NSE_dr, NSE_recon, agents_corrected):
     """
     :param NSE_naive: Scalar value of NSE encountered when Agents don't know about NSE
     :param NSE_dr: Array of 10 NSE values when corrected agents vary from 10% to 100% under Difference Reward baseline
@@ -537,4 +537,71 @@ def NSE_with_varying_corrected_agents(NSE_naive, NSE_dr, NSE_recon, agents_corre
     ax.set_xticklabels(x_labels)
     ax.legend(fontsize=fsize)
 
+    plt.show()
+
+
+def plot_effect_of_generalization(NSE_naive, NSE_recon, NSE_gen_recon_wo_cf, NSE_gen_recon_w_cf, NSE_dr,
+                                  num_agents_tracker, mode):
+    index = np.arange(num_agents_tracker)
+    bar_width = 0.4
+    fsize = 10
+    num_grid = 5
+    color1 = COLOR['indianred']
+    color2 = COLOR['darkorange']
+    color3 = COLOR['limegreen']
+    color4 = COLOR['seagreen']
+    color5 = COLOR['darkorchid']
+
+    title_str = 'Average NSE penalty for different mitigation techniques\n in ' + str(
+        num_grid) + ' similar environments in ' + mode + ' mode'
+
+    fig, ax = plt.subplots()
+
+    ax.bar(index, NSE_naive, bar_width, label="Naive Policy", color=color1, )
+    ax.bar(index + bar_width, NSE_recon, bar_width, label="RECON", color=color2)
+    ax.bar(index + 2 * bar_width, NSE_gen_recon_wo_cf, bar_width, label="Generalized RECON without cf data",
+           color=color3)
+    ax.bar(index + 3 * bar_width, NSE_gen_recon_w_cf, bar_width, label="Generalized RECON with cf data", color=color4)
+    ax.bar(index + 4 * bar_width, NSE_dr, bar_width, label="Generalized RECON with cf data", color=color5)
+
+    ax.set_xlabel('Number of Agents')
+    ax.set_ylabel('NSE Penalty')
+    plt.ylim([0, plt.ylim()[1] + 100])
+    ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 12, '  Unavoidable NSE \nin all environments',
+            color='black', weight='bold', bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.7'))
+
+    ax.set_title(title_str)
+    ax.set_xticks(index + 2.5 * bar_width)
+    x_labels = []
+    for i in num_agents_tracker:
+        x_labels.append(str(i))
+
+    ax.set_xticklabels(x_labels)
+    ax.legend(fontsize=fsize)
+
+    plt.show()
+
+
+def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf, time_dr, num_of_agents_tracker):
+    title_str = 'Process Times with Number of Agents\nfor (10x10) grids averaged over 5 environment'
+
+    color1 = COLOR['darkorange']
+    color2 = COLOR['limegreen']
+    color3 = COLOR['seagreen']
+    color4 = COLOR['darkorchid']
+
+    fig, ax = plt.subplots()
+
+    ax.set_xlabel('Number of Agents')
+    plt.xticks(num_of_agents_tracker, num_of_agents_tracker)
+    ax.set_ylabel('Time (min)')
+
+    ax.set_title(title_str)
+
+    plt.plot(num_of_agents_tracker, time_recon, color=color2, label='RECON')
+    plt.plot(num_of_agents_tracker, time_gen_recon_wo_cf, color=color3, label='Generalized RECON without cf data')
+    plt.plot(num_of_agents_tracker, time_gen_recon_w_cf, color=color4, label='Generalized RECON with cf data')
+    plt.plot(num_of_agents_tracker, time_dr, color=color1, label='Difference Reward')
+
+    ax.legend()
     plt.show()
