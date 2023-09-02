@@ -195,18 +195,33 @@ for ctr in range(0, len(MM)):
     time_gen_recon_w_cf_tracker.append(time_gen_recon_w_cf_sum / num_of_grids)
     time_dr_tracker.append(time_dr_sum / num_of_grids)
 
-# saving to sim_results_folder
-np.savetxt('sim_result_data/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_recon_gen_wo_cf_tracker.txt', NSE_recon_gen_wo_cf_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_recon_gen_with_cf_tracker.txt', NSE_recon_gen_with_cf_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
+    print("#########################   GRID SUMMARY   ##########################")
+    print("Number of Agents: ", num_of_agents)
+    print("NSE_naive (avg): ", NSE_naive_sum / num_of_grids)
+    print("NSE_recon (avg): ", NSE_recon_sum / num_of_grids)
+    print("NSE_gen_recon_wo_cf (avg): ", NSE_gen_recon_wo_cf_sum / num_of_grids)
+    print("NSE_gen_recon_with_cf (avg): ", NSE_gen_recon_w_cf_sum / num_of_grids)
+    print("NSE_dr (avg): ", NSE_dr_sum / num_of_grids)
+    print()
+    print("time_recon (avg): ", time_recon_sum / num_of_grids)
+    print("time_gen_recon_wo_cf (avg): ", time_gen_recon_wo_cf_sum / num_of_grids)
+    print("time_gen_recon_with_cf (avg): ", time_gen_recon_w_cf_sum / num_of_grids)
+    print("time_dr (avg): ", time_dr_sum / num_of_grids)
 
-np.savetxt('sim_result_data/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
+    print("######################################################################")
+
+    # saving to sim_results_folder after every Average of 5 grids
+    np.savetxt('sim_result_data/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_gen_wo_cf_tracker.txt', NSE_recon_gen_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_gen_with_cf_tracker.txt', NSE_recon_gen_with_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
+
+    np.savetxt('sim_result_data/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
 
 # display_lib.time_plot(num_of_agents_tracker, time_tracker)
 # display_lib.separated_time_plot(num_of_agents_tracker, initial_policy_time_tracker, LVI_time_tracker,
