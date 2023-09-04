@@ -9,7 +9,6 @@ from blame_assignment_baseline import BlameBaseline
 from init_env import Environment, get_total_R_and_NSE_from_path
 from init_env import reset_Agents, show_joint_states_and_NSE_values
 
-
 warnings.filterwarnings('ignore')
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
@@ -17,27 +16,24 @@ agents_to_be_corrected = 0.3  # 30% agents will undergo policy update
 Num_of_agents = [2, 5, 10, 25, 50, 75, 100]
 MM = [math.ceil(i * agents_to_be_corrected) for i in Num_of_agents]
 Goal_deposit = [(1, 1), (2, 3), (5, 5), (10, 15), (25, 25), (35, 40), (55, 55)]
-
-# Tracking NSE values with grids
-NSE_naive_tracker = []
-NSE_recon_tracker = []
-NSE_recon_gen_wo_cf_tracker = []
-NSE_recon_gen_with_cf_tracker = []
-NSE_dr_tracker = []
-num_of_agents_tracker = []
-
-time_recon_tracker = []
-time_gen_recon_wo_cf_tracker = []
-time_gen_recon_w_cf_tracker = []
-time_dr_tracker = []
 num_of_grids = 5
 
+# Tracking NSE values with grids
+
+num_of_agents_tracker = []
+
+NSE_naive_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+NSE_recon_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+NSE_gen_recon_wo_cf_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+NSE_gen_recon_with_cf_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+NSE_dr_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+
+time_recon_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+time_gen_recon_wo_cf_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+time_gen_recon_w_cf_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+time_dr_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+
 for ctr in range(0, len(MM)):
-    NSE_naive_sum = 0
-    NSE_recon_sum = 0
-    NSE_gen_recon_wo_cf_sum = 0
-    NSE_gen_recon_w_cf_sum = 0
-    NSE_dr_sum = 0
 
     time_recon_sum = 0
     time_gen_recon_wo_cf_sum = 0
@@ -56,7 +52,7 @@ for ctr in range(0, len(MM)):
     mode = 'stochastic'  # 'deterministic' or 'stochastic'
     prob = 0.8
 
-    for i in [str(x) for x in range(0, num_of_grids)]:
+    for i in [int(x) for x in range(0, num_of_grids)]:
         filename = 'grids/test_grid' + str(i) + '.txt'
         print("======= Now in test_grid" + str(i) + ".txt =======")
         Grid = Environment(num_of_agents, goal_deposit, filename, mode, prob)
@@ -71,7 +67,7 @@ for ctr in range(0, len(MM)):
         R_naive, NSE_naive = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_naive: ', NSE_naive)
         Agents = reset_Agents(Agents)
-        NSE_naive_sum += NSE_naive
+        NSE_naive_tracker[ctr][i] = NSE_naive
 
         ###############################################
         # RECON (basic Rblame)
@@ -95,8 +91,8 @@ for ctr in range(0, len(MM)):
         R_recon, NSE_recon = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_recon: ', NSE_recon)
         Agents = reset_Agents(Agents)
-        NSE_recon_sum += NSE_recon
-        time_recon_sum += time_recon
+        NSE_recon_tracker[ctr][i] = NSE_recon
+        time_recon_tracker[ctr][i] = time_recon
 
         ###############################################
         # Generalized RECON without counterfactual data
@@ -128,8 +124,8 @@ for ctr in range(0, len(MM)):
         R_gen_recon_wo_cf, NSE_gen_recon_wo_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_gen_recon_wo_cf: ', NSE_gen_recon_wo_cf)
         Agents = reset_Agents(Agents)
-        NSE_gen_recon_wo_cf_sum += NSE_gen_recon_wo_cf
-        time_gen_recon_wo_cf_sum += time_gen_recon_wo_cf
+        NSE_gen_recon_wo_cf_tracker[ctr][i] = NSE_gen_recon_wo_cf
+        time_gen_recon_wo_cf_tracker[ctr][i] = time_gen_recon_wo_cf
 
         ###############################################
         # Generalized RECON with counterfactual data
@@ -141,7 +137,6 @@ for ctr in range(0, len(MM)):
                 filename_agent_y = 'training_data/Agent' + agent.label + '_y_with_cf.txt'
                 np.savetxt(filename_agent_x, agent.blame_training_data_x_with_cf)
                 np.savetxt(filename_agent_y, agent.blame_training_data_y_with_cf)
-
         else:
             print("Loading training data for with_cf")
             for agent in Agents:
@@ -161,8 +156,8 @@ for ctr in range(0, len(MM)):
         R_gen_recon_w_cf, NSE_gen_recon_w_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_gen_recon_w_cf: ', NSE_gen_recon_w_cf)
         Agents = reset_Agents(Agents)
-        NSE_gen_recon_w_cf_sum += NSE_gen_recon_w_cf
-        time_gen_recon_w_cf_sum += time_gen_recon_w_cf
+        NSE_gen_recon_with_cf_tracker[ctr][i] = NSE_gen_recon_w_cf
+        time_gen_recon_w_cf_tracker[ctr][i] = time_gen_recon_w_cf
 
         ###############################################
         # Difference Reward Baseline (basic R_blame)
@@ -178,43 +173,31 @@ for ctr in range(0, len(MM)):
         R_dr, NSE_dr = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_dr: ', NSE_dr)
         Agents = reset_Agents(Agents)
-        NSE_dr_sum += NSE_dr
-        time_dr_sum += time_dr
-
-        ##############################################################################################
-    NSE_naive_tracker.append(NSE_naive_sum / num_of_grids)
-    NSE_recon_tracker.append(NSE_recon_sum / num_of_grids)
-    NSE_recon_gen_wo_cf_tracker.append(NSE_gen_recon_wo_cf_sum / num_of_grids)
-    NSE_recon_gen_with_cf_tracker.append(NSE_gen_recon_w_cf_sum / num_of_grids)
-    NSE_dr_tracker.append(NSE_dr_sum / num_of_grids)
+        NSE_dr_tracker[ctr][i] = NSE_dr
+        time_dr_tracker[ctr][i] = time_dr
 
     num_of_agents_tracker.append(num_of_agents)
 
-    time_recon_tracker.append(time_recon_sum / num_of_grids)
-    time_gen_recon_wo_cf_tracker.append(time_gen_recon_wo_cf_sum / num_of_grids)
-    time_gen_recon_w_cf_tracker.append(time_gen_recon_w_cf_sum / num_of_grids)
-    time_dr_tracker.append(time_dr_sum / num_of_grids)
-
-    print("#########################   GRID SUMMARY   ##########################")
+    print("#########################   AVERAGE SUMMARY   ##########################")
     print("Number of Agents: ", num_of_agents)
-    print("NSE_naive (avg): ", NSE_naive_sum / num_of_grids)
-    print("NSE_recon (avg): ", NSE_recon_sum / num_of_grids)
-    print("NSE_gen_recon_wo_cf (avg): ", NSE_gen_recon_wo_cf_sum / num_of_grids)
-    print("NSE_gen_recon_with_cf (avg): ", NSE_gen_recon_w_cf_sum / num_of_grids)
-    print("NSE_dr (avg): ", NSE_dr_sum / num_of_grids)
+    print("NSE_naive (avg): ", np.sum(NSE_naive_tracker[ctr][:]) / num_of_grids)
+    print("NSE_recon (avg): ", np.sum(NSE_recon_tracker[ctr][:]) / num_of_grids)
+    print("NSE_gen_recon_wo_cf (avg): ", np.sum(NSE_gen_recon_wo_cf_tracker[ctr][:]) / num_of_grids)
+    print("NSE_gen_recon_with_cf (avg): ", np.sum(NSE_gen_recon_with_cf_tracker[ctr][:]) / num_of_grids)
+    print("NSE_dr (avg): ", np.sum(NSE_dr_tracker[ctr][:]) / num_of_grids)
     print()
-    print("time_recon (avg): ", time_recon_sum / num_of_grids)
-    print("time_gen_recon_wo_cf (avg): ", time_gen_recon_wo_cf_sum / num_of_grids)
-    print("time_gen_recon_with_cf (avg): ", time_gen_recon_w_cf_sum / num_of_grids)
-    print("time_dr (avg): ", time_dr_sum / num_of_grids)
+    print("time_recon (avg): ", np.sum(time_recon_tracker[ctr][:]) / num_of_grids)
+    print("time_gen_recon_wo_cf (avg): ", np.sum(time_gen_recon_wo_cf_tracker[ctr][:]) / num_of_grids)
+    print("time_gen_recon_with_cf (avg): ", np.sum(time_gen_recon_w_cf_tracker[ctr][:]) / num_of_grids)
+    print("time_dr (avg): ", np.sum(time_dr_tracker[ctr][:]) / num_of_grids)
 
-    print("######################################################################")
+    print("########################################################################")
 
-    # saving to sim_results_folder after every Average of 5 grids
+    # saving to sim_results_folder after for all 5 grids in a single row; next row means new number of agents
     np.savetxt('sim_result_data/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
     np.savetxt('sim_result_data/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_recon_gen_wo_cf_tracker.txt', NSE_recon_gen_wo_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_recon_gen_with_cf_tracker.txt', NSE_recon_gen_with_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_gen_wo_cf_tracker.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_gen_with_cf_tracker.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
     np.savetxt('sim_result_data/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
     np.savetxt('sim_result_data/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
 
