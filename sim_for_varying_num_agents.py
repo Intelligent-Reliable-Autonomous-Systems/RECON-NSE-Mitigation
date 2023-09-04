@@ -84,10 +84,11 @@ for ctr in range(0, len(MM)):
                                 reverse=True)
         Agents_for_correction = ["Agent " + str(i + 1) for i in sorted_indices[:M]]
         print("\nAgents to be corrected [RECON]: ", Agents_for_correction)
+        time_recon_s = timer()
+
         Agents_to_be_corrected = [Agents[i] for i in sorted_indices[:M]]
         Agents = reset_Agents(Agents)
 
-        time_recon_s = timer()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame')  # RECON basic mitigation
         time_recon_e = timer()
         time_recon = round((time_recon_e - time_recon_s) / 60.0, 2)  # in minutes
@@ -117,10 +118,11 @@ for ctr in range(0, len(MM)):
                 agent.blame_training_data_x_wo_cf = np.loadtxt(filename_agent_x, ndmin=2)
                 agent.blame_training_data_y_wo_cf = np.loadtxt(filename_agent_y, ndmin=1)
 
+        time_gen_recon_wo_cf_s = timer()
+
         for agent in Agents_to_be_corrected:
             agent.generalize_Rblame_wo_cf()
 
-        time_gen_recon_wo_cf_s = timer()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_wo_cf')  # Generalized RECON wo cf
         time_gen_recon_wo_cf_e = timer()
         time_gen_recon_wo_cf = round((time_gen_recon_wo_cf_e - time_gen_recon_wo_cf_s) / 60.0, 2)  # in minutes
@@ -150,10 +152,11 @@ for ctr in range(0, len(MM)):
                 agent.blame_training_data_x_with_cf = np.loadtxt(filename_agent_x, ndmin=2)
                 agent.blame_training_data_y_with_cf = np.loadtxt(filename_agent_y, ndmin=1)
 
+        time_gen_recon_w_cf_s = timer()
+
         for agent in Agents_to_be_corrected:
             agent.generalize_Rblame_with_cf()
 
-        time_gen_recon_w_cf_s = timer()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_with_cf')  # Generalized RECON with cf
         time_gen_recon_w_cf_e = timer()
         time_gen_recon_w_cf = round((time_gen_recon_w_cf_e - time_gen_recon_w_cf_s) / 60.0, 2)  # in minutes
@@ -167,10 +170,12 @@ for ctr in range(0, len(MM)):
         ###############################################
         # Difference Reward Baseline (basic R_blame)
         blameDR = BlameBaseline(Agents, Grid)  # referring to baseline blame calculation using Difference Reward
+
+        time_dr_s = timer()
+
         blameDR.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)
         Agents = reset_Agents(Agents)
 
-        time_dr_s = timer()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_dr')  # Difference Reward baseline mitigation
         time_dr_e = timer()
         time_dr = round((time_dr_e - time_dr_s) / 60.0, 2)  # in minutes
@@ -195,18 +200,33 @@ for ctr in range(0, len(MM)):
     time_gen_recon_w_cf_tracker.append(time_gen_recon_w_cf_sum / num_of_grids)
     time_dr_tracker.append(time_dr_sum / num_of_grids)
 
-# saving to sim_results_folder
-np.savetxt('sim_result_data/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_recon_gen_wo_cf_tracker.txt', NSE_recon_gen_wo_cf_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_recon_gen_with_cf_tracker.txt', NSE_recon_gen_with_cf_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
+    print("#########################   GRID SUMMARY   ##########################")
+    print("Number of Agents: ", num_of_agents)
+    print("NSE_naive (avg): ", NSE_naive_sum / num_of_grids)
+    print("NSE_recon (avg): ", NSE_recon_sum / num_of_grids)
+    print("NSE_gen_recon_wo_cf (avg): ", NSE_gen_recon_wo_cf_sum / num_of_grids)
+    print("NSE_gen_recon_with_cf (avg): ", NSE_gen_recon_w_cf_sum / num_of_grids)
+    print("NSE_dr (avg): ", NSE_dr_sum / num_of_grids)
+    print()
+    print("time_recon (avg): ", time_recon_sum / num_of_grids)
+    print("time_gen_recon_wo_cf (avg): ", time_gen_recon_wo_cf_sum / num_of_grids)
+    print("time_gen_recon_with_cf (avg): ", time_gen_recon_w_cf_sum / num_of_grids)
+    print("time_dr (avg): ", time_dr_sum / num_of_grids)
 
-np.savetxt('sim_result_data/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
-np.savetxt('sim_result_data/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
+    print("######################################################################")
+
+    # saving to sim_results_folder after every Average of 5 grids
+    np.savetxt('sim_result_data/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_gen_wo_cf_tracker.txt', NSE_recon_gen_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_gen_with_cf_tracker.txt', NSE_recon_gen_with_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
+
+    np.savetxt('sim_result_data/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
 
 # display_lib.time_plot(num_of_agents_tracker, time_tracker)
 # display_lib.separated_time_plot(num_of_agents_tracker, initial_policy_time_tracker, LVI_time_tracker,
@@ -224,3 +244,4 @@ np.savetxt('sim_result_data/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
 # [46.36, 55.67, 90.56, 99.45, 173.22, 288.83, 419.78]
 # NSE_new_gen_with_cf_tracker
 # [46.36, 55.67, 90.56, 99.45, 173.22, 270.3, 386.4]
+
