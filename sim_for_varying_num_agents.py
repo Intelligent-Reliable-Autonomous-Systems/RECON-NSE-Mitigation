@@ -228,20 +228,3 @@ for ctr in range(0, len(MM)):
     np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
     np.savetxt('sim_result_data/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
 
-# display_lib.time_plot(num_of_agents_tracker, time_tracker)
-# display_lib.separated_time_plot(num_of_agents_tracker, initial_policy_time_tracker, LVI_time_tracker,
-#                                 LVI_wo_cf_time_tracker, LVI_w_cf_time_tracker)
-# plot_NSE_bars_with_num_agents(NSE_old_tracker, NSE_new_tracker, NSE_new_gen_wo_cf_tracker,
-#                               NSE_new_gen_with_cf_tracker, num_of_agents_tracker, Grid)
-
-
-# CA Baseline Results
-# NSE_old_tracker
-# [43.92, 50.91, 85.8, 92.46, 164.1, 279.72, 402.96]
-# NSE_new_tracker
-# [46.36, 55.67, 90.56, 99.45, 173.22, 270.3, 386.4]
-# NSE_new_gen_wo_cf_tracker
-# [46.36, 55.67, 90.56, 99.45, 173.22, 288.83, 419.78]
-# NSE_new_gen_with_cf_tracker
-# [46.36, 55.67, 90.56, 99.45, 173.22, 270.3, 386.4]
-
