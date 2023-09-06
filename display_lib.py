@@ -186,14 +186,13 @@ def plot_NSE_bar_comparisons(NSE_before_mit, NSE_after_mit, NSE_after_mit_gen_wo
         Grid.rows) + ' x ' + str(Grid.columns) + ') grid in ' + Grid.mode + ' mode'
 
     fig, ax = plt.subplots()
-
-    NSE_values = ax.bar(index, NSE_before_mit, bar_width, label="Primary-Objective Policy", color=color1)
-    NSE_values_with_Rblame = ax.bar(index + bar_width, NSE_after_mit, bar_width, label="RECON",
+    NSE_values = ax.bar(index, list(NSE_before_mit), bar_width, label="Primary-Objective Policy", color=color1)
+    NSE_values_with_Rblame = ax.bar(index + bar_width, list(NSE_after_mit), bar_width, label="RECON",
                                     color=color2)
-    NSE_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, NSE_after_mit_gen_wo_cf, bar_width,
+    NSE_values_with_Rblame_gen_wo_cf = ax.bar(index + 2 * bar_width, list(NSE_after_mit_gen_wo_cf), bar_width,
                                               label="Generalized RECON without cf data",
                                               color=color3)
-    NSE_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, NSE_after_mit_gen_w_cf, bar_width,
+    NSE_values_with_Rblame_gen_w_cf = ax.bar(index + 3 * bar_width, list(NSE_after_mit_gen_w_cf), bar_width,
                                              label="Generalized RECON with cf data",
                                              color=color4)
     ax.set_xlabel('Number of Agents')

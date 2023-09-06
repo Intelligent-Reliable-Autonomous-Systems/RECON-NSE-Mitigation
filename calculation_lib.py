@@ -3,13 +3,18 @@ import random
 import numpy as np
 
 
+# from init_agent import Agent
+# from init_env import Environment
+
+
 def get_transition_prob(agent, s, a):
-    # actions = ['pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']
+    # state of an agent: <x, y, onboard_sample, coral_flag, done_flag>
+    # operation actions = ['Noop', 'pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']
     p_success = copy.copy(agent.p_success)
     p_fail = 1 - p_success
     action = {0: 'U', 1: 'R', 2: 'D', 3: 'L'}
     action_key = {'U': 0, 'R': 1, 'D': 2, 'L': 3}
-    if s == agent.s_goal:
+    if s == agent.s_goal or a == 'Noop':
         T = {s: 1}  # stay at the goal with prob = 1
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
         s_next_correct = move_correctly(agent.Grid, s, a)
@@ -23,9 +28,6 @@ def get_transition_prob(agent, s, a):
             T = {s_next_correct: round(p_success, 3),
                  s_next_slide_left: round(p_fail / 2, 3),
                  s_next_slide_right: round(p_fail / 2, 3)}
-
-        # T = {s: p_fail, move_correctly(agent.Grid, s, a): p_success}
-        # print("T: len = " + str(len(T)) + ":   " + str(T))
     else:
         T = {do_action(agent, s, a): 1}  # (same: 0.2, next: 0.8)
     return T
@@ -71,25 +73,27 @@ def move_correctly(Grid, s, a):
 
 
 def do_action(agent, s, a):
-    # operation actions = ['pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']
+    # state of an agent: <x,y,sample_with_agent,coral_flag,done_flag>
+    # operation actions = ['Noop','pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']
     s = list(s)
     if a == 'pick_A':
         s[2] = 'A'
     elif a == 'pick_B':
         s[2] = 'B'
     elif a == 'drop':
-        index = agent.goal_modes.index(s[4])
-        # print("calc_lib.py DEBUG: 'drop' action at state ", s)
-        s[4] = list(s[4])
-        if (index + agent.num_of_agents) < len(agent.goal_modes):
-            s[4] = agent.goal_modes[index + agent.num_of_agents]
+        # print('\nState: ', s)
+        # print("--Assigned sample for Agent " + agent.label + " is " + agent.assigned_sample)
+        # print("--Onboard sample for Agent " + agent.label + " is " + str(s[2]))
+        # print("Onboard_sample == Assigned_sample: ", agent.assigned_sample == s[2])
+        if s[2] == agent.assigned_sample and s[4] is False:
+            s[2] = 'X'
+            s[4] = True
         else:
-            s[4] = list(agent.s_goal[4])
-        s[4] = tuple(s[4])
-        s[2] = 'X'
-
+            print("[from calc_lib] INVALID 'drop' ACTION at : " + str(s) + " by Agent" + agent.label)
     elif a == 'U' or a == 'D' or a == 'L' or a == 'R':
         s = move(agent.Grid, s, a)
+    elif a == 'Noop':
+        s = s
     else:
         print("INVALID ACTION (from calc_lib): ", a)
     s = tuple(s)
