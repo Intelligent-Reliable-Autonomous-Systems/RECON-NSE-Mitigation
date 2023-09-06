@@ -28,7 +28,7 @@ class Environment:
         self.all_states = copy.copy(All_States)
         self.file_name = grid_filename
         self.sample = ('A', 'B')
-        self.weighting = {'X': 0.0, 'A': 2.0, 'B': 10.0}
+        self.weighting = {'X': 0.0, 'A': 3.0, 'B': 8.0}
 
         if mode == 'stochastic':
             self.p_success = p
