@@ -120,7 +120,7 @@ for i in [int(x) for x in range(0, num_of_grids)]:
         NSE_RECON[ctr][i] = nse_recon
         NSE_GEN_RECON_with_cf[ctr][i] = NSE_gen_recon_w_cf
 
-MMM = np.array([100 * i for i in MM])
+MMM = np.array([int(100 * i) for i in MM])
 np.savetxt('sim_result_data/NSE_Naive.txt', NSE_Naive, fmt='%.1f')
 np.savetxt('sim_result_data/NSE_DR.txt', NSE_DR, fmt='%.1f')
 np.savetxt('sim_result_data/NSE_RECON.txt', NSE_RECON, fmt='%.1f')

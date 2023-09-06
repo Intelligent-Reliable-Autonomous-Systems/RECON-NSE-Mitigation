@@ -201,7 +201,7 @@ for ctr in range(0, len(MM)):
     np.savetxt('sim_result_data/NSE_dr_tracker1.txt', NSE_dr_tracker, fmt='%.1f')
     np.savetxt('sim_result_data/num_of_agents_tracker1.txt', num_of_agents_tracker, fmt='%d')
 
-    np.savetxt('sim_result_data/time_recon_tracker.txt1', time_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_recon_tracker1.txt', time_recon_tracker, fmt='%.1f')
     np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker1.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
     np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker1.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
     np.savetxt('sim_result_data/time_dr_tracker1.txt', time_dr_tracker, fmt='%.1f')
