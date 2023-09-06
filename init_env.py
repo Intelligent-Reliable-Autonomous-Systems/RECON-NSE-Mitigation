@@ -27,6 +27,7 @@ class Environment:
         All_States, rows, columns = read_grid.grid_read_from_file(grid_filename)
         self.all_states = copy.copy(All_States)
         self.file_name = grid_filename
+        self.sample = ('A', 'B')
         self.weighting = {'X': 0.0, 'A': 2.0, 'B': 10.0}
 
         if mode == 'stochastic':
@@ -44,9 +45,10 @@ class Environment:
             mode = 'deterministic'
 
         self.mode = mode
+        self.deposit_goal = goal_deposit  # (the tuple (#A,#B))
         s_goals = np.argwhere(All_States == 'G')
         s_goal = s_goals[0]
-        self.s_goal = (s_goal[0], s_goal[1], 'X', False, goal_deposit)
+        self.s_goal_loc = s_goal[0:2]
 
         self.num_of_agents = num_of_agents
         self.S, self.coral_flag = initialize_grid_params(All_States, rows, columns, goal_deposit, self.weighting)
@@ -54,17 +56,17 @@ class Environment:
         self.columns = columns
         self.goal_states = s_goals  # this is a list of list [[gx_1,gy_1],[gx_2,gy_2]...]
         self.All_States = All_States
-        self.goal_modes = []
-        i = 0
-        for i in range(int(goal_deposit[0]) + 1):
-            self.goal_modes.append((i, 0))
-        for j in range(1, int(goal_deposit[1] + 1)):
-            self.goal_modes.append((i, j))
+        self.task_list = []
+        for i in range(len(self.deposit_goal)):
+            for j in range(self.deposit_goal[i]):
+                self.task_list.append(self.sample[i])
 
     def init_agents_with_initial_policy(self):
         Agents = []
         for label in range(self.num_of_agents):
-            Agents.append(Agent((0, 0), self, str(label + 1)))
+            # MetaReasoning in the environment will assign a specific sample (type) to the agent
+            # this task has already been assigned in the index of agent 'i' in self(env).task_list[i]
+            Agents.append(Agent((0, 0), self, str(label + 1), self.task_list[label]))
 
         # value iteration for all agents
         for agent in Agents:
@@ -84,7 +86,7 @@ class Environment:
         return joint_NSE_val
 
     def add_goal_reward(self, agent):
-        if agent.s == self.s_goal:
+        if agent.s == agent.s_goal:
             agent.R_blame[agent.s] = 100
             agent.R_blame_dr[agent.s] = 100
         return agent
@@ -197,15 +199,12 @@ def initialize_grid_params(All_States, rows, columns, goal_deposit, weighting):
     S = []
     goal_modes = []
     i = 0
-    for i in range(int(goal_deposit[0]) + 1):
-        goal_modes.append((i, 0))
-    for j in range(1, int(goal_deposit[1]) + 1):
-        goal_modes.append((i, j))
+    done_flags = [True, False]
     for i in range(rows):
         for j in range(columns):
             for sample_onboard in weighting.keys():
-                for goal_configurations in goal_modes:
-                    S.append((i, j, sample_onboard, All_States[i][j] == 'C', goal_configurations))
+                for done_flag in done_flags:
+                    S.append((i, j, sample_onboard, All_States[i][j] == 'C', done_flag))
 
     # recording coral on the floor
     coral = np.zeros((rows, columns), dtype=bool)
