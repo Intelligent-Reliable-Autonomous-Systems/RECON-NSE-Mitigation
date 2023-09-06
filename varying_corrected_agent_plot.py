@@ -10,8 +10,8 @@ from init_env import reset_Agents, show_joint_states_and_NSE_values
 warnings.filterwarnings('ignore')
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
-MM = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]  # fractions of agents
-num_of_agents = 20  # total number of agents to be maintained as constant
+MM = [0.10, 0.20, 0.50, 0.75, 1.00]  # fractions of agents
+num_of_agents = 25  # total number of agents to be maintained as constant
 Num_agents_to_correct = [math.ceil(num_of_agents * i) for i in MM]
 goal_deposit = (10, 10)
 mode = 'stochastic'
@@ -23,16 +23,18 @@ NSE_Naive = np.zeros((1, num_of_grids))
 # R_Naive = np.float(0.0)
 
 NSE_DR = np.zeros((len(MM), num_of_grids), dtype=float)
-# R_DR = np.zeros((len(Num_agents_to_correct),num_of_grids), dtype=float)
 
 NSE_RECON = np.zeros((len(MM), num_of_grids), dtype=float)
-# R_RECON = np.zeros((len(Num_agents_to_correct),num_of_grids), dtype=float)
+
+NSE_GEN_RECON_with_cf = np.zeros((len(MM), num_of_grids), dtype=float)
+
 for i in [int(x) for x in range(0, num_of_grids)]:
     filename = 'grids/test_grid' + str(i) + '.txt'
     print("======= Now in test_grid" + str(i) + ".txt =======")
     Grid = Environment(num_of_agents, goal_deposit, filename, mode, prob)
 
     Agents = Grid.init_agents_with_initial_policy()
+    blame = Blame(Agents, Grid)
     # NAIVE POLICY FOR NAIVE NSE
     # Grid = Environment(num_of_agents, goal_deposit, "grids/train_grid.txt", mode, prob)
     # Agents = Grid.init_agents_with_initial_policy()
@@ -87,13 +89,40 @@ for i in [int(x) for x in range(0, num_of_grids)]:
         _, joint_NSE_values_RECON = show_joint_states_and_NSE_values(Grid, Agents)
         r_recon, nse_recon = get_total_R_and_NSE_from_path(Agents, joint_NSE_values_RECON)
 
-        # R_DR[ctr] = r_dr
+        ###############################################
+        # Generalized RECON with counterfactual data
+        if int(i) == 0:
+            print("Saving training data for with_cf")
+            blame.get_training_data_with_cf(Agents, joint_NSE_states)
+            for agent in Agents:
+                filename_agent_x = 'training_data/Agent' + agent.label + '_x_with_cf_for_fig5.txt'
+                filename_agent_y = 'training_data/Agent' + agent.label + '_y_with_cf_for_fig5.txt'
+                np.savetxt(filename_agent_x, agent.blame_training_data_x_with_cf)
+                np.savetxt(filename_agent_y, agent.blame_training_data_y_with_cf)
+        else:
+            print("Loading training data for with_cf")
+            for agent in Agents:
+                filename_agent_x = 'training_data/Agent' + agent.label + '_x_with_cf_for_fig5.txt'
+                filename_agent_y = 'training_data/Agent' + agent.label + '_y_with_cf_for_fig5.txt'
+                agent.blame_training_data_x_with_cf = np.loadtxt(filename_agent_x, ndmin=2)
+                agent.blame_training_data_y_with_cf = np.loadtxt(filename_agent_y, ndmin=1)
+
+        for agent in Agents_to_be_corrected:
+            agent.generalize_Rblame_with_cf()
+
+        value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_with_cf')  # Generalized RECON with cf
+        _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
+        R_gen_recon_w_cf, NSE_gen_recon_w_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
+        print('NSE_gen_recon_w_cf: ', NSE_gen_recon_w_cf)
+        Agents = reset_Agents(Agents)
+
         NSE_DR[ctr][i] = nse_dr
-        # R_RECON[ctr] = r_recon
         NSE_RECON[ctr][i] = nse_recon
+        NSE_GEN_RECON_with_cf[ctr][i] = NSE_gen_recon_w_cf
 
 MMM = np.array([100 * i for i in MM])
 np.savetxt('sim_result_data/NSE_Naive.txt', NSE_Naive, fmt='%.1f')
 np.savetxt('sim_result_data/NSE_DR.txt', NSE_DR, fmt='%.1f')
 np.savetxt('sim_result_data/NSE_RECON.txt', NSE_RECON, fmt='%.1f')
+np.savetxt('sim_result_data/NSE_GEN_RECON_with_cf.txt', NSE_GEN_RECON_with_cf, fmt='%.1f')
 np.savetxt('sim_result_data/agent_percentage_corrected.txt', MMM, fmt='%d')

@@ -494,11 +494,13 @@ def separated_time_plot(number_of_agents_tracker, DR_time_tracker, LVI_time_trac
     plt.show()
 
 
-def plot_NSE_LinePlot_with_corrected_agents(NSE_naive_tracker, NSE_dr_tracker, NSE_recon_tracker, agents_corrected):
+def plot_NSE_LinePlot_with_corrected_agents(NSE_naive_tracker, NSE_dr_tracker, NSE_recon_tracker,
+                                            NSE_gen_recon_with_cf_tracker, agents_corrected):
     """
     :param NSE_naive_tracker: Scalar value of NSE encountered when Agents don't know about NSE
     :param NSE_dr_tracker: Array of 10 NSE values when corrected agents vary from 10% to 100% under Difference Reward baseline
     :param NSE_recon_tracker: Array of 10 NSE values when corrected agents vary from 10% to 100% under RECON (simple R_blame)
+    :param NSE_gen_recon_with_cf_tracker: Array of 10 NSE values when corrected agents vary from 10% to 100% under GEN RECON with cf
     :param agents_corrected: Array of 10 NSE values showing percentage of agents corrected
 
     :return: plot (Figure 1)
@@ -509,6 +511,7 @@ def plot_NSE_LinePlot_with_corrected_agents(NSE_naive_tracker, NSE_dr_tracker, N
     color1 = COLOR['red']  # color for Naive NSE
     color2 = COLOR['darkorchid']  # color for DR NSE
     color3 = COLOR['darkorange']  # color for RECON NSE
+    color4 = COLOR['seagreen']  # color for Gen RECON with cf NSE
 
     title_str = 'Average NSE mitigation trend for 20 agents\nwith varying percentage of agents undergoing policy update'
 
@@ -517,15 +520,18 @@ def plot_NSE_LinePlot_with_corrected_agents(NSE_naive_tracker, NSE_dr_tracker, N
     NSE_naive_means = np.repeat(NSE_naive_means, num_experiments)
     NSE_dr_means = np.mean(NSE_dr_tracker, axis=1)
     NSE_recon_means = np.mean(NSE_recon_tracker, axis=1)
+    NSE_gen_recon_with_cf_means = np.mean(NSE_gen_recon_with_cf_tracker, axis=1)
 
     NSE_naive_std = np.std(NSE_naive_tracker)
     NSE_dr_std = np.std(NSE_dr_tracker, axis=1)
     NSE_recon_std = np.std(NSE_recon_tracker, axis=1)
+    NSE_gen_recon_with_cf_std = np.std(NSE_gen_recon_with_cf_tracker, axis=1)
 
     # Create the line plot for the means
     plt.plot(agents_corrected, NSE_naive_means, label='Naive Policy', color=color1)
     plt.plot(agents_corrected, NSE_dr_means, label='Difference Reward', color=color2)
     plt.plot(agents_corrected, NSE_recon_means, label='RECON', color=color3)
+    plt.plot(agents_corrected, NSE_recon_means, label='Generalized RECON with cf data', color=color4)
 
     # Create the shaded region for the standard deviations using fill_between
     plt.fill_between(agents_corrected, NSE_naive_means - NSE_naive_std, NSE_naive_means + NSE_naive_std, alpha=0.2,
@@ -533,6 +539,8 @@ def plot_NSE_LinePlot_with_corrected_agents(NSE_naive_tracker, NSE_dr_tracker, N
     plt.fill_between(agents_corrected, NSE_dr_means - NSE_dr_std, NSE_dr_means + NSE_dr_std, alpha=0.2, color=color2)
     plt.fill_between(agents_corrected, NSE_recon_means - NSE_recon_std, NSE_recon_means + NSE_recon_std, alpha=0.2,
                      color=color3)
+    plt.fill_between(agents_corrected, NSE_gen_recon_with_cf_means - NSE_gen_recon_with_cf_std,
+                     NSE_gen_recon_with_cf_means + NSE_gen_recon_with_cf_std, alpha=0.2, color=color4)
 
     plt.plot([30, 30], [0, NSE_dr_means[2]], linestyle='dotted', color='black')
 

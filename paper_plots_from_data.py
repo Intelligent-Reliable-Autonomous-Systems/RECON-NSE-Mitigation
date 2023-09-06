@@ -6,8 +6,9 @@ from init_env import Environment
 NSE_naive = np.loadtxt('sim_result_data/NSE_Naive.txt', dtype=float)
 NSE_dr = np.loadtxt('sim_result_data/NSE_DR.txt', dtype=float)
 NSE_recon = np.loadtxt('sim_result_data/NSE_RECON.txt', dtype=float)
+NSE_gen_recon_with_cf = np.loadtxt('sim_result_data/NSE_GEN_RECON_with_cf.txt', dtype=float)
 agents_corrected = np.loadtxt('sim_result_data/agent_percentage_corrected.txt', dtype=int)
-plot_NSE_LinePlot_with_corrected_agents(NSE_naive, NSE_dr, NSE_recon, agents_corrected)
+plot_NSE_LinePlot_with_corrected_agents(NSE_naive, NSE_dr, NSE_recon, NSE_gen_recon_with_cf, agents_corrected)
 
 # Figure 2: NSE penalty from all algorithms averaged over 5 environments [sim_for_varying_num_agents.py]
 # load variables from textfiles
