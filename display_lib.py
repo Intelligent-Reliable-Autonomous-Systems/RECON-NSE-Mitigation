@@ -362,12 +362,12 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
                                              color=color4, yerr=NSE_after_gen_std_w_cf, ecolor='black', capsize=10)
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE Penalty')
-    plt.ylim([0, plt.ylim()[1] + 20])
+    plt.ylim([0, plt.ylim()[1]*2])
     if min(NSE_after_mit_gen_w_cf_list) == 0.0:
         ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 15, 'Avoidable NSE', color='black', weight='bold',
                 bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
     else:
-        ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 12, '  Unavoidable NSE \nin all environments',
+        ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] * 0.85, '  Unavoidable NSE \nin all environments',
                 color='black', weight='bold',
                 bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.7'))
 
