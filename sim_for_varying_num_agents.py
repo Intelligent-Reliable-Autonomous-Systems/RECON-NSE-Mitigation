@@ -13,14 +13,10 @@ warnings.filterwarnings('ignore')
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
 agents_to_be_corrected = 0.3  # 30% agents will undergo policy update
-Num_of_agents = [100]#[2, 5, 10, 25, 50, 75, 100]
+Num_of_agents = [2, 5, 10, 25, 50, 75, 100]
 MM = [math.ceil(i * agents_to_be_corrected) for i in Num_of_agents]
-<<<<<<< HEAD
-Goal_deposit = [(50,50)]#[(1, 1), (2, 3), (5, 5), (10, 15), (25, 25), (35, 40), (55, 55)]
-=======
-Goal_deposit = [(1, 1), (2, 3), (5, 5), (10, 15), (25, 25), (35, 40), (55, 55)]
+Goal_deposit = [(1, 1), (2, 3), (5, 5), (10, 15), (25, 25), (35, 40), (50, 50)]
 num_of_grids = 5
->>>>>>> 19c8d35b1e76439dcfb743f2ef584f79d3445398
 
 # Tracking NSE values with grids
 
@@ -84,11 +80,10 @@ for ctr in range(0, len(MM)):
                                 reverse=True)
         Agents_for_correction = ["Agent " + str(i + 1) for i in sorted_indices[:M]]
         print("\nAgents to be corrected [RECON]: ", Agents_for_correction)
-        time_recon_s = timer()
-
         Agents_to_be_corrected = [Agents[i] for i in sorted_indices[:M]]
         Agents = reset_Agents(Agents)
 
+        time_recon_s = timer()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame')  # RECON basic mitigation
         time_recon_e = timer()
         time_recon = round((time_recon_e - time_recon_s) / 60.0, 2)  # in minutes
@@ -118,11 +113,10 @@ for ctr in range(0, len(MM)):
                 agent.blame_training_data_x_wo_cf = np.loadtxt(filename_agent_x, ndmin=2)
                 agent.blame_training_data_y_wo_cf = np.loadtxt(filename_agent_y, ndmin=1)
 
-        time_gen_recon_wo_cf_s = timer()
-
         for agent in Agents_to_be_corrected:
             agent.generalize_Rblame_wo_cf()
 
+        time_gen_recon_wo_cf_s = timer()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_wo_cf')  # Generalized RECON wo cf
         time_gen_recon_wo_cf_e = timer()
         time_gen_recon_wo_cf = round((time_gen_recon_wo_cf_e - time_gen_recon_wo_cf_s) / 60.0, 2)  # in minutes
@@ -151,11 +145,10 @@ for ctr in range(0, len(MM)):
                 agent.blame_training_data_x_with_cf = np.loadtxt(filename_agent_x, ndmin=2)
                 agent.blame_training_data_y_with_cf = np.loadtxt(filename_agent_y, ndmin=1)
 
-        time_gen_recon_w_cf_s = timer()
-
         for agent in Agents_to_be_corrected:
             agent.generalize_Rblame_with_cf()
 
+        time_gen_recon_w_cf_s = timer()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_with_cf')  # Generalized RECON with cf
         time_gen_recon_w_cf_e = timer()
         time_gen_recon_w_cf = round((time_gen_recon_w_cf_e - time_gen_recon_w_cf_s) / 60.0, 2)  # in minutes
@@ -169,12 +162,10 @@ for ctr in range(0, len(MM)):
         ###############################################
         # Difference Reward Baseline (basic R_blame)
         blameDR = BlameBaseline(Agents, Grid)  # referring to baseline blame calculation using Difference Reward
-
-        time_dr_s = timer()
-
         blameDR.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)
         Agents = reset_Agents(Agents)
 
+        time_dr_s = timer()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_dr')  # Difference Reward baseline mitigation
         time_dr_e = timer()
         time_dr = round((time_dr_e - time_dr_s) / 60.0, 2)  # in minutes
@@ -203,14 +194,15 @@ for ctr in range(0, len(MM)):
     print("########################################################################")
 
     # saving to sim_results_folder after for all 5 grids in a single row; next row means new number of agents
-    np.savetxt('sim_result_data/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_recon_gen_wo_cf_tracker.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_recon_gen_with_cf_tracker.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
+    np.savetxt('sim_result_data/NSE_naive_tracker1.txt', NSE_naive_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_tracker1.txt', NSE_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_gen_wo_cf_tracker1.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_gen_with_cf_tracker1.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_dr_tracker1.txt', NSE_dr_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/num_of_agents_tracker1.txt', num_of_agents_tracker, fmt='%d')
 
-    np.savetxt('sim_result_data/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_recon_tracker.txt1', time_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker1.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker1.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_dr_tracker1.txt', time_dr_tracker, fmt='%.1f')
+

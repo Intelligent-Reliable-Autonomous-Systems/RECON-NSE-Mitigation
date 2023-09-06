@@ -17,7 +17,7 @@ goal_deposit = (10, 10)
 mode = 'stochastic'
 prob = 0.8
 
-num_of_grids = 2
+num_of_grids = 5
 # Tracking NSE values with grids
 NSE_Naive = np.zeros((1, num_of_grids))
 # R_Naive = np.float(0.0)
