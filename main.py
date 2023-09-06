@@ -10,14 +10,14 @@ from init_env import reset_Agents, show_joint_states_and_NSE_values
 
 warnings.filterwarnings('ignore')
 
-mode = 'stochastic'  # 'deterministic' or 'stochastic'
+mode = 'deterministic'  # 'deterministic' or 'stochastic'
 prob = 0.8
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
 agents_to_be_corrected = 0.3  # 30% agents will undergo policy update
 Num_of_agents = 2
 Goal_deposit = (1, 1)
-num_of_grids = 1
+num_of_grids = 5
 ctr = 0
 # Tracking NSE values with grids
 
@@ -42,7 +42,6 @@ time_dr_sum = 0
 num_of_agents = Num_of_agents
 M = int(math.ceil(num_of_agents * agents_to_be_corrected))
 goal_deposit = Goal_deposit
-
 
 print("------------------------------------------")
 print("Number of Agents: ", num_of_agents)
@@ -193,6 +192,5 @@ print("time_dr (avg): ", np.sum(time_dr_tracker[ctr][:]) / num_of_grids)
 print("########################################################################")
 # plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_recon_wo_cf_tracker,
 #                               NSE_gen_recon_with_cf_tracker, NSE_dr_tracker, num_of_agents_tracker, 'stochastic')
-plot_NSE_bar_comparisons(NSE_naive_tracker[0], NSE_recon_tracker[0], NSE_gen_recon_wo_cf_tracker[0],
-                         NSE_gen_recon_with_cf_tracker[0], [num_of_agents], Grid)
-
+plot_NSE_bar_comparisons_with_std_mean(NSE_naive_tracker[0], NSE_recon_tracker[0], NSE_gen_recon_wo_cf_tracker[0],
+                                       NSE_gen_recon_with_cf_tracker[0], Grid.mode)
