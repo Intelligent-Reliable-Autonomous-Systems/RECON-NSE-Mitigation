@@ -114,7 +114,6 @@ for ctr in range(0, len(MM)):
                 agent.blame_training_data_x_wo_cf = np.loadtxt(filename_agent_x, ndmin=2)
                 agent.blame_training_data_y_wo_cf = np.loadtxt(filename_agent_y, ndmin=1)
 
-
         time_gen_recon_wo_cf_s = timer()
         for agent in Agents_to_be_corrected:
             agent.generalize_Rblame_wo_cf()
@@ -145,7 +144,6 @@ for ctr in range(0, len(MM)):
                 filename_agent_y = 'training_data/Agent' + agent.label + '_y_with_cf.txt'
                 agent.blame_training_data_x_with_cf = np.loadtxt(filename_agent_x, ndmin=2)
                 agent.blame_training_data_y_with_cf = np.loadtxt(filename_agent_y, ndmin=1)
-
 
         time_gen_recon_w_cf_s = timer()
         for agent in Agents_to_be_corrected:
@@ -196,15 +194,14 @@ for ctr in range(0, len(MM)):
     print("########################################################################")
 
     # saving to sim_results_folder after for all 5 grids in a single row; next row means new number of agents
-    # np.savetxt('sim_result_data/NSE_naive_tracker1.txt', NSE_naive_tracker, fmt='%.1f')
-    # np.savetxt('sim_result_data/NSE_recon_tracker1.txt', NSE_recon_tracker, fmt='%.1f')
-    # np.savetxt('sim_result_data/NSE_gen_recon_wo_cf_tracker1.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
-    # np.savetxt('sim_result_data/NSE_gen_recon_with_cf_tracker1.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
-    # np.savetxt('sim_result_data/NSE_dr_tracker1.txt', NSE_dr_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/num_of_agents_tracker2.txt', num_of_agents_tracker, fmt='%d')
+    np.savetxt('sim_result_data/NSE_naive_tracker3.txt', NSE_naive_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_tracker3.txt', NSE_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_gen_recon_wo_cf_tracker3.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_gen_recon_with_cf_tracker3.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_dr_tracker3.txt', NSE_dr_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/num_of_agents_tracker3.txt', num_of_agents_tracker, fmt='%d')
 
-    np.savetxt('sim_result_data/time_recon_tracker2.txt', time_recon_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker2.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker2.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_dr_tracker2.txt', time_dr_tracker, fmt='%.1f')
-
+    np.savetxt('sim_result_data/time_recon_tracker3.txt', time_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker3.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker3.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_dr_tracker3.txt', time_dr_tracker, fmt='%.1f')

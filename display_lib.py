@@ -551,7 +551,7 @@ def plot_NSE_LinePlot_with_corrected_agents(NSE_naive_tracker, NSE_dr_tracker, N
     plt.title(title_str)
     # x_ticks = np.array(len(agents_corrected))
     x_labels = []
-    X = np.arange(10,101,10,dtype=int)
+    X = np.arange(10, 101, 10, dtype=int)
     for i in X:
         x_labels.append(str(i) + '%')
 
@@ -623,7 +623,7 @@ def plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_
 
 
 def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf, time_dr, num_of_agents_tracker):
-    title_str = 'Process Times with Number of Agents\nfor (10x10) grids averaged over 5 environment'
+    title_str = 'Process Times with Number of Agents\nfor (20x20) grids averaged over 5 environment'
 
     color1 = COLOR['darkorange']
     color2 = COLOR['limegreen']
@@ -633,7 +633,8 @@ def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf,
     fig, ax = plt.subplots()
 
     ax.set_xlabel('Number of Agents')
-    plt.xticks(num_of_agents_tracker, num_of_agents_tracker)
+    x_ticks = np.arange(0, 101, 10, dtype=int)
+    plt.xticks(x_ticks, x_ticks)
     ax.set_ylabel('Time (sec)')
 
     time_recon_means = np.mean(time_recon, axis=1)
@@ -656,11 +657,11 @@ def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf,
     plt.fill_between(num_of_agents_tracker, time_recon_means - time_recon_std, time_recon_means + time_recon_std,
                      alpha=0.2, color=color1)
     plt.fill_between(num_of_agents_tracker, time_gen_recon_wo_cf_means - time_gen_recon_wo_cf_std,
-                     time_gen_recon_wo_cf_means + time_gen_recon_wo_cf_std, alpha=0.2, color=color3)
+                     time_gen_recon_wo_cf_means + time_gen_recon_wo_cf_std, alpha=0.2, color=color2)
     plt.fill_between(num_of_agents_tracker, time_gen_recon_w_cf_means - time_gen_recon_w_cf_std,
-                     time_gen_recon_w_cf_means + time_gen_recon_w_cf_std, alpha=0.2, color=color4)
+                     time_gen_recon_w_cf_means + time_gen_recon_w_cf_std, alpha=0.2, color=color3)
     plt.fill_between(num_of_agents_tracker, time_dr_means - time_dr_std, time_dr_means + time_dr_std, alpha=0.2,
-                     color=color2)
+                     color=color4)
 
     ax.legend()
     plt.show()

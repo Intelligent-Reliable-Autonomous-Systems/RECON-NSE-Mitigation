@@ -24,9 +24,9 @@ plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_reco
 
 # Figure 3: Scalability plot showing algorithm times averaged over 5 environments [sim_for_varying_num_agents.py]
 # load variables from textfiles
-time_recon_tracker = np.loadtxt('sim_result_data/time_recon_tracker1.txt', dtype=float)
-time_gen_recon_wo_cf_tracker = np.loadtxt('sim_result_data/time_gen_recon_wo_cf_tracker1.txt', dtype=float)
-time_gen_recon_w_cf_tracker = np.loadtxt('sim_result_data/time_gen_recon_w_cf_tracker1.txt', dtype=float)
-time_dr_tracker = np.loadtxt('sim_result_data/time_dr_tracker1.txt', dtype=float)
+time_recon_tracker = np.loadtxt('sim_result_data/time_recon_tracker2.txt', dtype=float)
+time_gen_recon_wo_cf_tracker = np.loadtxt('sim_result_data/time_gen_recon_wo_cf_tracker2.txt', dtype=float)
+time_gen_recon_w_cf_tracker = np.loadtxt('sim_result_data/time_gen_recon_w_cf_tracker2.txt', dtype=float)
+time_dr_tracker = np.loadtxt('sim_result_data/time_dr_tracker2.txt', dtype=float)
 plot_time_scalability(time_recon_tracker, time_gen_recon_wo_cf_tracker, time_gen_recon_w_cf_tracker, time_dr_tracker,
                       num_of_agents_tracker)
