@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore')
 MM = [0.10, 0.20, 0.50, 0.75, 1.00]  # fractions of agents
 num_of_agents = 25  # total number of agents to be maintained as constant
 Num_agents_to_correct = [math.ceil(num_of_agents * i) for i in MM]
-goal_deposit = (10, 10)
+goal_deposit = (10, 15)
 mode = 'stochastic'
 prob = 0.8
 

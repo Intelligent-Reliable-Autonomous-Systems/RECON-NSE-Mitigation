@@ -28,7 +28,7 @@ class Environment:
         self.all_states = copy.copy(All_States)
         self.file_name = grid_filename
         self.sample = ('A', 'B')
-        self.weighting = {'X': 0.0, 'A': 3.0, 'B': 8.0}
+        self.weighting = {'X': 0.0, 'A': 20.0, 'B': 50.0}
 
         if mode == 'stochastic':
             self.p_success = p
@@ -251,7 +251,7 @@ def log_joint_NSE(Grid, joint_state):
             X[s[2]] += 1
     for sample_type in X.keys():
         joint_NSE_val += Grid.weighting[sample_type] * np.log(X[sample_type] / 20.0 + 1)
-    joint_NSE_val *= 25  # rescaling it to get good values
+    # joint_NSE_val *= 1  # rescaling it to get good values
     joint_NSE_val = round(joint_NSE_val, 2)
 
     return joint_NSE_val

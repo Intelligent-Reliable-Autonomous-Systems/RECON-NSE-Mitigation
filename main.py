@@ -10,7 +10,7 @@ from init_env import reset_Agents, show_joint_states_and_NSE_values
 
 warnings.filterwarnings('ignore')
 
-mode = 'deterministic'  # 'deterministic' or 'stochastic'
+mode = 'stochastic'  # 'deterministic' or 'stochastic'
 prob = 0.8
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]

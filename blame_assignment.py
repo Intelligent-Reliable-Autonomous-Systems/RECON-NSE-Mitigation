@@ -1,5 +1,7 @@
 import copy
 import numpy as np
+from sklearn import preprocessing
+
 from init_env import log_joint_NSE
 from itertools import permutations
 
@@ -111,7 +113,7 @@ class Blame:
             for agent in Agents:
                 agent_idx = agent.IDX
                 s = js[agent_idx]
-                agent.blame_training_data_x_with_cf.append([weighting[s[2]], int(s[3]), int(s[4])])
+                agent.blame_training_data_x_with_cf.append(np.array([weighting[s[2]], int(s[3]), int(s[4])]))
                 agent.blame_training_data_y_with_cf.append(-blame_values[agent_idx])
 
     def get_training_data_wo_cf(self, Agents, Joint_NSE_states):
@@ -125,7 +127,7 @@ class Blame:
                 agent_idx = agent.IDX
                 s = js[agent_idx]
                 # state of an agent: <x,y,sample_with_agent,coral_flag,done_flag>
-                agent.blame_training_data_x_wo_cf.append([weighting[s[2]], int(s[3]), int(s[4])])
+                agent.blame_training_data_x_wo_cf.append(np.array([weighting[s[2]], int(s[3]), int(s[4])]))
                 agent.blame_training_data_y_wo_cf.append(-blame_values[agent_idx])
 
     def compute_R_Blame_for_all_Agents(self, Agents, joint_NSE_states):
