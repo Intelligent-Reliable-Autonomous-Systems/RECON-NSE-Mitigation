@@ -606,7 +606,7 @@ def plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_
 
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE Penalty')
-    plt.ylim([0, plt.ylim()[1] + 100])
+    plt.ylim([0, plt.ylim()[1] + 25])
     # ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 12, '  Unavoidable NSE \nin all environments',
     #         color='black', weight='bold', bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.7'))
 
