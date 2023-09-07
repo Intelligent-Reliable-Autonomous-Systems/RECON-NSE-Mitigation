@@ -362,7 +362,7 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
                                              color=color4, yerr=NSE_after_gen_std_w_cf, ecolor='black', capsize=10)
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE Penalty')
-    plt.ylim([0, plt.ylim()[1]*2])
+    plt.ylim([0, plt.ylim()[1] * 2])
     if min(NSE_after_mit_gen_w_cf_list) == 0.0:
         ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 15, 'Avoidable NSE', color='black', weight='bold',
                 bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
@@ -513,7 +513,7 @@ def plot_NSE_LinePlot_with_corrected_agents(NSE_naive_tracker, NSE_dr_tracker, N
     color3 = COLOR['darkorange']  # color for RECON NSE
     color4 = COLOR['seagreen']  # color for Gen RECON with cf NSE
 
-    title_str = 'Average NSE mitigation trend for 20 agents\nwith varying percentage of agents undergoing policy update'
+    title_str = 'Average NSE mitigation trend for 25 agents\nwith varying percentage of agents undergoing policy update'
 
     # Calculate the mean and standard deviation for each row
     NSE_naive_means = np.mean(NSE_naive_tracker)
@@ -531,29 +531,31 @@ def plot_NSE_LinePlot_with_corrected_agents(NSE_naive_tracker, NSE_dr_tracker, N
     plt.plot(agents_corrected, NSE_naive_means, label='Naive Policy', color=color1)
     plt.plot(agents_corrected, NSE_dr_means, label='Difference Reward', color=color2)
     plt.plot(agents_corrected, NSE_recon_means, label='RECON', color=color3)
-    plt.plot(agents_corrected, NSE_recon_means, label='Generalized RECON with cf data', color=color4)
+    plt.plot(agents_corrected, NSE_gen_recon_with_cf_means, label='Generalized RECON with cf data', color=color4)
 
     # Create the shaded region for the standard deviations using fill_between
-    plt.fill_between(agents_corrected, NSE_naive_means - NSE_naive_std, NSE_naive_means + NSE_naive_std, alpha=0.2,
+    plt.fill_between(agents_corrected, NSE_naive_means - NSE_naive_std, NSE_naive_means + NSE_naive_std, alpha=0.1,
                      color=color1)
-    plt.fill_between(agents_corrected, NSE_dr_means - NSE_dr_std, NSE_dr_means + NSE_dr_std, alpha=0.2, color=color2)
-    plt.fill_between(agents_corrected, NSE_recon_means - NSE_recon_std, NSE_recon_means + NSE_recon_std, alpha=0.2,
+    plt.fill_between(agents_corrected, NSE_dr_means - NSE_dr_std, NSE_dr_means + NSE_dr_std, alpha=0.1, color=color2)
+    plt.fill_between(agents_corrected, NSE_recon_means - NSE_recon_std, NSE_recon_means + NSE_recon_std, alpha=0.1,
                      color=color3)
     plt.fill_between(agents_corrected, NSE_gen_recon_with_cf_means - NSE_gen_recon_with_cf_std,
-                     NSE_gen_recon_with_cf_means + NSE_gen_recon_with_cf_std, alpha=0.2, color=color4)
+                     NSE_gen_recon_with_cf_means + NSE_gen_recon_with_cf_std, alpha=0.1, color=color4)
 
-    plt.plot([30, 30], [0, NSE_dr_means[2]], linestyle='dotted', color='black')
+    plt.plot([50, 50], [0, NSE_gen_recon_with_cf_means[2]], alpha=0.4, linestyle='dotted', color='black')
 
     plt.xlabel('Percentage of agents undergoing policy update')
     plt.ylabel('NSE Penalty')
     plt.ylim([0, plt.ylim()[1] + 50])
 
     plt.title(title_str)
+    # x_ticks = np.array(len(agents_corrected))
     x_labels = []
-    for i in agents_corrected:
+    X = np.arange(10,101,10,dtype=int)
+    for i in X:
         x_labels.append(str(i) + '%')
 
-    plt.xticks(agents_corrected, x_labels)
+    plt.xticks(X, x_labels)
     plt.legend()
     plt.show()
 
@@ -632,14 +634,33 @@ def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf,
 
     ax.set_xlabel('Number of Agents')
     plt.xticks(num_of_agents_tracker, num_of_agents_tracker)
-    ax.set_ylabel('Time (min)')
+    ax.set_ylabel('Time (sec)')
+
+    time_recon_means = np.mean(time_recon, axis=1)
+    time_gen_recon_wo_cf_means = np.mean(time_gen_recon_wo_cf, axis=1)
+    time_gen_recon_w_cf_means = np.mean(time_gen_recon_w_cf, axis=1)
+    time_dr_means = np.mean(time_dr, axis=1)
+
+    time_recon_std = np.std(time_recon, axis=1)
+    time_gen_recon_wo_cf_std = np.std(time_gen_recon_wo_cf, axis=1)
+    time_gen_recon_w_cf_std = np.std(time_gen_recon_w_cf, axis=1)
+    time_dr_std = np.std(time_dr, axis=1)
 
     ax.set_title(title_str)
 
-    plt.plot(num_of_agents_tracker, time_recon, color=color1, label='RECON')
-    plt.plot(num_of_agents_tracker, time_gen_recon_wo_cf, color=color2, label='Generalized RECON without cf data')
-    plt.plot(num_of_agents_tracker, time_gen_recon_w_cf, color=color3, label='Generalized RECON with cf data')
-    plt.plot(num_of_agents_tracker, time_dr, color=color4, label='Difference Reward')
+    plt.plot(num_of_agents_tracker, time_recon_means, color=color1, label='RECON')
+    plt.plot(num_of_agents_tracker, time_gen_recon_wo_cf_means, color=color2, label='Generalized RECON without cf data')
+    plt.plot(num_of_agents_tracker, time_gen_recon_w_cf_means, color=color3, label='Generalized RECON with cf data')
+    plt.plot(num_of_agents_tracker, time_dr_means, color=color4, label='Difference Reward')
+
+    plt.fill_between(num_of_agents_tracker, time_recon_means - time_recon_std, time_recon_means + time_recon_std,
+                     alpha=0.2, color=color1)
+    plt.fill_between(num_of_agents_tracker, time_gen_recon_wo_cf_means - time_gen_recon_wo_cf_std,
+                     time_gen_recon_wo_cf_means + time_gen_recon_wo_cf_std, alpha=0.2, color=color3)
+    plt.fill_between(num_of_agents_tracker, time_gen_recon_w_cf_means - time_gen_recon_w_cf_std,
+                     time_gen_recon_w_cf_means + time_gen_recon_w_cf_std, alpha=0.2, color=color4)
+    plt.fill_between(num_of_agents_tracker, time_dr_means - time_dr_std, time_dr_means + time_dr_std, alpha=0.2,
+                     color=color2)
 
     ax.legend()
     plt.show()
