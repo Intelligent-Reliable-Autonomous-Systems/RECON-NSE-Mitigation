@@ -69,6 +69,11 @@ for ctr in range(0, len(MM)):
         Agents = reset_Agents(Agents)
         NSE_naive_tracker[ctr][i] = NSE_naive
 
+        for agent in Agents:
+            agent.follow_policy()
+            print("Agent " + agent.label + ": " + agent.plan)
+            agent.agent_reset()
+
         ###############################################
         # RECON (basic Rblame)
         blame = Blame(Agents, Grid)
@@ -98,6 +103,10 @@ for ctr in range(0, len(MM)):
         NSE_recon_tracker[ctr][i] = NSE_recon
         time_recon_tracker[ctr][i] = time_recon
 
+        for agent in Agents:
+            agent.follow_policy()
+            print("Agent " + agent.label + ": " + agent.plan)
+            agent.agent_reset()
         ###############################################
         # Generalized RECON without counterfactual data
         if int(i) == 0:
@@ -130,6 +139,12 @@ for ctr in range(0, len(MM)):
         NSE_gen_recon_wo_cf_tracker[ctr][i] = NSE_gen_recon_wo_cf
         time_gen_recon_wo_cf_tracker[ctr][i] = time_gen_recon_wo_cf
 
+
+        for agent in Agents:
+            agent.follow_policy()
+            print("Agent " + agent.label + ": " + agent.plan)
+            agent.agent_reset()
+
         ###############################################
         # Generalized RECON with counterfactual data
         if int(i) == 0:
@@ -160,6 +175,12 @@ for ctr in range(0, len(MM)):
         Agents = reset_Agents(Agents)
         NSE_gen_recon_with_cf_tracker[ctr][i] = NSE_gen_recon_w_cf
         time_gen_recon_w_cf_tracker[ctr][i] = time_gen_recon_w_cf
+
+
+        for agent in Agents:
+            agent.follow_policy()
+            print("Agent " + agent.label + ": " + agent.plan)
+            agent.agent_reset()
 
         ###############################################
         # Difference Reward Baseline (basic R_blame)
