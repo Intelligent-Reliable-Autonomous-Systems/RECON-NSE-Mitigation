@@ -84,8 +84,11 @@ for ctr in range(0, len(MM)):
         Agents = reset_Agents(Agents)
 
         time_recon_s = timer()
+        # print("At Line 87 with Test_grid", i)
         blame.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)
+        # print("At Line 89 with Test_grid", i)
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame')  # RECON basic mitigation
+        # print("At Line 91 with Test_grid", i)
         time_recon_e = timer()
         time_recon = round((time_recon_e - time_recon_s), 2)  # in seconds
         joint_NSE_states, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)

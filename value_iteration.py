@@ -121,8 +121,6 @@ def action_set_value_iteration(agent, S):
     for s in S:
         action_set = [k for k, v in Q[s].items() if round(v) == round(V[s])]
         agent.A[s] = action_set
-        # print(str(s) + "------> " + str(Q[s]) + " ==== optimal action set: " + str(action_set))
-        # print(str(s) + ": " + str(action_set))
 
     return agent
 
