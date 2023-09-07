@@ -29,8 +29,8 @@ NSE_RECON = np.zeros((len(MM), num_of_grids), dtype=float)
 NSE_GEN_RECON_with_cf = np.zeros((len(MM), num_of_grids), dtype=float)
 
 for i in [int(x) for x in range(0, num_of_grids)]:
-    filename = 'grids/test_grid' + str(i) + '.txt'
-    print("======= Now in test_grid" + str(i) + ".txt =======")
+    filename = 'grids/Test_grid' + str(i) + '.txt'
+    print("======= Now in Test_grid" + str(i) + ".txt =======")
     Grid = Environment(num_of_agents, goal_deposit, filename, mode, prob)
 
     Agents = Grid.init_agents_with_initial_policy()
@@ -121,8 +121,8 @@ for i in [int(x) for x in range(0, num_of_grids)]:
         NSE_GEN_RECON_with_cf[ctr][i] = NSE_gen_recon_w_cf
 
 MMM = np.array([int(100 * i) for i in MM])
-np.savetxt('sim_result_data/NSE_Naive.txt', NSE_Naive, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_DR.txt', NSE_DR, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_RECON.txt', NSE_RECON, fmt='%.1f')
-np.savetxt('sim_result_data/NSE_GEN_RECON_with_cf.txt', NSE_GEN_RECON_with_cf, fmt='%.1f')
-np.savetxt('sim_result_data/agent_percentage_corrected.txt', MMM, fmt='%d')
+np.savetxt('sim_result_data/NSE_Naive3.txt', NSE_Naive, fmt='%.1f')
+np.savetxt('sim_result_data/NSE_DR3.txt', NSE_DR, fmt='%.1f')
+np.savetxt('sim_result_data/NSE_RECON3.txt', NSE_RECON, fmt='%.1f')
+np.savetxt('sim_result_data/NSE_GEN_RECON_with_cf3.txt', NSE_GEN_RECON_with_cf, fmt='%.1f')
+np.savetxt('sim_result_data/agent_percentage_corrected3.txt', MMM, fmt='%d')
