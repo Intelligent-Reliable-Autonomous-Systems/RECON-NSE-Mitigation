@@ -17,7 +17,7 @@ prob = 0.8
 agents_to_be_corrected = 0.3  # 30% agents will undergo policy update
 Num_of_agents = 2
 Goal_deposit = (1, 1)
-num_of_grids = 5
+num_of_grids = 1
 ctr = 0
 # Tracking NSE values with grids
 
