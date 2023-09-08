@@ -580,22 +580,22 @@ def plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_
     # Calculate the mean and standard deviation for each row
 
     NSE_naive_means = np.mean(NSE_naive_tracker, axis=1)
+    NSE_dr_means = np.mean(NSE_dr_tracker, axis=1)
     NSE_recon_means = np.mean(NSE_recon_tracker, axis=1)
     NSE_gen_recon_wo_cf_means = np.mean(NSE_gen_recon_wo_cf_tracker, axis=1)
     NSE_gen_recon_w_cf_means = np.mean(NSE_gen_recon_w_cf_tracker, axis=1)
-    NSE_dr_means = np.mean(NSE_dr_tracker, axis=1)
 
     NSE_naive_std = np.std(NSE_naive_tracker, axis=1)
+    NSE_dr_std = np.std(NSE_dr_tracker, axis=1)
     NSE_recon_std = np.std(NSE_recon_tracker, axis=1)
     NSE_gen_recon_wo_cf_std = np.std(NSE_gen_recon_wo_cf_tracker, axis=1)
     NSE_gen_recon_w_cf_std = np.std(NSE_gen_recon_w_cf_tracker, axis=1)
-    NSE_dr_std = np.std(NSE_dr_tracker, axis=1)
 
     ax.bar(index, NSE_naive_means, bar_width, label="Naive Policy", color=color1,
            yerr=NSE_naive_std, ecolor='black', capsize=3)
-    ax.bar(index + 2 * bar_width, NSE_dr_means, bar_width, label="Difference Reward", color=color5,
+    ax.bar(index + bar_width, NSE_dr_means, bar_width, label="Difference Reward", color=color5,
            yerr=NSE_dr_std, ecolor='black', capsize=3)
-    ax.bar(index + bar_width, NSE_recon_means, bar_width, label="RECON", color=color2,
+    ax.bar(index + 2 * bar_width, NSE_recon_means, bar_width, label="RECON", color=color2,
            yerr=NSE_recon_std, ecolor='black', capsize=3)
     ax.bar(index + 3 * bar_width, NSE_gen_recon_wo_cf_means, bar_width, label="Generalized RECON without cf data",
            color=color3,
