@@ -12,7 +12,7 @@ from init_env import reset_Agents, show_joint_states_and_NSE_values
 warnings.filterwarnings('ignore')
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
-agents_to_be_corrected = 0.5  # 50% agents will undergo policy update
+agents_to_be_corrected = 0.2  # 20% agents will undergo policy update
 Num_of_agents = [2, 5, 10, 25, 50, 75, 100]
 MM = [math.ceil(i * agents_to_be_corrected) for i in Num_of_agents]
 Goal_deposit = [(1, 1), (2, 3), (5, 5), (10, 15), (25, 25), (35, 40), (50, 50)]
@@ -69,10 +69,10 @@ for ctr in range(0, len(MM)):
         Agents = reset_Agents(Agents)
         NSE_naive_tracker[ctr][i] = NSE_naive
 
-        for agent in Agents:
-            agent.follow_policy()
-            print("Agent " + agent.label + ": " + agent.plan)
-            agent.agent_reset()
+        #for agent in Agents:
+        #    agent.follow_policy()
+        #    print("Agent " + agent.label + ": " + agent.plan)
+        #    agent.agent_reset()
 
         ###############################################
         # RECON (basic Rblame)
@@ -103,10 +103,10 @@ for ctr in range(0, len(MM)):
         NSE_recon_tracker[ctr][i] = NSE_recon
         time_recon_tracker[ctr][i] = time_recon
 
-        for agent in Agents:
-            agent.follow_policy()
-            print("Agent " + agent.label + ": " + agent.plan)
-            agent.agent_reset()
+        #for agent in Agents:
+        #    agent.follow_policy()
+        #    print("Agent " + agent.label + ": " + agent.plan)
+        #    agent.agent_reset()
         ###############################################
         # Generalized RECON without counterfactual data
         if int(i) == 0:
@@ -140,10 +140,10 @@ for ctr in range(0, len(MM)):
         time_gen_recon_wo_cf_tracker[ctr][i] = time_gen_recon_wo_cf
 
 
-        for agent in Agents:
-            agent.follow_policy()
-            print("Agent " + agent.label + ": " + agent.plan)
-            agent.agent_reset()
+        #for agent in Agents:
+        #    agent.follow_policy()
+        #    print("Agent " + agent.label + ": " + agent.plan)
+        #    agent.agent_reset()
 
         ###############################################
         # Generalized RECON with counterfactual data
@@ -177,10 +177,10 @@ for ctr in range(0, len(MM)):
         time_gen_recon_w_cf_tracker[ctr][i] = time_gen_recon_w_cf
 
 
-        for agent in Agents:
-            agent.follow_policy()
-            print("Agent " + agent.label + ": " + agent.plan)
-            agent.agent_reset()
+        #for agent in Agents:
+        #    agent.follow_policy()
+        #    print("Agent " + agent.label + ": " + agent.plan)
+        #    agent.agent_reset()
 
         ###############################################
         # Difference Reward Baseline (basic R_blame)
@@ -218,14 +218,14 @@ for ctr in range(0, len(MM)):
     print("########################################################################")
 
     # saving to sim_results_folder after for all 5 grids in a single row; next row means new number of agents
-    np.savetxt('sim_result_data/NSE_naive_tracker3.txt', NSE_naive_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_recon_tracker3.txt', NSE_recon_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_gen_recon_wo_cf_tracker3.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_gen_recon_with_cf_tracker3.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_dr_tracker3.txt', NSE_dr_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/num_of_agents_tracker3.txt', num_of_agents_tracker, fmt='%d')
+    np.savetxt('sim_result_data/NSE_naive_tracker4.txt', NSE_naive_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_recon_tracker4.txt', NSE_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_gen_recon_wo_cf_tracker4.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_gen_recon_with_cf_tracker4.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/NSE_dr_tracker4.txt', NSE_dr_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/num_of_agents_tracker4.txt', num_of_agents_tracker, fmt='%d')
 
-    np.savetxt('sim_result_data/time_recon_tracker3.txt', time_recon_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker3.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker3.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_dr_tracker3.txt', time_dr_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_recon_tracker4.txt', time_recon_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker4.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker4.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
+    np.savetxt('sim_result_data/time_dr_tracker4.txt', time_dr_tracker, fmt='%.1f')

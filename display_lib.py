@@ -593,16 +593,16 @@ def plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_
 
     ax.bar(index, NSE_naive_means, bar_width, label="Naive Policy", color=color1,
            yerr=NSE_naive_std, ecolor='black', capsize=3)
+    ax.bar(index + 2 * bar_width, NSE_dr_means, bar_width, label="Difference Reward", color=color5,
+           yerr=NSE_dr_std, ecolor='black', capsize=3)
     ax.bar(index + bar_width, NSE_recon_means, bar_width, label="RECON", color=color2,
            yerr=NSE_recon_std, ecolor='black', capsize=3)
-    ax.bar(index + 2 * bar_width, NSE_gen_recon_wo_cf_means, bar_width, label="Generalized RECON without cf data",
+    ax.bar(index + 3 * bar_width, NSE_gen_recon_wo_cf_means, bar_width, label="Generalized RECON without cf data",
            color=color3,
            yerr=NSE_gen_recon_wo_cf_std, ecolor='black', capsize=3)
-    ax.bar(index + 3 * bar_width, NSE_gen_recon_w_cf_means, bar_width, label="Generalized RECON with cf data",
+    ax.bar(index + 4 * bar_width, NSE_gen_recon_w_cf_means, bar_width, label="Generalized RECON with cf data",
            color=color4,
            yerr=NSE_gen_recon_w_cf_std, ecolor='black', capsize=3)
-    ax.bar(index + 4 * bar_width, NSE_dr_means, bar_width, label="Difference Reward", color=color5,
-           yerr=NSE_dr_std, ecolor='black', capsize=3)
 
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE Penalty')
