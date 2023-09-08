@@ -144,8 +144,8 @@ def reset_Agents(Agents):
 
 def compare_all_plans_from_all_methods(Agents):
     for agent in Agents:
-        methods = ['Normal initial plan:', 'Rblame mitigation:', 'Generalized mit wo cf data:',
-                   'Generalized mit with cf data:']
+        methods = ['Naive Policy:', 'RECON:', 'Generalized RECON without cf data:',
+                   'Generalized RECON with cf data:']
         print(simple_colors.red("Agent " + agent.label + " plans:", ['bold']))
         while '' in agent.plan_from_all_methods:
             agent.plan_from_all_methods.remove('')
