@@ -96,6 +96,7 @@ class Environment:
         # state s: < x , y , sample_with_the_agent , coral_flag(True or False), tuple_of_samples_at_goal >
         NSE_worst = 10 * np.log(len(Agents) / 20.0 + 1)
         NSE_worst *= 25  # rescaling it to get good values
+        NSE_worst = max(self.weighting.values()) * np.log(len(Agents) / 20.0 + 1)
         NSE_worst = round(NSE_worst, 2)
         return NSE_worst
 
