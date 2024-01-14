@@ -12,28 +12,28 @@ from init_env import reset_Agents, show_joint_states_and_NSE_values
 warnings.filterwarnings('ignore')
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
-agents_to_be_corrected = 0.2  # 20% agents will undergo policy update
-Num_of_agents = [2, 5, 10, 25, 50, 75, 100]
+agents_to_be_corrected = 0.5  # 20% agents will undergo policy update
+Num_of_agents = [10, 20, 50, 75, 100]
 MM = [math.ceil(i * agents_to_be_corrected) for i in Num_of_agents]
-Goal_deposit = [(1, 1), (2, 3), (5, 5), (10, 15), (25, 25), (35, 40), (50, 50)]
+Goal_deposit = [(5, 5), (10, 10), (25, 25), (35, 40), (50, 50)]
 num_of_grids = 5
 
 # Tracking NSE values with grids
 
 num_of_agents_tracker = []
 
-NSE_naive_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
-NSE_recon_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
-NSE_gen_recon_wo_cf_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
-NSE_gen_recon_with_cf_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
-NSE_dr_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+NSE_naive_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+NSE_recon_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+NSE_gen_recon_wo_cf_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+NSE_gen_recon_with_cf_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+NSE_dr_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
 
-time_recon_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
-time_gen_recon_wo_cf_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
-time_gen_recon_w_cf_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
-time_dr_tracker = np.zeros((len(MM), num_of_grids), dtype=float)
+time_recon_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+time_gen_recon_wo_cf_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+time_gen_recon_w_cf_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+time_dr_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
 
-for ctr in range(0, len(MM)):
+for ctr in range(0, len(Num_of_agents)):
 
     time_recon_sum = 0
     time_gen_recon_wo_cf_sum = 0
