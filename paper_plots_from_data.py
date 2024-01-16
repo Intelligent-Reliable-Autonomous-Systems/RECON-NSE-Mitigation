@@ -34,10 +34,10 @@ plot_time_scalability(time_recon_tracker, time_gen_recon_wo_cf_tracker, time_gen
 
 # Print the the mean +- standard deviation of the time for 100 agents for each algorithm in minutes rounded to 2 decimal places
 print('Time for 100 agents for each algorithm in minutes:')
-print('DR: ', np.round(np.mean(time_dr_tracker[:, -1])/60, 2), '+-', np.round(np.std(time_dr_tracker[:, -1])/60, 2))
-print('RECON: ', np.round(np.mean(time_recon_tracker[:, -1])/60, 2), '+-', np.round(np.std(time_recon_tracker[:, -1])/60, 2))
-print('GEN_RECON_wo_cf: ', np.round(np.mean(time_gen_recon_wo_cf_tracker[:, -1])/60, 2), '+-', np.round(np.std(time_gen_recon_wo_cf_tracker[:, -1])/60, 2))
-print('GEN_RECON_w_cf: ', np.round(np.mean(time_gen_recon_w_cf_tracker[:, -1])/60, 2), '+-', np.round(np.std(time_gen_recon_w_cf_tracker[:, -1])/60, 2))
+print('DR: ', np.round(np.mean(time_dr_tracker[-1, :])/60, 2), '+-', np.round(np.std(time_dr_tracker[-1, :])/60, 2))
+print('RECON: ', np.round(np.mean(time_recon_tracker[-1, :])/60, 2), '+-', np.round(np.std(time_recon_tracker[-1, :])/60, 2))
+print('GEN_RECON_wo_cf: ', np.round(np.mean(time_gen_recon_wo_cf_tracker[-1, :])/60, 2), '+-', np.round(np.std(time_gen_recon_wo_cf_tracker[-1, :])/60, 2))
+print('GEN_RECON_w_cf: ', np.round(np.mean(time_gen_recon_w_cf_tracker[-1, :])/60, 2), '+-', np.round(np.std(time_gen_recon_w_cf_tracker[-1, :])/60, 2))
 
 
 
