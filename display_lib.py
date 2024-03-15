@@ -546,11 +546,11 @@ def plot_NSE_LinePlot_with_corrected_agents(NSE_naive_tracker, NSE_dr_tracker, N
     plt.fill_between(agents_corrected, NSE_gen_recon_with_cf_means - NSE_gen_recon_with_cf_std,
                      NSE_gen_recon_with_cf_means + NSE_gen_recon_with_cf_std, alpha=0.1, color=color4)
 
-    # plt.plot([100, 100], [0, NSE_gen_recon_with_cf_means[4]], alpha=0.4, linestyle='dotted', color='black')
+    plt.plot([50, 50], [0, NSE_gen_recon_with_cf_means[2]], alpha=0.4, linestyle='dotted', color='black')
 
     plt.xlabel('Percentage of agents undergoing policy update')
     plt.ylabel('NSE Penalty')
-    plt.ylim([0, plt.ylim()[1] + 50])
+    plt.ylim([0, plt.ylim()[1] + 20])
 
     # plt.title(title_str)
     # x_ticks = np.array(len(agents_corrected))
