@@ -630,19 +630,19 @@ def plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_
 
 
 def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf, time_dr, num_of_agents_tracker):
-    title_str = 'Process times with varying number of agents\naveraged over 5 environment in overcooked domain'
+    title_str = 'Process times with varying number of agents\naveraged over 5 environment in salp domain'
 
     color1 = COLOR['darkorange']
     color2 = COLOR['limegreen']
     color3 = COLOR['seagreen']
     color4 = COLOR['darkorchid']
     
-    for i in range(len(time_recon)):
-        for j in range(len(time_recon[0])):
-            time_recon[i][j] = time_recon[i][j] / 60.0
-            time_gen_recon_wo_cf[i][j] = time_gen_recon_wo_cf[i][j] / 60.0
-            time_gen_recon_w_cf[i][j] = time_gen_recon_w_cf[i][j] / 60.0
-            time_dr[i][j] =  time_dr[i][j] / 60.0
+    # for i in range(len(time_recon)):
+    #     for j in range(len(time_recon[0])):
+    #         time_recon[i][j] = time_recon[i][j] / 60.0
+    #         time_gen_recon_wo_cf[i][j] = time_gen_recon_wo_cf[i][j] / 60.0
+    #         time_gen_recon_w_cf[i][j] = time_gen_recon_w_cf[i][j] / 60.0
+    #         time_dr[i][j] =  time_dr[i][j] / 60.0
         
     fig, ax = plt.subplots()
 
@@ -652,8 +652,8 @@ def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf,
     plt.rc('axes', labelsize=14)
     plt.rc('xtick', labelsize=14)
     plt.rc('ytick', labelsize=14)
-    x_ticks = np.arange(0, 101, 10, dtype=int)
-    y_ticks = np.arange(0, 40, 2, dtype=int)
+    x_ticks = np.arange(0, 1001, 100, dtype=int)
+    y_ticks = np.arange(0, 15, 2, dtype=int)
     plt.xticks(x_ticks, x_ticks)
     plt.yticks(y_ticks, y_ticks)
 
@@ -667,7 +667,7 @@ def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf,
     time_gen_recon_w_cf_std = np.std(time_gen_recon_w_cf , axis=1)
     time_dr_std = np.std(time_dr , axis=1)
 
-    # ax.set_title(title_str)
+    ax.set_title(title_str)
 
     plt.plot(num_of_agents_tracker, time_dr_means, color=color4, label='Difference Reward')
     plt.plot(num_of_agents_tracker, time_recon_means, color=color1, label='RECON')

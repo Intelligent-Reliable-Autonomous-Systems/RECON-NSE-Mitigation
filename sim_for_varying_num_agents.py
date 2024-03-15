@@ -96,7 +96,7 @@ for ctr in range(0, len(MM)):
         # print("At Line 91 with Test_grid", i)
         time_recon_e = timer()
         time_recon = round((time_recon_e - time_recon_s), 2)  # in seconds
-        joint_NSE_states, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
+        _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
         R_recon, NSE_recon = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_recon: ', NSE_recon)
         Agents = reset_Agents(Agents)
@@ -132,7 +132,7 @@ for ctr in range(0, len(MM)):
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_wo_cf')  # Generalized RECON wo cf
         time_gen_recon_wo_cf_e = timer()
         time_gen_recon_wo_cf = round((time_gen_recon_wo_cf_e - time_gen_recon_wo_cf_s), 2)  # in seconds
-        joint_NSE_states, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
+        _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
         R_gen_recon_wo_cf, NSE_gen_recon_wo_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_gen_recon_wo_cf: ', NSE_gen_recon_wo_cf)
         Agents = reset_Agents(Agents)
@@ -169,7 +169,7 @@ for ctr in range(0, len(MM)):
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_with_cf')  # Generalized RECON with cf
         time_gen_recon_w_cf_e = timer()
         time_gen_recon_w_cf = round((time_gen_recon_w_cf_e - time_gen_recon_w_cf_s), 2)  # in seconds
-        joint_NSE_states, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
+        _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
         R_gen_recon_w_cf, NSE_gen_recon_w_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_gen_recon_w_cf: ', NSE_gen_recon_w_cf)
         Agents = reset_Agents(Agents)
@@ -193,7 +193,7 @@ for ctr in range(0, len(MM)):
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_dr')  # Difference Reward baseline mitigation
         time_dr_e = timer()
         time_dr = round((time_dr_e - time_dr_s), 2)  # in seconds
-        joint_NSE_states, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
+        _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
         R_dr, NSE_dr = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_dr: ', NSE_dr)
         Agents = reset_Agents(Agents)
@@ -218,14 +218,14 @@ for ctr in range(0, len(MM)):
     print("########################################################################")
 
     # saving to sim_results_folder after for all 5 grids in a single row; next row means new number of agents
-    np.savetxt('sim_result_data/NSE_naive_tracker5.txt', NSE_naive_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_recon_tracker5.txt', NSE_recon_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_gen_recon_wo_cf_tracker5.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_gen_recon_with_cf_tracker5.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/NSE_dr_tracker5.txt', NSE_dr_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/num_of_agents_tracker5.txt', num_of_agents_tracker, fmt='%d')
+    np.savetxt('IJCAI_sim_results/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
+    np.savetxt('IJCAI_sim_results/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
+    np.savetxt('IJCAI_sim_results/NSE_gen_recon_wo_cf_tracker.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('IJCAI_sim_results/NSE_gen_recon_with_cf_tracker.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
+    np.savetxt('IJCAI_sim_results/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
+    np.savetxt('IJCAI_sim_results/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
 
-    np.savetxt('sim_result_data/time_recon_tracker5.txt', time_recon_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_gen_recon_wo_cf_tracker5.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_gen_recon_w_cf_tracker5.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
-    np.savetxt('sim_result_data/time_dr_tracker5.txt', time_dr_tracker, fmt='%.1f')
+    np.savetxt('IJCAI_sim_results/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
+    np.savetxt('IJCAI_sim_results/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('IJCAI_sim_results/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
+    np.savetxt('IJCAI_sim_results/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')

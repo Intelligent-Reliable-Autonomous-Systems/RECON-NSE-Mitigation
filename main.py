@@ -84,7 +84,7 @@ for i in [x for x in range(0, num_of_grids)]:
     value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame')  # RECON basic mitigation
     time_recon_e = timer()
     time_recon = round((time_recon_e - time_recon_s) / 60.0, 2)  # in minutes
-    joint_NSE_states, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
+    _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
     R_recon, NSE_recon = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
     print('NSE_recon: ', NSE_recon)
     Agents = reset_Agents(Agents)
@@ -117,7 +117,7 @@ for i in [x for x in range(0, num_of_grids)]:
     value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_wo_cf')  # Generalized RECON wo cf
     time_gen_recon_wo_cf_e = timer()
     time_gen_recon_wo_cf = round((time_gen_recon_wo_cf_e - time_gen_recon_wo_cf_s) / 60.0, 2)  # in minutes
-    joint_NSE_states, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
+    _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
     R_gen_recon_wo_cf, NSE_gen_recon_wo_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
     print('NSE_gen_recon_wo_cf: ', NSE_gen_recon_wo_cf)
     Agents = reset_Agents(Agents)
@@ -149,7 +149,7 @@ for i in [x for x in range(0, num_of_grids)]:
     value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_with_cf')  # Generalized RECON with cf
     time_gen_recon_w_cf_e = timer()
     time_gen_recon_w_cf = round((time_gen_recon_w_cf_e - time_gen_recon_w_cf_s) / 60.0, 2)  # in minutes
-    joint_NSE_states, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
+    _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
     R_gen_recon_w_cf, NSE_gen_recon_w_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
     print('NSE_gen_recon_w_cf: ', NSE_gen_recon_w_cf)
     Agents = reset_Agents(Agents)
@@ -166,7 +166,7 @@ for i in [x for x in range(0, num_of_grids)]:
     value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_dr')  # Difference Reward baseline mitigation
     time_dr_e = timer()
     time_dr = round((time_dr_e - time_dr_s) / 60.0, 2)  # in minutes
-    joint_NSE_states, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
+    _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
     R_dr, NSE_dr = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
     print('NSE_dr: ', NSE_dr)
     Agents = reset_Agents(Agents)
@@ -192,5 +192,5 @@ print("time_dr (avg): ", np.sum(time_dr_tracker[ctr][:]) / num_of_grids)
 print("########################################################################")
 # plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_recon_wo_cf_tracker,
 #                               NSE_gen_recon_with_cf_tracker, NSE_dr_tracker, num_of_agents_tracker, 'stochastic')
-plot_NSE_bar_comparisons_with_std_mean(NSE_naive_tracker[0], NSE_recon_tracker[0], NSE_gen_recon_wo_cf_tracker[0],
-                                       NSE_gen_recon_with_cf_tracker[0], Grid.mode)
+plot_NSE_bar_comparisons_with_std_mean(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_recon_wo_cf_tracker,
+                                       NSE_gen_recon_with_cf_tracker, Grid.mode)

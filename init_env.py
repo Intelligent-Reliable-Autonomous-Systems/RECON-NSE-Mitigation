@@ -28,7 +28,7 @@ class Environment:
         self.all_states = copy.copy(All_States)
         self.file_name = grid_filename
         self.sample = ('A', 'B')
-        self.weighting = {'X': 0.0, 'A': 20.0, 'B': 50.0}
+        self.weighting = {'X': 0.0, 'A': 2.0, 'B': 5.0}
 
         if mode == 'stochastic':
             self.p_success = p
@@ -239,27 +239,53 @@ def get_joint_state(Agents):
     return tuple(Joint_State)
 
 
+# def log_joint_NSE(Grid, joint_state):
+#     joint_NSE_val = 0
+#     X = {}
+#     for sample_type in Grid.weighting.keys():
+#         X[sample_type] = 0
+#     Joint_State = list(copy.deepcopy(joint_state))
+
+#     # state s: < x , y , sample_with_agent , coral_flag(True or False), done_flag >
+#     for s in Joint_State:
+#         if s[3] is True:
+#             X[s[2]] += 1
+#     for sample_type in X.keys():
+#         joint_NSE_val += Grid.weighting[sample_type] * np.log(X[sample_type] / 20.0 + 1)
+#     # joint_NSE_val *= 1  # rescaling it to get good values
+#     joint_NSE_val = round(joint_NSE_val, 2)
+
+#     return joint_NSE_val
+
+# log_joint_NSE finction that takes Grid and joint_state as input and returns joint_NSE_val
+# The joint_NSE_val is calculated as follows:
+#   1. Calculate number of agents on the same coral location in the joint state
+#   2. Calculate the log of the number of agents on the same coral location multplied with the weighting of the sample
+#   3. Sum over all the samples in the joint state
+#   4. Return the sum as the joint_NSE_val
 def log_joint_NSE(Grid, joint_state):
     joint_NSE_val = 0
     X = {}
-    for sample_type in Grid.weighting.keys():
-        X[sample_type] = 0
-    Joint_State = list(copy.deepcopy(joint_state))
-
-    # state s: < x , y , sample_with_agent , coral_flag(True or False), samples_at_goal_condition >
-    for s in Joint_State:
-        if s[3] is True:
-            X[s[2]] += 1
-    for sample_type in X.keys():
-        joint_NSE_val += Grid.weighting[sample_type] * np.log(X[sample_type] / 20.0 + 1)
-    # joint_NSE_val *= 1  # rescaling it to get good values
+    sample_at_coral_loc = {}
+    
+    coral_locs = np.argwhere(Grid.coral_flag == True)
+    for coral_loc in coral_locs:
+        X[coral_loc[0], coral_loc[1]] = 0
+        sample_at_coral_loc[coral_loc[0], coral_loc[1]] = 'X'
+        
+    # count the number of agents on the same coral location with a sample
+    for s in joint_state:
+        if s[3] is True and s[2] != 'X':
+            X[s[0], s[1]] += 1
+            sample_at_coral_loc[s[0], s[1]] = s[2]
+    
+    # calculate the log of the number of agents on the same coral location multiplied with the weighting of the sample
+    for coral_loc in coral_locs:
+        joint_NSE_val += Grid.weighting[sample_at_coral_loc[coral_loc[0], coral_loc[1]]] * np.log(X[coral_loc[0], coral_loc[1]] + 1)
+    
+    # rescale the joint_NSE_val to get good values
+    joint_NSE_val *= 1
     joint_NSE_val = round(joint_NSE_val, 2)
-
+    
     return joint_NSE_val
-
-# Grid = Environment({'A': 2, 'B': 3}, 2)
-# print(All_States)
-# for s in Grid.S:
-#     print(s)
-# print()
-# print("All goal modes: ", Grid.goal_modes)
+    
