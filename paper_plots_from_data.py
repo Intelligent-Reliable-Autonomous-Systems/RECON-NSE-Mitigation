@@ -13,17 +13,22 @@ from init_env import Environment
 
 # Figure 2: NSE penalty from all algorithms averaged over 5 environments [sim_for_varying_num_agents.py]
 # load variables from textfiles
-NSE_naive_tracker = np.loadtxt('IJCAI_sim_results/NSE_naive_tracker.txt', dtype=float)[2:]
-NSE_recon_tracker = np.loadtxt('IJCAI_sim_results/NSE_recon_tracker.txt', dtype=float)[2:]
-NSE_gen_recon_wo_cf_tracker = np.loadtxt('IJCAI_sim_results/NSE_gen_recon_wo_cf_tracker.txt', dtype=float)[2:]
-NSE_gen_recon_with_cf_tracker = np.loadtxt('IJCAI_sim_results/NSE_gen_recon_with_cf_tracker.txt', dtype=float)[2:]
-NSE_dr_tracker = np.loadtxt('IJCAI_sim_results/NSE_dr_tracker.txt', dtype=float)[2:]
-num_of_agents_tracker = np.loadtxt('IJCAI_sim_results/num_of_agents_tracker.txt', dtype=int)[2:]
-num_of_agents_tracker[1] = 20
+NSE_naive_tracker = np.loadtxt('Considerate_sim_results/NSE_naive_tracker.txt', dtype=float)
+NSE_recon_tracker = np.loadtxt('Considerate_sim_results/NSE_recon_tracker.txt', dtype=float)
+NSE_gen_recon_wo_cf_tracker = np.loadtxt('Considerate_sim_results/NSE_gen_recon_wo_cf_tracker.txt', dtype=float)
+NSE_gen_recon_with_cf_tracker = np.loadtxt('Considerate_sim_results/NSE_gen_recon_with_cf_tracker.txt', dtype=float)
+NSE_dr_tracker = np.loadtxt('Considerate_sim_results/NSE_dr_tracker.txt', dtype=float)
+num_of_agents_tracker = np.loadtxt('Considerate_sim_results/num_of_agents_tracker.txt', dtype=int)
+# num_of_agents_tracker[1] = 20
 plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_recon_wo_cf_tracker,
-                              NSE_gen_recon_with_cf_tracker, NSE_dr_tracker, num_of_agents_tracker, 'stochastic')
+                              NSE_gen_recon_with_cf_tracker, NSE_dr_tracker, num_of_agents_tracker)
+
+NSE_considerate_tracker = np.loadtxt('Considerate_sim_results/NSE_considerate_tracker.txt', dtype=float)
+plot_effect_of_generalization2(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_recon_wo_cf_tracker,
+                                NSE_gen_recon_with_cf_tracker, NSE_dr_tracker, NSE_considerate_tracker, num_of_agents_tracker)
 
 
+exit(0)
 # Figure 3: Scalability plot showing algorithm times averaged over 5 environments [sim_for_varying_num_agents.py]
 # load variables from textfiles
 time_recon_tracker = np.loadtxt('sim_result_data/results_julia/TIME_RECON_onr.txt', dtype=float)

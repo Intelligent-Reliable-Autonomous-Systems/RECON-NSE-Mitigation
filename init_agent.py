@@ -50,6 +50,7 @@ class Agent:
         self.R_blame_dr = {}
         self.R_blame_gen_with_cf = {}
         self.R_blame_gen_wo_cf = {}
+        self.R_blame_considerate = {}
         self.model_wo_cf = LinearRegression()
         self.model_with_cf = LinearRegression()
 
@@ -61,6 +62,7 @@ class Agent:
             self.R_blame_gen_with_cf[s] = 0.0
             self.R_blame_gen_wo_cf[s] = 0.0
             self.R_blame_dr[s] = 0.0
+            self.R_blame_considerate[s] = 0.0
         for s in self.Grid.S:
             if self.assigned_sample == 'A':
                 if 'pick_B' in self.A[s]:
