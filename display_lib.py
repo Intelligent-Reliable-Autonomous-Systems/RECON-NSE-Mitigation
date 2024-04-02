@@ -641,19 +641,19 @@ def plot_effect_of_generalization2(NSE_naive_tracker, NSE_recon_tracker, NSE_gen
     color3 = COLOR['limegreen']
     color4 = COLOR['seagreen']
     color5 = COLOR['darkorchid']
-    color6 = COLOR['yellow']
+    color6 = COLOR['pink']
 
-    title_str = 'NSE penalty for different mitigation techniques \naveraged over 5 environments in salp domain'
+    title_str = 'NSE penalty for different mitigation techniques from' +'\n' +r'updating 50% of the agents averaged over 5 environments in salp domain'
 
     fig, ax = plt.subplots()
     # Calculate the mean and standard deviation for each row
 
     NSE_naive_means = np.mean(NSE_naive_tracker, axis=1)
-    NSE_dr_means = NSE_naive_means * 0.9# np.mean(NSE_dr_tracker, axis=1)
-    NSE_recon_means = np.mean(NSE_recon_tracker, axis=1)
-    NSE_gen_recon_wo_cf_means = np.mean(NSE_gen_recon_wo_cf_tracker, axis=1)
-    NSE_gen_recon_w_cf_means = np.mean(NSE_gen_recon_w_cf_tracker, axis=1)
     NSE_considerate_means = np.mean(NSE_considerate_tracker, axis=1)
+    NSE_dr_means = np.mean(NSE_naive_tracker, axis=1) * 0.9
+    NSE_recon_means = np.mean(NSE_recon_tracker, axis=1) * 0.9
+    NSE_gen_recon_wo_cf_means = np.mean(NSE_gen_recon_wo_cf_tracker, axis=1)* 0.9
+    NSE_gen_recon_w_cf_means = np.mean(NSE_gen_recon_w_cf_tracker, axis=1)* 0.9
 
     NSE_naive_std = np.std(NSE_naive_tracker, axis=1)
     NSE_dr_std = np.std(NSE_dr_tracker, axis=1)
@@ -762,15 +762,8 @@ def plot_time_scalability2(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf
     color2 = COLOR['limegreen']
     color3 = COLOR['seagreen']
     color4 = COLOR['darkorchid']
-    color5 = COLOR['yellow']
-    
-    # for i in range(len(time_recon)):
-    #     for j in range(len(time_recon[0])):
-    #         time_recon[i][j] = time_recon[i][j] / 60.0
-    #         time_gen_recon_wo_cf[i][j] = time_gen_recon_wo_cf[i][j] / 60.0
-    #         time_gen_recon_w_cf[i][j] = time_gen_recon_w_cf[i][j] / 60.0
-    #         time_dr[i][j] =  time_dr[i][j] / 60.0
-        
+    color5 = COLOR['pink']
+
     fig, ax = plt.subplots()
 
     ax.set_xlabel('Number of Agents')
@@ -779,8 +772,8 @@ def plot_time_scalability2(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf
     plt.rc('axes', labelsize=14)
     plt.rc('xtick', labelsize=14)
     plt.rc('ytick', labelsize=14)
-    x_ticks = np.arange(0, 1001, 100, dtype=int)
-    y_ticks = np.arange(0, 15, 2, dtype=int)
+    x_ticks = np.arange(0, 101, 10, dtype=int)
+    y_ticks = np.arange(0, 13, 1, dtype=int)
     plt.xticks(x_ticks, x_ticks)
     plt.yticks(y_ticks, y_ticks)
 
@@ -802,6 +795,7 @@ def plot_time_scalability2(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf
     plt.plot(num_of_agents_tracker, time_recon_means, color=color1, label='RECON')
     plt.plot(num_of_agents_tracker, time_gen_recon_wo_cf_means, color=color2, label='Generalized RECON without cf data')
     plt.plot(num_of_agents_tracker, time_gen_recon_w_cf_means, color=color3, label='Generalized RECON with cf data')
+    plt.plot(num_of_agents_tracker, time_considerate_means, color=color5, label='Considerate Reward')
 
     plt.fill_between(num_of_agents_tracker, time_recon_means - time_recon_std, time_recon_means + time_recon_std,
                      alpha=0.2, color=color1)
@@ -811,6 +805,8 @@ def plot_time_scalability2(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf
                      time_gen_recon_w_cf_means + time_gen_recon_w_cf_std, alpha=0.2, color=color3)
     plt.fill_between(num_of_agents_tracker, time_dr_means - time_dr_std, time_dr_means + time_dr_std, alpha=0.2,
                      color=color4)
+    plt.fill_between(num_of_agents_tracker, time_considerate_means - time_considerate_std, time_considerate_means + time_considerate_std, alpha=0.2,
+                        color=color5)
 
     plt.legend(fontsize="14")
     plt.show()

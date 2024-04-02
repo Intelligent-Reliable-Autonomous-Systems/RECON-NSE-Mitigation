@@ -99,7 +99,7 @@ for ctr in range(0, len(Num_of_agents)):
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame')  # RECON basic mitigation
         # print("At Line 91 with Test_grid", i)
         time_recon_e = timer()
-        time_recon = round((time_recon_e - time_recon_s), 2)  # in seconds
+        time_recon = round((time_recon_e - time_recon_s) / 60.0, 2)  # in minutes
         _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
         R_recon, NSE_recon = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_recon: ', NSE_recon)
@@ -135,7 +135,7 @@ for ctr in range(0, len(Num_of_agents)):
             agent.generalize_Rblame_wo_cf()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_wo_cf')  # Generalized RECON wo cf
         time_gen_recon_wo_cf_e = timer()
-        time_gen_recon_wo_cf = round((time_gen_recon_wo_cf_e - time_gen_recon_wo_cf_s), 2)  # in seconds
+        time_gen_recon_wo_cf = round((time_gen_recon_wo_cf_e - time_gen_recon_wo_cf_s) / 60.0, 2)  # in minutes
         _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
         R_gen_recon_wo_cf, NSE_gen_recon_wo_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_gen_recon_wo_cf: ', NSE_gen_recon_wo_cf)
@@ -172,7 +172,7 @@ for ctr in range(0, len(Num_of_agents)):
             agent.generalize_Rblame_with_cf()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_gen_with_cf')  # Generalized RECON with cf
         time_gen_recon_w_cf_e = timer()
-        time_gen_recon_w_cf = round((time_gen_recon_w_cf_e - time_gen_recon_w_cf_s), 2)  # in seconds
+        time_gen_recon_w_cf = round((time_gen_recon_w_cf_e - time_gen_recon_w_cf_s) / 60.0, 2)  # in minutes
         _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
         R_gen_recon_w_cf, NSE_gen_recon_w_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_gen_recon_w_cf: ', NSE_gen_recon_w_cf)
@@ -196,7 +196,7 @@ for ctr in range(0, len(Num_of_agents)):
         blameDR.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_dr')  # Difference Reward baseline mitigation
         time_dr_e = timer()
-        time_dr = round((time_dr_e - time_dr_s), 2)  # in seconds
+        time_dr = round((time_dr_e - time_dr_s) / 60.0, 2)  # in minutes
         _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
         R_dr, NSE_dr = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_dr: ', NSE_dr)
@@ -209,12 +209,12 @@ for ctr in range(0, len(Num_of_agents)):
         # Baseline inspired from [Alizadeh Alamdari et al., 2021]
         # Considerate Reward Baseline (R_blame augmented with other R blames of other agents with caring coefficients)
 
+        time_considerate_s = timer()
         blame.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)
         # blameDR.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)  # Be considerate baseline using DR
         
         Agents = reset_Agents(Agents)
 
-        time_considerate_s = timer()
         value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_considerate')  # Difference Reward baseline mitigation
         time_considerate_e = timer()
         time_considerate = round((time_considerate_e - time_considerate_s) / 60.0, 2)  # in minutes
