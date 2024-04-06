@@ -276,7 +276,6 @@ for ctr in range(0, len(Num_of_agents)):
     np.savetxt('Considerate_sim_results/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
     np.savetxt('Considerate_sim_results/NSE_considerate_tracker.txt', NSE_considerate_tracker, fmt='%.1f')
     np.savetxt('Considerate_sim_results/NSE_considerate2_tracker.txt', NSE_considerate2_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
 
     np.savetxt('Considerate_sim_results/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
     np.savetxt('Considerate_sim_results/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
@@ -284,3 +283,5 @@ for ctr in range(0, len(Num_of_agents)):
     np.savetxt('Considerate_sim_results/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
     np.savetxt('Considerate_sim_results/time_considerate_tracker.txt', time_considerate_tracker, fmt='%.1f')
     np.savetxt('Considerate_sim_results/time_considerate2_tracker.txt', time_considerate2_tracker, fmt='%.1f')
+    
+    np.savetxt('Considerate_sim_results/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')

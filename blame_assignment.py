@@ -148,7 +148,7 @@ class Blame:
     def compute_considerate_R_Blame_for_all_Agents(self, Agents, joint_NSE_states):
         blame_distribution = {}  # blame distributions of joint states [Agent1_blame, Agent2_blame,..]
         alpha_self = 1.0
-        alpha_care = 0#.2
+        alpha_care = 0.1
 
 
         for js_nse in joint_NSE_states:
@@ -167,7 +167,7 @@ class Blame:
     def compute_scalarized_considerate_R_for_all_Agents(self, Agents, joint_NSE_states):
         blame_distribution = {}  # blame distributions of joint states [Agent1_blame, Agent2_blame,..]
         alpha_self = 1.0
-        alpha_care = 0.2
+        alpha_care = 0.1
 
 
         for js_nse in joint_NSE_states:
