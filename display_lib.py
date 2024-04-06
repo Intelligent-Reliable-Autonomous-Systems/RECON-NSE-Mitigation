@@ -624,7 +624,7 @@ def plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_
 
 
 def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf, time_dr, num_of_agents_tracker):
-    title_str = 'Process Times with Number of Agents\nfor (20x20) grids averaged over 5 environment'
+    title_str = 'Process Times with Number of Agents for (20x20) \n grid environments averaged over 5 instances of salp domain'
 
     color1 = COLOR['darkorange']
     color2 = COLOR['limegreen']
