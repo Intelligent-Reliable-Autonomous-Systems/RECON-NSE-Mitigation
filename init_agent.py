@@ -51,6 +51,7 @@ class Agent:
         self.R_blame_gen_with_cf = {}
         self.R_blame_gen_wo_cf = {}
         self.R_blame_considerate = {}
+        self.R_blame_considerate2 = {}
         self.model_wo_cf = LinearRegression()
         self.model_with_cf = LinearRegression()
 
@@ -117,7 +118,14 @@ class Agent:
         else:
             R = -1
         return R
-
+    
+    def R_1(self, s, a):
+        # operation actions = ['pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']
+        # state of an agent: <x,y,sample_with_agent,coral_flag,done_flag>
+        s_next = do_action(self, s, a)
+        R = self.Reward(s, a) + self.R_blame_considerate[s_next]
+        return R
+    
     def follow_policy(self):
         Pi = copy.copy(self.Pi)
         while self.s != self.s_goal:

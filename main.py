@@ -192,6 +192,27 @@ for i in [x for x in range(0, num_of_grids)]:
     NSE_considerate_tracker[ctr][i] = NSE_considerate
     time_considerate_tracker[ctr][i] = time_considerate
 
+    ###############################################
+    # Actual true Be Considerate paper by Parand Alizadeh Alamdari
+    # Baseline inspired from [Alizadeh Alamdari et al., 2021]
+    # Considerate Reward Baseline (R_blame augmented with other R blames of other agents with caring coefficients)
+
+    blame.compute_scalarized_considerate_R_for_all_Agents(Agents, joint_NSE_states)
+    # blameDR.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)  # Be considerate baseline using DR
+    
+    Agents = reset_Agents(Agents)
+
+    time_considerate_s = timer()
+    value_iteration.LVI(Agents, Agents_to_be_corrected, 'R_blame_considerate')  # Difference Reward baseline mitigation
+    time_considerate_e = timer()
+    time_considerate = round((time_considerate_e - time_considerate_s) / 60.0, 2)  # in minutes
+    _, joint_NSE_values = show_joint_states_and_NSE_values(Grid, Agents)
+    R_considerate, NSE_considerate = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
+    print('NSE_considerate: ', NSE_considerate)
+    Agents = reset_Agents(Agents)
+    NSE_considerate_tracker[ctr][i] = NSE_considerate
+    time_considerate_tracker[ctr][i] = time_considerate
+
  ############################################### END of all methods in the for loop
 num_of_agents_tracker.append(num_of_agents)
 
