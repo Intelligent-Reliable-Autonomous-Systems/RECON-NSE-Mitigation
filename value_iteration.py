@@ -142,6 +142,8 @@ def LVI(Agents, Agents_to_be_corrected, mode):
             agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_gen_wo_cf)
         elif mode == 'R_blame_gen_with_cf':
             agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_gen_with_cf)
+        elif mode == 'R_blame_considerate':
+            agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_considerate)
 
     for agent in Agents:
         agent.s = copy.deepcopy(agent.s0)
