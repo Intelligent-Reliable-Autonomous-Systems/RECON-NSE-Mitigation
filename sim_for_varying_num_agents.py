@@ -210,7 +210,7 @@ for ctr in range(0, len(Num_of_agents)):
         # Considerate Reward Baseline (R_blame augmented with other R blames of other agents with caring coefficients)
 
         time_considerate_s = timer()
-        blame.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)
+        blame.compute_considerate_R_Blame_for_all_Agents(Agents, joint_NSE_states)
         # blameDR.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)  # Be considerate baseline using DR
         
         Agents = reset_Agents(Agents)
@@ -247,16 +247,16 @@ for ctr in range(0, len(Num_of_agents)):
     print("########################################################################")
 
     # saving to sim_results_folder after for all 5 grids in a single row; next row means new number of agents
-    np.savetxt('Considerate_sim_results/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/NSE_gen_recon_wo_cf_tracker.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/NSE_gen_recon_with_cf_tracker.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/NSE_considerate_tracker.txt', NSE_considerate_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
+    # np.savetxt('Considerate_sim_results/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/NSE_gen_recon_wo_cf_tracker.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/NSE_gen_recon_with_cf_tracker.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/NSE_considerate_tracker.txt', NSE_considerate_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
 
-    np.savetxt('Considerate_sim_results/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
-    np.savetxt('Considerate_sim_results/time_considerate_tracker.txt', time_considerate_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
+    # np.savetxt('Considerate_sim_results/time_considerate_tracker.txt', time_considerate_tracker, fmt='%.1f')

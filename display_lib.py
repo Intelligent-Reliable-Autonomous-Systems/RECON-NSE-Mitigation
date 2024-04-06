@@ -363,13 +363,13 @@ def plot_NSE_bar_comparisons_with_std_mean(NSE_before_mit_list, NSE_after_mit_li
     ax.set_xlabel('Number of Agents')
     ax.set_ylabel('NSE Penalty')
     plt.ylim([0, plt.ylim()[1] * 2])
-    if min(NSE_after_mit_gen_w_cf_list.all()) == 0.0:
-        ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 15, 'Avoidable NSE', color='black', weight='bold',
-                bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
-    else:
-        ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] * 0.85, '  Unavoidable NSE \nin all environments',
-                color='black', weight='bold',
-                bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.7'))
+    # if min(NSE_after_mit_gen_w_cf_list.all()) == 0.0:
+    #     ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 15, 'Avoidable NSE', color='black', weight='bold',
+    #             bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
+    # else:
+    #     ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] * 0.85, '  Unavoidable NSE \nin all environments',
+    #             color='black', weight='bold',
+    #             bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.7'))
 
     ax.set_title(title_str)
     ax.set_xticks(index + 1.5 * bar_width)
@@ -698,9 +698,6 @@ def plot_effect_of_generalization2(NSE_naive_tracker, NSE_recon_tracker, NSE_gen
 
 
 def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf, time_dr, num_of_agents_tracker):
-<<<<<<< HEAD
-    title_str = 'Process Times with Number of Agents for (20x20) \n grid environments averaged over 5 instances of salp domain'
-=======
     title_str = 'Process times with varying number of agents\naveraged over 5 environment in salp domain'
 
     color1 = COLOR['darkorange']
@@ -760,7 +757,6 @@ def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf,
 
 def plot_time_scalability2(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf, time_dr, time_considerate, num_of_agents_tracker):
     title_str = 'Process times with varying number of agents\naveraged over 5 environment in salp domain'
->>>>>>> 3149f95472dc0feddde7d45964f1e788806325bc
 
     color1 = COLOR['darkorange']
     color2 = COLOR['limegreen']

@@ -15,9 +15,9 @@ prob = 0.8
 
 # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
 agents_to_be_corrected = 0.5  # 50% agents will undergo policy update
-Num_of_agents = 5
-Goal_deposit = (2, 3)
-num_of_grids = 5
+Num_of_agents = 2
+Goal_deposit = (1, 1)
+num_of_grids = 1
 ctr = 0
 # Tracking NSE values with grids
 
@@ -176,7 +176,7 @@ for i in [x for x in range(0, num_of_grids)]:
     # Baseline inspired from [Alizadeh Alamdari et al., 2021]
     # Considerate Reward Baseline (R_blame augmented with other R blames of other agents with caring coefficients)
 
-    blame.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)
+    blame.compute_considerate_R_Blame_for_all_Agents(Agents, joint_NSE_states)
     # blameDR.compute_R_Blame_for_all_Agents(Agents, joint_NSE_states)  # Be considerate baseline using DR
     
     Agents = reset_Agents(Agents)
