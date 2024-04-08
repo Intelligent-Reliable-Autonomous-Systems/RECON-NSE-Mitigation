@@ -22,6 +22,14 @@ num_of_grids = 5
 
 num_of_agents_tracker = []
 
+R_naive_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+R_recon_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+R_gen_recon_wo_cf_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+R_gen_recon_with_cf_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+R_dr_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+R_considerate_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+R_considerate2_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
+
 NSE_naive_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
 NSE_recon_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
 NSE_gen_recon_wo_cf_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
@@ -73,6 +81,7 @@ for ctr in range(0, len(Num_of_agents)):
         R_naive, NSE_naive = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_naive: ', NSE_naive)
         Agents = reset_Agents(Agents)
+        R_naive_tracker[ctr][i] = R_naive
         NSE_naive_tracker[ctr][i] = NSE_naive
 
         #for agent in Agents:
@@ -106,6 +115,7 @@ for ctr in range(0, len(Num_of_agents)):
         R_recon, NSE_recon = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_recon: ', NSE_recon)
         Agents = reset_Agents(Agents)
+        R_recon_tracker[ctr][i] = R_recon
         NSE_recon_tracker[ctr][i] = NSE_recon
         time_recon_tracker[ctr][i] = time_recon
 
@@ -142,6 +152,7 @@ for ctr in range(0, len(Num_of_agents)):
         R_gen_recon_wo_cf, NSE_gen_recon_wo_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_gen_recon_wo_cf: ', NSE_gen_recon_wo_cf)
         Agents = reset_Agents(Agents)
+        R_gen_recon_wo_cf_tracker[ctr][i] = R_gen_recon_wo_cf
         NSE_gen_recon_wo_cf_tracker[ctr][i] = NSE_gen_recon_wo_cf
         time_gen_recon_wo_cf_tracker[ctr][i] = time_gen_recon_wo_cf
 
@@ -179,6 +190,7 @@ for ctr in range(0, len(Num_of_agents)):
         R_gen_recon_w_cf, NSE_gen_recon_w_cf = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_gen_recon_w_cf: ', NSE_gen_recon_w_cf)
         Agents = reset_Agents(Agents)
+        R_gen_recon_w_cf[ctr][i] = R_gen_recon_w_cf
         NSE_gen_recon_with_cf_tracker[ctr][i] = NSE_gen_recon_w_cf
         time_gen_recon_w_cf_tracker[ctr][i] = time_gen_recon_w_cf
 
@@ -203,6 +215,7 @@ for ctr in range(0, len(Num_of_agents)):
         R_dr, NSE_dr = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_dr: ', NSE_dr)
         Agents = reset_Agents(Agents)
+        R_dr_tracker[ctr][i] = R_dr
         NSE_dr_tracker[ctr][i] = NSE_dr
         time_dr_tracker[ctr][i] = time_dr
 
@@ -224,6 +237,7 @@ for ctr in range(0, len(Num_of_agents)):
         R_considerate, NSE_considerate = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_considerate: ', NSE_considerate)
         Agents = reset_Agents(Agents)
+        R_considerate_tracker[ctr][i] = R_considerate
         NSE_considerate_tracker[ctr][i] = NSE_considerate
         time_considerate_tracker[ctr][i] = time_considerate
         
@@ -245,6 +259,7 @@ for ctr in range(0, len(Num_of_agents)):
         R_considerate2, NSE_considerate2 = get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
         print('NSE_considerate2: ', NSE_considerate2)
         Agents = reset_Agents(Agents)
+        R_considerate2_tracker[ctr][i] = R_considerate2
         NSE_considerate2_tracker[ctr][i] = NSE_considerate2
         time_considerate2_tracker[ctr][i] = time_considerate2
     ############################################### END of all methods in the for loop
@@ -276,6 +291,14 @@ for ctr in range(0, len(Num_of_agents)):
     np.savetxt('Considerate_sim_results/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
     np.savetxt('Considerate_sim_results/NSE_considerate_tracker.txt', NSE_considerate_tracker, fmt='%.1f')
     np.savetxt('Considerate_sim_results/NSE_considerate2_tracker.txt', NSE_considerate2_tracker, fmt='%.1f')
+    
+    np.savetxt('Considerate_sim_results/R_naive_tracker.txt', R_naive_tracker, fmt='%.1f')
+    np.savetxt('Considerate_sim_results/R_recon_tracker.txt', R_recon_tracker, fmt='%.1f')
+    np.savetxt('Considerate_sim_results/R_gen_recon_wo_cf_tracker.txt', R_gen_recon_wo_cf_tracker, fmt='%.1f')
+    np.savetxt('Considerate_sim_results/R_gen_recon_with_cf_tracker.txt', R_gen_recon_with_cf_tracker, fmt='%.1f')
+    np.savetxt('Considerate_sim_results/R_dr_tracker.txt', R_dr_tracker, fmt='%.1f')
+    np.savetxt('Considerate_sim_results/R_considerate_tracker.txt', R_considerate_tracker, fmt='%.1f')
+    np.savetxt('Considerate_sim_results/R_considerate2_tracker.txt', R_considerate2_tracker, fmt='%.1f')
 
     np.savetxt('Considerate_sim_results/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
     np.savetxt('Considerate_sim_results/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')

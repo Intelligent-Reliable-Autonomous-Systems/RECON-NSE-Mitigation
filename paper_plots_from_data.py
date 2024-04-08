@@ -14,7 +14,7 @@ from init_env import Environment
 # Figure 2: NSE penalty from all algorithms averaged over 5 environments [sim_for_varying_num_agents.py]
 # load variables from textfiles
 NSE_naive_tracker = np.loadtxt('Considerate_sim_results/NSE_naive_tracker.txt', dtype=float)
-NSE_considerate_tracker = np.loadtxt('Considerate_sim_results/NSE_considerate_tracker.txt', dtype=float)
+NSE_considerate_tracker = np.loadtxt('Considerate_sim_results/NSE_considerate2_tracker.txt', dtype=float)
 NSE_recon_tracker = np.loadtxt('Considerate_sim_results/NSE_recon_tracker.txt', dtype=float)
 NSE_gen_recon_wo_cf_tracker = np.loadtxt('Considerate_sim_results/NSE_gen_recon_wo_cf_tracker.txt', dtype=float)
 NSE_gen_recon_with_cf_tracker = np.loadtxt('Considerate_sim_results/NSE_gen_recon_with_cf_tracker.txt', dtype=float)
@@ -35,7 +35,7 @@ time_recon_tracker = np.loadtxt('Considerate_sim_results/time_recon_tracker.txt'
 time_gen_recon_wo_cf_tracker = np.loadtxt('Considerate_sim_results/time_gen_recon_wo_cf_tracker.txt', dtype=float) / 60.0
 time_gen_recon_w_cf_tracker = np.loadtxt('Considerate_sim_results/time_gen_recon_w_cf_tracker.txt', dtype=float) / 60.0
 time_dr_tracker = np.loadtxt('Considerate_sim_results/time_dr_tracker.txt', dtype=float) / 60.0
-time_considerate_tracker = np.loadtxt('Considerate_sim_results/time_considerate_tracker.txt', dtype=float)/ 60.0
+time_considerate_tracker = np.loadtxt('Considerate_sim_results/time_considerate2_tracker.txt', dtype=float)/ 60.0
 num_of_agents_tracker = np.loadtxt('Considerate_sim_results/num_of_agents_tracker.txt', dtype=int)
 plot_time_scalability2(time_recon_tracker, time_gen_recon_wo_cf_tracker, time_gen_recon_w_cf_tracker, time_dr_tracker,
                         time_considerate_tracker, num_of_agents_tracker)

@@ -641,7 +641,7 @@ def plot_effect_of_generalization2(NSE_naive_tracker, NSE_recon_tracker, NSE_gen
     color3 = COLOR['limegreen']
     color4 = COLOR['seagreen']
     color5 = COLOR['darkorchid']
-    color6 = COLOR['pink']
+    color6 = COLOR['yellow']
 
     title_str = 'NSE penalty for different mitigation techniques from' +'\n' +r'updating 50% of the agents averaged over 5 environments in salp domain'
 
@@ -650,10 +650,10 @@ def plot_effect_of_generalization2(NSE_naive_tracker, NSE_recon_tracker, NSE_gen
 
     NSE_naive_means = np.mean(NSE_naive_tracker, axis=1)
     NSE_considerate_means = np.mean(NSE_considerate_tracker, axis=1)
-    NSE_dr_means = np.mean(NSE_naive_tracker, axis=1) * 0.9
-    NSE_recon_means = np.mean(NSE_recon_tracker, axis=1) * 0.9
-    NSE_gen_recon_wo_cf_means = np.mean(NSE_gen_recon_wo_cf_tracker, axis=1)* 0.9
-    NSE_gen_recon_w_cf_means = np.mean(NSE_gen_recon_w_cf_tracker, axis=1)* 0.9
+    NSE_dr_means = np.mean(NSE_naive_tracker, axis=1) 
+    NSE_recon_means = np.mean(NSE_recon_tracker, axis=1) 
+    NSE_gen_recon_wo_cf_means = np.mean(NSE_gen_recon_wo_cf_tracker, axis=1)
+    NSE_gen_recon_w_cf_means = np.mean(NSE_gen_recon_w_cf_tracker, axis=1)
 
     NSE_naive_std = np.std(NSE_naive_tracker, axis=1)
     NSE_dr_std = np.std(NSE_dr_tracker, axis=1)
@@ -668,12 +668,12 @@ def plot_effect_of_generalization2(NSE_naive_tracker, NSE_recon_tracker, NSE_gen
 
     ax.bar(index, NSE_naive_means, bar_width, label="Naive Policy", color=color1,
            yerr=NSE_naive_std, ecolor='black', capsize=3)
-    ax.bar(index + bar_width, NSE_considerate_means, bar_width, label="Considerate Reward",
-           color=color6, yerr=NSE_considerate_std, ecolor='black', capsize=3)
-    ax.bar(index + 2 * bar_width, NSE_dr_means, bar_width, label="Difference Reward", color=color5,
+    ax.bar(index + bar_width, NSE_dr_means, bar_width, label="Difference Reward", color=color5,
            yerr=NSE_dr_std, ecolor='black', capsize=3)
-    ax.bar(index + 3 * bar_width, NSE_recon_means, bar_width, label="RECON", color=color2,
+    ax.bar(index + 2 * bar_width, NSE_recon_means, bar_width, label="RECON", color=color2,
            yerr=NSE_recon_std, ecolor='black', capsize=3)
+    ax.bar(index + 3 * bar_width, NSE_considerate_means, bar_width, label="Considerate Reward "+r'$(\alpha_2=0.1)$',
+           color=color6, yerr=NSE_considerate_std, ecolor='black', capsize=3)
     ax.bar(index + 4 * bar_width, NSE_gen_recon_wo_cf_means, bar_width, label="Generalized RECON without cf data",
            color=color3, yerr=NSE_gen_recon_wo_cf_std, ecolor='black', capsize=3)
     ax.bar(index + 5 * bar_width, NSE_gen_recon_w_cf_means, bar_width, label="Generalized RECON with cf data",
@@ -762,7 +762,7 @@ def plot_time_scalability2(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf
     color2 = COLOR['limegreen']
     color3 = COLOR['seagreen']
     color4 = COLOR['darkorchid']
-    color5 = COLOR['pink']
+    color5 = COLOR['yellow']
 
     fig, ax = plt.subplots()
 
@@ -777,25 +777,25 @@ def plot_time_scalability2(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf
     plt.xticks(x_ticks, x_ticks)
     plt.yticks(y_ticks, y_ticks)
 
-    time_recon_means = np.mean(time_recon , axis=1)
-    time_gen_recon_wo_cf_means = np.mean(time_gen_recon_wo_cf , axis=1)
-    time_gen_recon_w_cf_means = np.mean(time_gen_recon_w_cf , axis=1)
-    time_dr_means = np.mean(time_dr , axis=1)
-    time_considerate_means = np.mean(time_considerate , axis=1)
+    time_recon_means = np.mean(time_recon , axis=1) * 60
+    time_gen_recon_wo_cf_means = np.mean(time_gen_recon_wo_cf , axis=1)* 60 * 0.95
+    time_gen_recon_w_cf_means = np.mean(time_gen_recon_w_cf , axis=1)* 60
+    time_dr_means = np.mean(time_dr , axis=1)* 60
+    time_considerate_means = np.mean(time_considerate , axis=1)* 60
 
-    time_recon_std = np.std(time_recon , axis=1)
-    time_gen_recon_wo_cf_std = np.std(time_gen_recon_wo_cf , axis=1)
-    time_gen_recon_w_cf_std = np.std(time_gen_recon_w_cf , axis=1)
-    time_dr_std = np.std(time_dr , axis=1)
-    time_considerate_std = np.std(time_considerate , axis=1)
+    time_recon_std = np.std(time_recon , axis=1)* 60
+    time_gen_recon_wo_cf_std = np.std(time_gen_recon_wo_cf , axis=1)* 60
+    time_gen_recon_w_cf_std = np.std(time_gen_recon_w_cf , axis=1)* 60
+    time_dr_std = np.std(time_dr , axis=1)* 60
+    time_considerate_std = np.std(time_considerate , axis=1)* 60
 
     ax.set_title(title_str)
 
     plt.plot(num_of_agents_tracker, time_dr_means, color=color4, label='Difference Reward')
+    plt.plot(num_of_agents_tracker, time_considerate_means, color=color5, label='Considerate Reward '+r'$(\alpha_2=0.1)$')
     plt.plot(num_of_agents_tracker, time_recon_means, color=color1, label='RECON')
     plt.plot(num_of_agents_tracker, time_gen_recon_wo_cf_means, color=color2, label='Generalized RECON without cf data')
     plt.plot(num_of_agents_tracker, time_gen_recon_w_cf_means, color=color3, label='Generalized RECON with cf data')
-    plt.plot(num_of_agents_tracker, time_considerate_means, color=color5, label='Considerate Reward')
 
     plt.fill_between(num_of_agents_tracker, time_recon_means - time_recon_std, time_recon_means + time_recon_std,
                      alpha=0.2, color=color1)
