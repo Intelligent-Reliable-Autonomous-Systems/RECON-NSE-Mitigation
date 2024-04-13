@@ -27,8 +27,10 @@ class Agent:
         self.s_goal_loc = Grid.s_goal_loc
         self.P = 1.0
         self.R = 0.0
+        self.R_max = 100.0
         self.gamma = 0.95
         self.V = []
+        self.V_naive = {}
         self.Pi = []
         self.NSE = 0.0
         self.NSE_gen = 0.0
@@ -119,11 +121,13 @@ class Agent:
             R = -1
         return R
     
-    def R_1(self, s, a):
+    def R_considerate_scalarized(self, s, a):
         # operation actions = ['pick_A', 'pick_B', 'drop', 'U', 'D', 'L', 'R']
         # state of an agent: <x,y,sample_with_agent,coral_flag,done_flag>
+        alpha_self = 1.0
+        alpha_care = 0.1
         s_next = do_action(self, s, a)
-        R = self.Reward(s, a) + self.R_blame_considerate[s_next]
+        R = alpha_self * self.V_naive[s] / self.R_max + alpha_care * self.R_blame_considerate[s_next] / self.Grid.R_Nmax
         return R
     
     def follow_policy(self):

@@ -695,6 +695,76 @@ def plot_effect_of_generalization2(NSE_naive_tracker, NSE_recon_tracker, NSE_gen
     ax.legend(fontsize=14)
 
     plt.show()
+    
+
+def plot_effect_of_generalization3(NSE_naive_tracker, NSE_considerate4_tracker,
+                                  NSE_considerate5_tracker, NSE_considerate6_tracker, NSE_considerate7_tracker, NSE_gen_recon_w_cf_tracker,
+                                  num_agents_tracker):
+    index = np.arange(len(num_agents_tracker))
+    bar_width = 0.12
+    fsize = 10
+    num_grid = 5
+    color1 = COLOR['red']
+    color2 = COLOR['orange']
+    color3 = COLOR['gold']
+    color4 = COLOR['teal']
+    color5 = COLOR['dodgerblue']
+    color6 = COLOR['green']
+
+    title_str = 'NSE penalty for different mitigation techniques from' +'\n' +r'updating 50% of the agents averaged over 5 environments in salp domain'
+
+    fig, ax = plt.subplots()
+    # Calculate the mean and standard deviation for each row
+
+    NSE_naive_means = np.mean(NSE_naive_tracker, axis=1)
+    NSE_considerate4_means = np.mean(NSE_considerate4_tracker, axis=1)
+    NSE_considerate5_means = np.mean(NSE_considerate5_tracker, axis=1) 
+    NSE_considerate6_means = np.mean(NSE_considerate6_tracker, axis=1) 
+    NSE_considerate7_means = np.mean(NSE_considerate7_tracker, axis=1)
+    NSE_gen_recon_w_cf_means = np.mean(NSE_gen_recon_w_cf_tracker, axis=1)
+
+    NSE_naive_std = np.std(NSE_naive_tracker, axis=1)
+    NSE_considerate4_std = np.std(NSE_considerate4_tracker, axis=1)
+    NSE_considerate5_std = np.std(NSE_considerate5_tracker, axis=1)
+    NSE_considerate6_std = np.std(NSE_considerate6_tracker, axis=1)
+    NSE_considerate7_std = np.std(NSE_considerate7_tracker, axis=1)
+    NSE_gen_recon_w_cf_std = np.std(NSE_gen_recon_w_cf_tracker, axis=1)
+    plt.rc('axes', titlesize=14)
+    plt.rc('axes', labelsize=14)
+    plt.rc('xtick', labelsize=14)
+    plt.rc('ytick', labelsize=14)
+
+    ax.bar(index, NSE_naive_means, bar_width, label="Naive Policy", color=color1,
+           yerr=NSE_naive_std, ecolor='black', capsize=3)
+    ax.bar(index + 1 * bar_width, NSE_considerate7_means, bar_width, label="Considerate Value Reward "+r'$(\alpha_1= 1, \alpha_2= 0.1)$', color=color2,
+                yerr=NSE_considerate7_std, ecolor='black', capsize=3)
+    ax.bar(index + 2 * bar_width, NSE_considerate4_means, bar_width, label="Considerate Reward "+r'$(\alpha_1= 0.5, \alpha_2= 0.5)$', color=color4,
+              yerr=NSE_considerate4_std, ecolor='black', capsize=3)
+    ax.bar(index + 3 * bar_width, NSE_considerate5_means, bar_width, label="Considerate Reward "+r'$(\alpha_1= 1, \alpha_2= 0.1)$', color=color3,
+                yerr=NSE_considerate5_std, ecolor='black', capsize=3, hatch='//')
+    ax.bar(index + 4 * bar_width, NSE_considerate6_means, bar_width, label="Considerate Value Reward "+r'$(\alpha_1= 0.5, \alpha_2= 0.5)$', color=color5,
+                yerr=NSE_considerate6_std, ecolor='black', capsize=3)
+    ax.bar(index + 5 * bar_width, NSE_gen_recon_w_cf_means, bar_width, label="Generalized RECON with cf data",
+              color=color6, yerr=NSE_gen_recon_w_cf_std, ecolor='black', capsize=3)
+    
+            
+
+    ax.set_xlabel('Number of Agents')
+    ax.set_ylabel('NSE Penalty')
+    plt.ylim([0, plt.ylim()[1] + 25])
+    # ax.text(plt.xlim()[0] + 0.2 * bar_width, plt.ylim()[1] - 12, '  Unavoidable NSE \nin all environments',
+    #         color='black', weight='bold', bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.7'))
+
+    ax.set_title(title_str)
+    ax.set_xticks(index + 2.5 * bar_width)
+    x_labels = []
+    for i in num_agents_tracker:
+        x_labels.append(str(i))
+
+    ax.set_xticklabels(x_labels)
+    ax.legend(fontsize=14)
+
+    plt.show()
 
 
 def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf, time_dr, num_of_agents_tracker):

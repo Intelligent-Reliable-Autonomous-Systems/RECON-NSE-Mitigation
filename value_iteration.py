@@ -68,7 +68,7 @@ def be_considerate_value_iteration(agent):
                 T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
-                Q[s][a] = agent.R_1(s, a) + QQ
+                Q[s][a] = agent.R_considerate_scalarized(s, a) + QQ
             V[s] = max(Q[s].values())  # V = max(Q_values)
             Residual[s] = abs(V[s] - oldV[s])
             for aa in agent.A[s]:
@@ -179,7 +179,7 @@ def LVI(Agents, Agents_to_be_corrected, mode):
             agent = action_set_value_iteration(agent, agent.Grid.S)
             if mode == 'R_blame':
                 agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame)
-            if mode == 'R_blame_dr':
+            elif mode == 'R_blame_dr':
                 agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_dr)
             elif mode == 'R_blame_gen_wo_cf':
                 agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_gen_wo_cf)

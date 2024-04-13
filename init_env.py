@@ -29,6 +29,7 @@ class Environment:
         self.file_name = grid_filename
         self.sample = ('A', 'B')
         self.weighting = {'X': 0.0, 'A': 2.0, 'B': 5.0}
+        self.R_Nmax = max(self.weighting.values())* np.log(num_of_agents)
 
         if mode == 'stochastic':
             self.p_success = p
@@ -71,6 +72,7 @@ class Environment:
         # value iteration for all agents
         for agent in Agents:
             agent.V, agent.Pi = value_iteration.value_iteration(agent, self.S)
+            agent.V_naive = copy.deepcopy(agent.V)
 
         # print("[init_env.py] Initial policy for both agents has been computed!!!")
         for agent in Agents:
