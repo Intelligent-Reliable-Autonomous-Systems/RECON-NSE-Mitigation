@@ -31,7 +31,7 @@ class OvercookedEnvironment:
         
         self.serving_counter_locations = [(i,j) for i in range(rows) for j in range(columns) if All_States[i][j] == 'S']
         self.pot_locations = [(i,j) for i in range(rows) for j in range(columns) if All_States[i][j] == 'P']
-        self.dustbin_locations = [(i,j) for i in range(rows) for j in range(columns) if All_States[i][j] == 'W']
+        self.dustbin_locations = [(i,j) for i in range(rows) for j in range(columns) if All_States[i][j] == 'W']  # W for wastebin since D is used for dish
         self.onion_locations = [(i,j) for i in range(rows) for j in range(columns) if All_States[i][j] == 'O']
         self.tomato_locations = [(i,j) for i in range(rows) for j in range(columns) if All_States[i][j] == 'T']
         self.dish_locations = [(i,j) for i in range(rows) for j in range(columns) if All_States[i][j] == 'D']
@@ -40,7 +40,7 @@ class OvercookedEnvironment:
         self.s_goal_locs = [(serving_counter_location[0]-1, serving_counter_location[1]) for serving_counter_location in self.serving_counter_locations]
         
         self.R_Nmax = max(self.weighting.values())* np.log(num_of_agents+1)
-        self.deposit_goal = goal_deposit  # (the tuple (#O,#T,#C) sum of onion soups, tomato soups, and cleaner agents
+        self.deposit_goal = goal_deposit  # (the tuple (#O,#T) sum of onion soups, tomato soups, and cleaner agents that are assigned later
         self.num_of_agents = num_of_agents
         self.rows = rows
         self.columns = columns
@@ -50,6 +50,12 @@ class OvercookedEnvironment:
         for i in range(len(self.deposit_goal)):
             for j in range(self.deposit_goal[i]):
                 self.task_list.append(self.dish[i])
+        # remove 20% of the tasks with an equal mix of O and T replaced by C that represent the cleaner agents
+        num_of_cleaners = int(0.2 * len(self.task_list))
+        task_list = copy(self.task_list)
+        for i in range(num_of_cleaners):
+            task_list[i] = 'C'
+        random.shuffle(task_list)
 
     def get_state_space(self):
         # s = (s[0]: row, s[1]: column, s[2]: direction, s[3]: dustbin, s[4]: object in hand, s[5]: done)
@@ -95,6 +101,9 @@ class OvercookedAgent:
         self.columns = Grid.columns
         self.best_performance_flag = False
         
+        if self.assigned_dish == 'C':  # cleaner agent
+            self.goal_loc = Grid.dustbin_locations[self.IDX%len(Grid.dustbin_locations)]
+            
         # Set the success probability of the agent
         self.p_success = 0.8
         
@@ -108,10 +117,7 @@ class OvercookedAgent:
         self.s0 = (start_location[0], start_location[1], 2, self.Grid.All_States[start_location[0]][start_location[1]] == 'W', 'X', False)
         self.s = copy.deepcopy(self.s0)
         self.s_goal = (self.goal_loc[0], self.goal_loc[1], 2, self.Grid.All_States[self.goal_loc[0]][self.goal_loc[1]] == 'W', 'X', True)
-        # print("Agent " + self.label + " is assigned to deliver " + self.assigned_dish + " to the serving counter at " + str(self.goal_loc))
-        # print("s_goal: " + str(self.s_goal))
-        # print("goal_loc: ", self.goal_loc)
-        # print("self.is_looking_at(self.s_goal, 'S'): ", self.is_looking_at(self.s_goal, 'S'))
+            
         # Initialize state and action space
         self.S = Grid.S
         self.A = self.get_action_space()

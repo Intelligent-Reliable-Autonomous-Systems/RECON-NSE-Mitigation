@@ -4,7 +4,7 @@ import get_plots as sim3
 
 def main():
     #domain = 0: salp, 1: overcooked, 2: warehouse
-    for domain in [0, 1, 2]:
+    for domain in [1]:#[0, 1, 2]:
         if domain == 0:
             print('Domain: Salp')
             domain_name = 'salp'
@@ -27,7 +27,7 @@ def main():
             print('Domain not recognized')
             exit()
 
-        sim1.run_varying_corrected_agents_sim(domain_name, Agent, Environment, MR)
+        # sim1.run_varying_corrected_agents_sim(domain_name, Agent, Environment, MR)
         sim2.run_generalization_simulation(domain_name, Agent, Environment, MR)
         sim3.get_all_visualizations(save_figures=True)
 
