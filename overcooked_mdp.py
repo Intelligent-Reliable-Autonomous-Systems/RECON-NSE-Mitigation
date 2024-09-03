@@ -353,20 +353,6 @@ class OvercookedAgent:
         N2 = len(X_with_cf)
         X1, y1 = np.array(X_wo_cf).reshape((N1, 2)), np.array(y_wo_cf).reshape((N1, 1))
         X2, y2 = np.array(X_with_cf).reshape((N2, 2)), np.array(y_with_cf).reshape((N2, 1))
-
-        #####################################
-        # # Saving training data as text files
-        # filename_X1 = 'training_data/Agent' + self.label + '_X_wo_cf.txt'
-        # filename_y1 = 'training_data/Agent' + self.label + '_y_wo_cf.txt'
-        # filename_X2 = 'training_data/Agent' + self.label + '_X_with_cf.txt'
-        # filename_y2 = 'training_data/Agent' + self.label + '_y_with_cf.txt'
-        #
-        # np.savetxt(filename_X1, X1)
-        # np.savetxt(filename_y1, y1)
-        # np.savetxt(filename_X2, X2)
-        # np.savetxt(filename_y2, y2)
-        #####################################
-
         model_wo_cf_data = LinearRegression()
         model_with_cf_data = LinearRegression()
         model_wo_cf_data.fit(X1, y1)
@@ -382,18 +368,12 @@ class OvercookedAgent:
             self.R_blame_gen_wo_cf[s] = round(R_blame_gen_wo_cf, 1)
             self.R_blame_gen_with_cf[s] = round(R_blame_gen_with_cf, 1)
 
-        # print("%%%%%%%%%%[init_agent.py] RBlame1 == RBlame1: ", self.R_blame_gen_wo_cf == self.R_blame_gen_wo_cf)
-        # print("%%%%%%%%%%[init_agent.py] RBlame1 == RBlame2: ", self.R_blame_gen_wo_cf == self.R_blame_gen_with_cf)
-        self.R_blame_gen_wo_cf[self.s_goal] = 100
-        self.R_blame_gen_with_cf[self.s_goal] = 100
-
     def generalize_Rblame_wo_cf(self):
         weighting = self.Grid.weighting
         X_wo_cf = copy.deepcopy(self.blame_training_data_x_wo_cf)
         y_wo_cf = copy.deepcopy(self.blame_training_data_y_wo_cf)
         N1 = len(X_wo_cf)
         X1, y1 = np.array(X_wo_cf).reshape((N1, 2)), np.array(y_wo_cf).reshape((N1, 1))
-
         model_wo_cf_data = LinearRegression()
         model_wo_cf_data.fit(X1, y1)
         self.model_wo_cf = model_wo_cf_data
@@ -402,15 +382,12 @@ class OvercookedAgent:
                 self.model_wo_cf.predict(np.array([[int(s[3]), weighting[s[4]]]])))
             self.R_blame_gen_wo_cf[s] = round(R_blame_gen_wo_cf, 1)
 
-        self.R_blame_gen_wo_cf[self.s_goal] = 100
-
     def generalize_Rblame_with_cf(self):
         weighting = self.Grid.weighting
         X_with_cf = copy.deepcopy(self.blame_training_data_x_with_cf)
         y_with_cf = copy.deepcopy(self.blame_training_data_y_with_cf)
         N2 = len(X_with_cf)
         X2, y2 = np.array(X_with_cf).reshape((N2, 2)), np.array(y_with_cf).reshape((N2, 1))
-
         model_with_cf_data = LinearRegression()
         model_with_cf_data.fit(X2, y2)
         self.model_with_cf = model_with_cf_data
@@ -418,5 +395,3 @@ class OvercookedAgent:
             R_blame_gen_with_cf = float(
                 self.model_with_cf.predict(np.array([[int(s[3]), weighting[s[4]]]])))
             self.R_blame_gen_with_cf[s] = round(R_blame_gen_with_cf, 1)
-
-        self.R_blame_gen_with_cf[self.s_goal] = 100
