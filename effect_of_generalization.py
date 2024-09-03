@@ -9,13 +9,12 @@ warnings.filterwarnings('ignore')
 def run_generalization_simulation(domain_name, Agent, Environment, MR):
     # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
     agents_to_be_corrected = 0.5  # 20% agents will undergo policy update
-    Num_of_agents = [2]#[10, 20, 50, 75, 100]
+    Num_of_agents = [10, 20, 50, 75, 100]
     MM = [math.ceil(i * agents_to_be_corrected) for i in Num_of_agents]
-    Goal_deposit = [(1,1)]#[(5, 5), (10, 10), (25, 25), (35, 40), (50, 50)]
+    Goal_deposit = [(5, 5), (10, 10), (25, 25), (35, 40), (50, 50)]
     num_of_grids = 5
 
     # Tracking NSE values with grids
-
     num_of_agents_tracker = []
 
     R_naive_tracker = np.zeros((len(Num_of_agents), num_of_grids), dtype=float)
@@ -229,25 +228,25 @@ def run_generalization_simulation(domain_name, Agent, Environment, MR):
 
         print("########################################################################")
 
-        # # saving to sim_results_folder after for all 5 grids in a single row; next row means new number of agents
-        # np.savetxt('sim_results/'+domain_name+'/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/NSE_gen_recon_wo_cf_tracker.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/NSE_gen_recon_with_cf_tracker.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/NSE_considerate_tracker.txt', NSE_considerate_tracker, fmt='%.1f')
+        # saving to sim_results_folder after for all 5 grids in a single row; next row means new number of agents
+        np.savetxt('sim_results/'+domain_name+'/NSE_naive_tracker.txt', NSE_naive_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/NSE_recon_tracker.txt', NSE_recon_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/NSE_gen_recon_wo_cf_tracker.txt', NSE_gen_recon_wo_cf_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/NSE_gen_recon_with_cf_tracker.txt', NSE_gen_recon_with_cf_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/NSE_dr_tracker.txt', NSE_dr_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/NSE_considerate_tracker.txt', NSE_considerate_tracker, fmt='%.1f')
         
-        # np.savetxt('sim_results/'+domain_name+'/R_naive_tracker.txt', R_naive_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/R_recon_tracker.txt', R_recon_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/R_gen_recon_wo_cf_tracker.txt', R_gen_recon_wo_cf_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/R_gen_recon_with_cf_tracker.txt', R_gen_recon_with_cf_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/R_dr_tracker.txt', R_dr_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/R_considerate_tracker.txt', R_considerate_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/R_naive_tracker.txt', R_naive_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/R_recon_tracker.txt', R_recon_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/R_gen_recon_wo_cf_tracker.txt', R_gen_recon_wo_cf_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/R_gen_recon_with_cf_tracker.txt', R_gen_recon_with_cf_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/R_dr_tracker.txt', R_dr_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/R_considerate_tracker.txt', R_considerate_tracker, fmt='%.1f')
 
-        # np.savetxt('sim_results/'+domain_name+'/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
-        # np.savetxt('sim_results/'+domain_name+'/time_considerate_tracker.txt', time_considerate_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/time_recon_tracker.txt', time_recon_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/time_gen_recon_wo_cf_tracker.txt', time_gen_recon_wo_cf_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/time_gen_recon_w_cf_tracker.txt', time_gen_recon_w_cf_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/time_dr_tracker.txt', time_dr_tracker, fmt='%.1f')
+        np.savetxt('sim_results/'+domain_name+'/time_considerate_tracker.txt', time_considerate_tracker, fmt='%.1f')
         
-        # np.savetxt('sim_results/'+domain_name+'/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
+        np.savetxt('sim_results/'+domain_name+'/num_of_agents_tracker.txt', num_of_agents_tracker, fmt='%d')
