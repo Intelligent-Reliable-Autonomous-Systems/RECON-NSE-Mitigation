@@ -188,7 +188,7 @@ class OvercookedAgent:
         for s in self.S:
             A[s] = ['Noop', 'interact', 'forward', 'turn_left', 'turn_right']
         # Remove actions that are not possible in certain states
-        #    --> for now, no need to forbit any action.
+        #    --> for now, no need to forbid any action.
         return A
 
     def is_looking_at(self, s, entity):

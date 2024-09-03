@@ -115,10 +115,10 @@ def run_varying_corrected_agents_sim(domain_name, Agent, Environment, MR):
             NSE_considerate_vary[ctr][i] = NSE_considerate
             
     MMM = np.array([int(100 * i) for i in MM])
-    # np.savetxt('sim_results/'+domain_name+'/Vary_NSE_Naive.txt', NSE_naive_vary, fmt='%.1f')
-    # np.savetxt('sim_results/'+domain_name+'/Vary_NSE_DR.txt', NSE_dr_vary, fmt='%.1f')
-    # np.savetxt('sim_results/'+domain_name+'/Vary_NSE_RECON.txt', NSE_recon_vary, fmt='%.1f')
-    # np.savetxt('sim_results/'+domain_name+'/Vary_NSE_GEN_RECON_with_cf.txt', NSE_gen_recon_w_cf_vary, fmt='%.1f')
-    # np.savetxt('sim_results/'+domain_name+'/Vary_NSE_CONSIDERATE.txt', NSE_considerate_vary, fmt='%.1f')
-    # np.savetxt('sim_results/'+domain_name+'/Vary_agent_percentage_corrected.txt', MMM, fmt='%d')
+    np.savetxt('sim_results/'+domain_name+'/Vary_NSE_Naive.txt', NSE_naive_vary, fmt='%.1f')
+    np.savetxt('sim_results/'+domain_name+'/Vary_NSE_DR.txt', NSE_dr_vary, fmt='%.1f')
+    np.savetxt('sim_results/'+domain_name+'/Vary_NSE_RECON.txt', NSE_recon_vary, fmt='%.1f')
+    np.savetxt('sim_results/'+domain_name+'/Vary_NSE_GEN_RECON_with_cf.txt', NSE_gen_recon_w_cf_vary, fmt='%.1f')
+    np.savetxt('sim_results/'+domain_name+'/Vary_NSE_CONSIDERATE.txt', NSE_considerate_vary, fmt='%.1f')
+    np.savetxt('sim_results/'+domain_name+'/Vary_agent_percentage_corrected.txt', MMM, fmt='%d')
     print(simple_colors.green("\nSimulation results saved in sim_results/"+domain_name+"/",['bold']))

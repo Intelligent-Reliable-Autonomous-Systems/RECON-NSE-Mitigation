@@ -8,7 +8,6 @@ def NaivePolicy(agent):
     return Pi
 
 def ReconPolicy(agent):
-    print('Recon Policy is being generated for agent: ', agent.label)
     _, Pi = vi.LVI(agent, 'recon')
     agent.follow_policy(Pi)
     agent.Pi_recon = Pi

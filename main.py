@@ -1,3 +1,12 @@
+'''
+This is the master script that runs all the simulations and generates the plots.
+The script runs the following simulations:
+1. Varying Corrected Agent Simulation
+2. Effect of Generalization Simulation
+3. Get all visualizations
+
+After running the simulations, the results (data and figures) are stored in sim_results folder.
+'''
 import varying_corrected_agent as sim1
 import effect_of_generalization as sim2
 import get_plots as sim3
@@ -29,7 +38,7 @@ def main():
 
         sim1.run_varying_corrected_agents_sim(domain_name, Agent, Environment, MR)
         sim2.run_generalization_simulation(domain_name, Agent, Environment, MR)
-        sim3.get_all_visualizations(save_figures=True)
+        sim3.get_all_visualizations(domain_name, save_figures=True)
 
 if __name__ == '__main__':
     main()

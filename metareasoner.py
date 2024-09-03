@@ -232,7 +232,6 @@ class SalpMetareasoner:
         """
         blame = np.zeros(len(self.Agents))
         NSE_blame = np.zeros(len(self.Agents))
-
         for agent_idx in range(len(self.Agents)):
             counterfactual_constant_state = copy.deepcopy(joint_NSE_state)
             counterfactual_constant_state = list(counterfactual_constant_state)
