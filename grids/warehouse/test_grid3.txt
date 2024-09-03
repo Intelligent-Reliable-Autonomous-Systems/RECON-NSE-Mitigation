@@ -1,0 +1,17 @@
+..................
+...s..............
+t.tt..tt..tt..tt.t
+t.tt.stt..tt..tt.t
+t.tt..tt..xxs.xx.x
+x.xx..xx..xx..xxsx
+x.xx..xx..xx..xx.x
+x.xx..xxs.xx.sxx.x
+x.xx..xx..xx..xx.x
+x.xx..xx..xx..xx.x
+x.xxssxx..xxssxxsx
+x.xxssxx..xxssxxsx
+....ss..........s.
+.....s....s.s.....
+...ss....ss...s...
+.sss..............
+       gggg       

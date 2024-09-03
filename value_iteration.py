@@ -1,14 +1,13 @@
 import copy
-import calculation_lib
 
-
-def value_iteration(agent, S):
+def value_iteration(agent):
     """
     :param agent: object of the agent
     :param S: set of all states
 
     :return V: value V for all states
     """
+    S = agent.S
     V = {s: 0 for s in S}
     Residual = {s: 0 for s in S}
     PI = {s: ' ' for s in S}
@@ -23,9 +22,14 @@ def value_iteration(agent, S):
         iterations += 1
         oldV = V.copy()
         for s in S:
+            if s == agent.s_goal:
+                V[s] = agent.Reward(s, 'Noop')
+                PI[s] = 'Noop'
+                Residual[s] = abs(V[s] - oldV[s])
+                continue
             for a in agent.A[s]:
                 QQ = 0
-                T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
+                T = agent.get_transition_prob(s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
                 Q[s][a] = agent.Reward(s, a) + QQ
@@ -35,7 +39,7 @@ def value_iteration(agent, S):
                 Q[s][aa] = round(Q[s][aa])
             act = max(Q[s], key=Q[s].get)  # Storing the Action corresponding to max Q_value
             PI[s] = act
-
+        
         if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
             # print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
@@ -63,12 +67,17 @@ def be_considerate_value_iteration(agent):
         iterations += 1
         oldV = V.copy()
         for s in S:
+            if s == agent.s_goal:
+                V[s] = agent.Reward(s, 'Noop')
+                PI[s] = 'Noop'
+                Residual[s] = abs(V[s] - oldV[s])
+                continue
             for a in agent.A[s]:
                 QQ = 0
-                T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
+                T = agent.get_transition_prob(s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
-                Q[s][a] = agent.R_considerate_scalarized(s, a) + QQ
+                Q[s][a] = agent.R_considerate(s, a) + QQ
             V[s] = max(Q[s].values())  # V = max(Q_values)
             Residual[s] = abs(V[s] - oldV[s])
             for aa in agent.A[s]:
@@ -77,12 +86,11 @@ def be_considerate_value_iteration(agent):
             PI[s] = act
 
         if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
-            # print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
     return V, PI
 
 
-def blame_value_iteration(agent, S, R_blame):
+def blame_value_iteration(agent, R_blame):
     """
     :param agent: object of the agent
     :param S: set of all states
@@ -90,13 +98,13 @@ def blame_value_iteration(agent, S, R_blame):
 
     :return V: value V for all states
     """
+    S = agent.S
     V = {s: 0 for s in S}
     Residual = {s: 0 for s in S}
     PI = {s: ' ' for s in S}
     Q = {}
     iterations = 0
     for s in S:
-        # print(s)
         Q[s] = {}
     for s in S:
         for a in agent.A[s]:
@@ -105,29 +113,36 @@ def blame_value_iteration(agent, S, R_blame):
         iterations += 1
         oldV = V.copy()
         for s in S:
+            if s == agent.s_goal:
+                V[s] = agent.Reward(s, 'Noop')
+                PI[s] = 'Noop'
+                Residual[s] = abs(V[s] - oldV[s])
+                continue
             for a in agent.A[s]:
                 QQ = 0
-                T = calculation_lib.get_transition_prob(agent, s, a)  # returns {s:__, s': __}
+                T = agent.get_transition_prob(s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
                 Q[s][a] = R_blame[s] + QQ
             V[s] = max(Q[s].values())  # V = max(Q_values)
             Residual[s] = abs(V[s] - oldV[s])
+            for aa in agent.A[s]:
+                Q[s][aa] = round(Q[s][aa])
             act = max(Q[s], key=Q[s].get)  # Storing the Action corresponding to max Q_value
             PI[s] = act
-
+            
         if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
-            # print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
     return V, PI
 
 
-def action_set_value_iteration(agent, S):
+def action_set_value_iteration(agent):
     """
     :param agent: object of the agent
     :param S: set of states
     :return policy_space: All optimal actions for all states
     """
+    S = agent.S
     V = {s: 0 for s in S}
     Residual = {s: 0 for s in S}
     PI = {s: ' ' for s in S}
@@ -142,19 +157,25 @@ def action_set_value_iteration(agent, S):
         iterations += 1
         oldV = V.copy()
         for s in S:
+            if s == agent.s_goal:
+                V[s] = agent.Reward(s, 'Noop')
+                PI[s] = 'Noop'
+                Residual[s] = abs(V[s] - oldV[s])
+                continue
             for a in agent.A[s]:
                 QQ = 0
-                T = calculation_lib.get_transition_prob(agent, s, a)
+                T = agent.get_transition_prob(s, a)  # returns {s:__, s': __}
                 for ss in list(T.keys()):
                     QQ = QQ + T[ss] * (agent.gamma * V[ss])
                 Q[s][a] = agent.Reward(s, a) + QQ
             V[s] = max(Q[s].values())  # V = max(Q_values)
             Residual[s] = abs(V[s] - oldV[s])
+            for aa in agent.A[s]:
+                Q[s][aa] = round(Q[s][aa])
             act = max(Q[s], key=Q[s].get)  # Storing the Action corresponding to max Q_value
             PI[s] = act
-
+            
         if max(Residual[s] for s in S) < 0.001 or iterations >= 1000:
-            # print("Value Iteration for Agent " + agent.label + " is done after " + str(iterations) + " Iterations!!")
             break
 
     # After computing Q values for all actions in each state, we select all optimal actions
@@ -165,40 +186,19 @@ def action_set_value_iteration(agent, S):
     return agent
 
 
-def LVI(Agents, Agents_to_be_corrected, mode):
-    """
-    :param Agents: All agents
-    :param Agents_to_be_corrected: Indices of agents that have been selected to be corrected
-    :param mode: 'R_blame' or 'R_blame_gen_wo_cf' or 'R_blame_gen_with_cf'
-    :return:
-    """
-    for agent in Agents_to_be_corrected:
-        if mode == 'R_blame_considerate2':
-            agent.V, agent.Pi = be_considerate_value_iteration(agent)
+def LVI(agent, mode):
+    if mode == 'considerate':
+        V, Pi = be_considerate_value_iteration(agent)
+    else:
+        agent = action_set_value_iteration(agent)
+        if mode == 'recon':
+            V, Pi = blame_value_iteration(agent, agent.R_blame)
+        elif mode == 'DR':
+            V, Pi = blame_value_iteration(agent, agent.R_blame_dr)
+        elif mode == 'gen_recon_wo_cf':
+            V, Pi = blame_value_iteration(agent, agent.R_blame_gen_wo_cf)
+        elif mode == 'gen_recon_w_cf':
+            V, Pi = blame_value_iteration(agent, agent.R_blame_gen_with_cf)
         else:
-            agent = action_set_value_iteration(agent, agent.Grid.S)
-            if mode == 'R_blame':
-                agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame)
-            elif mode == 'R_blame_dr':
-                agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_dr)
-            elif mode == 'R_blame_gen_wo_cf':
-                agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_gen_wo_cf)
-            elif mode == 'R_blame_gen_with_cf':
-                agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_gen_with_cf)
-            elif mode == 'R_blame_considerate':
-                agent.V, agent.Pi = blame_value_iteration(agent, agent.Grid.S, agent.R_blame_considerate)
-            else:
-                print("Invalid mode in value iteration!!")
-
-    for agent in Agents:
-        agent.s = copy.deepcopy(agent.s0)
-        agent.follow_policy()
-
-    # display_just_grid(Agents[0].Grid.All_States)
-    # for agent in Agents:
-    #     print("Corrected Plan for Agent " + agent.label + ":")
-    #     print(agent.plan[4:])  # starting for 4 to avoid the initial arrow display ' -> '
-    #     print("________________________________________________\n")
-
-    for agent in Agents:
-        agent.agent_reset()
+            print("Invalid mode in value iteration!!")
+    return V, Pi

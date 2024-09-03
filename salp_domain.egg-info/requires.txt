@@ -1,6 +1,0 @@
-numpy
-seaborn
-scikit-learn
-scipy
-matplotlib
-simple_colors

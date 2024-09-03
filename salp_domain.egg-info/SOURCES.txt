@@ -1,8 +1,0 @@
-LICENSE
-README.md
-setup.py
-salp_domain.egg-info/PKG-INFO
-salp_domain.egg-info/SOURCES.txt
-salp_domain.egg-info/dependency_links.txt
-salp_domain.egg-info/requires.txt
-salp_domain.egg-info/top_level.txt
