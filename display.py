@@ -211,7 +211,7 @@ def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf,
     y_ticks = [int(i) for i in ax.get_yticks()]
     ax.set_yticklabels(y_ticks,fontsize=n)
     ax.locator_params(nbins=10, axis='y')
-    # ax.legend(fontsize=n)#loc='upper center', bbox_to_anchor=(0.5, 1.25), ncol=6, fontsize=n+10)
+    # ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=5, fontsize=n)
     ax.set_xlabel('Number of Agents', fontsize=n)
     ax.set_ylabel('Time (min)', fontsize=n)
     # ax.set_title(title_str, fontsize=n)

@@ -32,5 +32,5 @@ def get_all_visualizations(domain, save_figures=True):
     
     plot_time_scalability(time_recon_tracker, time_gen_recon_wo_cf_tracker, time_gen_recon_with_cf_tracker, time_dr_tracker, time_considerate_tracker, num_of_agents_tracker, domain, save_fig=save_figures)
 
-for domain in ['salp', 'overcooked', 'warehouse']:
-    get_all_visualizations(domain, True)
+for domain in ['salp']:#, 'overcooked', 'warehouse']:
+    get_all_visualizations(domain, False)
