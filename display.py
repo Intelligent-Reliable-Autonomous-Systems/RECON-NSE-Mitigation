@@ -93,7 +93,7 @@ def plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_
     color5 = COLOR['darkorchid']
     color6 = COLOR['deepskyblue']
 
-    # title_str = 'NSE penalty for different mitigation techniques for' +'\n' +r'varying number of agents agents averaged over 5 instances of '+domain_name+' domain'
+    title_str = 'NSE penalty for different mitigation techniques for' +'\n' +r'varying number of agents averaged over 5 instances of '+domain_name+' domain'
 
     fig, ax = plt.subplots()
     # Calculate the mean and standard deviation for each row
@@ -136,10 +136,10 @@ def plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_
     ax.set_xticklabels(x_labels, fontsize=n)
     ax.set_yticklabels(yticks,fontsize=n)
     ax.locator_params(nbins=10, axis='y')
-    # ax.legend(fontsize=n)#loc='upper center', bbox_to_anchor=(0.5, 1.25), ncol=6, fontsize=n+10)
+    ax.legend(fontsize=n)#loc='upper center', bbox_to_anchor=(0.5, 1.25), ncol=6, fontsize=n+10)
     ax.set_xlabel('Number of Agents', fontsize=n)
     ax.set_ylabel('NSE Penalty', fontsize=n)
-    # ax.set_title(title_str, fontsize=n)
+    ax.set_title(title_str, fontsize=n)
     
     # if save_fig:
     #     plt.savefig("sim_results/"+domain_name+"/Figures/"+domain_name+"_effect_of_generalization.png", bbox_inches = 'tight', pad_inches = 0)
@@ -155,7 +155,7 @@ def plot_effect_of_generalization(NSE_naive_tracker, NSE_recon_tracker, NSE_gen_
     
 
 def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf, time_dr, time_considerate, num_of_agents_tracker, domain_name, save_fig=False):
-    # title_str = 'Process times with varying number of agents averaged over 5 instances of '+domain_name+' domain'
+    title_str = 'Process times for varying number of agents averaged over 5 instances of '+domain_name+' domain'
 
     color1 = COLOR['darkorange']
     color2 = COLOR['limegreen']
@@ -171,10 +171,10 @@ def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf,
     plt.rc('axes', labelsize=14)
     plt.rc('xtick', labelsize=14)
     plt.rc('ytick', labelsize=14)
-    x_ticks = np.arange(0, 1001, 100, dtype=int)
-    y_ticks = np.arange(0, 12, 2, dtype=int)
+    x_ticks = np.arange(0, 101, 10, dtype=int)
+    # y_ticks = np.arange(0, 12, 1, dtype=int)
     plt.xticks(x_ticks, x_ticks)
-    plt.yticks(y_ticks, y_ticks)
+    # plt.yticks(y_ticks, y_ticks, fontsize=14)
 
     time_recon_means = np.mean(time_recon , axis=1)
     time_gen_recon_wo_cf_means = np.mean(time_gen_recon_wo_cf , axis=1)
@@ -190,8 +190,8 @@ def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf,
 
     # ax.set_title(title_str)
 
+    plt.plot(num_of_agents_tracker, time_considerate_means, color=color5, label='Considerate Reward '+r'$(\alpha_1=\alpha_2=0.5)$')
     plt.plot(num_of_agents_tracker, time_dr_means, color=color4, label='Difference Reward')
-    plt.plot(num_of_agents_tracker, time_considerate_means, color=color5, label='Considerate Reward '+r'$(\alpha_1=0.5,\alpha_2=0.5)$')
     plt.plot(num_of_agents_tracker, time_recon_means, color=color1, label='RECON')
     plt.plot(num_of_agents_tracker, time_gen_recon_wo_cf_means, color=color2, label='Generalized RECON without cf data')
     plt.plot(num_of_agents_tracker, time_gen_recon_w_cf_means, color=color3, label='Generalized RECON with cf data')
@@ -208,6 +208,7 @@ def plot_time_scalability(time_recon, time_gen_recon_wo_cf, time_gen_recon_w_cf,
                         color=color5)
     n = 14
     ax.set_xticklabels(x_ticks, fontsize=n)
+    y_ticks = [int(i) for i in ax.get_yticks()]
     ax.set_yticklabels(y_ticks,fontsize=n)
     ax.locator_params(nbins=10, axis='y')
     # ax.legend(fontsize=n)#loc='upper center', bbox_to_anchor=(0.5, 1.25), ncol=6, fontsize=n+10)
