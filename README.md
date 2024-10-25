@@ -7,7 +7,8 @@ After cloning the repo, setup a conda environment with python3, activate it, and
 $ pip install -r requirements.txt
 ```
 ## Run Simulation
-All simulation results including figures for all domains will be generated an saved in respective locations (in the sim_results folder) after running the main simulation
 ```bash
 $ python main.py
 ```
+## Results will be saved in the `sim_results/<domain>` folder
+All simulation results including figures for all domains will be generated an saved in respective locations (in the `sim_results/<domain>`folder) after running the main simulation

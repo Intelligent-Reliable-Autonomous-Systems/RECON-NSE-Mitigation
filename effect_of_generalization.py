@@ -7,8 +7,7 @@ import compute_policy
 
 warnings.filterwarnings('ignore')
 def run_generalization_simulation(domain_name, Agent, Environment, MR):
-    # Number of agent to be corrected [example (M = 2)/(out of num_of_agents = 5)]
-    agents_to_be_corrected = 0.5  # 20% agents will undergo policy update
+    agents_to_be_corrected = 0.5  # 50% agents will undergo policy update
     Num_of_agents = [10, 20, 50, 75, 100]
     MM = [math.ceil(i * agents_to_be_corrected) for i in Num_of_agents]
     Goal_deposit = [(5, 5), (10, 10), (25, 25), (35, 40), (50, 50)]
@@ -68,9 +67,6 @@ def run_generalization_simulation(domain_name, Agent, Environment, MR):
                 agent.Pi = compute_policy.NaivePolicy(agent)
             joint_NSE_states, joint_NSE_values = mr.get_jointstates_and_NSE_list(Agents)
             R_naive, NSE_naive = mr.get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
-            # print("Num of joint steps (naive): ", len(joint_NSE_values))
-            # print('NSE_naive: ', NSE_naive)
-            # print("R_naive = ", sum(R_naive))
             R_naive_tracker[ctr][i] = sum(R_naive)
             NSE_naive_tracker[ctr][i] = NSE_naive
             
@@ -94,8 +90,6 @@ def run_generalization_simulation(domain_name, Agent, Environment, MR):
             time_recon = round((time_recon_e - time_recon_s) / 60.0, 2)  # in minutes
             _, joint_NSE_values = mr.get_jointstates_and_NSE_list(Agents)
             R_recon, NSE_recon = mr.get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
-            # print("Num of joint steps (RECON): ", len(joint_NSE_values))
-            # print('NSE_recon: ', NSE_recon)
             R_recon_tracker[ctr][i] = sum(R_recon)
             NSE_recon_tracker[ctr][i] = NSE_recon
             time_recon_tracker[ctr][i] = time_recon
@@ -127,8 +121,6 @@ def run_generalization_simulation(domain_name, Agent, Environment, MR):
             time_gen_recon_wo_cf = round((time_gen_recon_wo_cf_e - time_gen_recon_wo_cf_s) / 60.0, 2)  # in minutes
             _, joint_NSE_values = mr.get_jointstates_and_NSE_list(Agents)
             R_gen_recon_wo_cf, NSE_gen_recon_wo_cf = mr.get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
-            # print("Num of joint steps (gen_recon_wo_cf): ", len(joint_NSE_values))
-            # print('NSE_gen_recon_wo_cf: ', NSE_gen_recon_wo_cf)
             R_gen_recon_wo_cf_tracker[ctr][i] = sum(R_gen_recon_wo_cf)
             NSE_gen_recon_wo_cf_tracker[ctr][i] = NSE_gen_recon_wo_cf
             time_gen_recon_wo_cf_tracker[ctr][i] = time_gen_recon_wo_cf
@@ -161,8 +153,6 @@ def run_generalization_simulation(domain_name, Agent, Environment, MR):
             time_gen_recon_w_cf = round((time_gen_recon_w_cf_e - time_gen_recon_w_cf_s) / 60.0, 2)  # in minutes
             _, joint_NSE_values = mr.get_jointstates_and_NSE_list(Agents)
             R_gen_recon_w_cf, NSE_gen_recon_w_cf = mr.get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
-            # print("Num of joint steps (gen_recon_w_cf): ", len(joint_NSE_values))
-            # print('NSE_gen_recon_w_cf: ', NSE_gen_recon_w_cf)
             R_gen_recon_with_cf_tracker[ctr][i] = sum(R_gen_recon_w_cf)
             NSE_gen_recon_with_cf_tracker[ctr][i] = NSE_gen_recon_w_cf
             time_gen_recon_w_cf_tracker[ctr][i] = time_gen_recon_w_cf
@@ -179,8 +169,6 @@ def run_generalization_simulation(domain_name, Agent, Environment, MR):
             time_dr = round((time_dr_e - time_dr_s) / 60.0, 2)  # in minutes
             _, joint_NSE_values = mr.get_jointstates_and_NSE_list(Agents)
             R_dr, NSE_dr = mr.get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
-            # print("Num of joint steps (DR): ", len(joint_NSE_values))
-            # print('NSE_dr: ', NSE_dr)
             R_dr_tracker[ctr][i] = sum(R_dr)
             NSE_dr_tracker[ctr][i] = NSE_dr
             time_dr_tracker[ctr][i] = time_dr
@@ -201,8 +189,6 @@ def run_generalization_simulation(domain_name, Agent, Environment, MR):
             time_considerate = round((time_considerate_e - time_considerate_s) / 60.0, 2)  # in minutes
             _, joint_NSE_values = mr.get_jointstates_and_NSE_list(Agents)
             R_considerate, NSE_considerate = mr.get_total_R_and_NSE_from_path(Agents, joint_NSE_values)
-            # print("Num of joint steps (considerate): ", len(joint_NSE_values))
-            # print('NSE_considerate: ', NSE_considerate)
             R_considerate_tracker[ctr][i] = sum(R_considerate)
             NSE_considerate_tracker[ctr][i] = NSE_considerate
             time_considerate_tracker[ctr][i] = time_considerate
